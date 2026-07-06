@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KAJIAN4D — Admin Panel Berita</title>
+<link rel="icon" type="image/png" href="https://ik.imagekit.io/ehc8d8fve/icon-kajian4d.png?updatedAt=1781622585259">
+<style>
+  :root{
+    --gold:#c9a53d;
+    --gold-bright:#e8c766;
+    --bg-0:#08090a;
+    --bg-1:#101113;
+    --bg-2:#17181b;
+    --line:#2a2b2e;
+    --text:#e9e7e0;
+    --muted:#9a978d;
+    --danger:#c85c5c;
+    --ok:#4caf7d;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    font-family:'Segoe UI',Roboto,Arial,sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(ellipse at top left, rgba(201,165,61,0.06), transparent 60%),
+      repeating-linear-gradient(115deg, #000 0px, #000 2px, #0c0d0e 2px, #0c0d0e 4px),
+      linear-gradient(160deg,#050505,#111213 55%,#050505);
+    background-blend-mode:screen, normal, normal;
+    min-height:100vh;
+  }
+  /* subtle carbon weave overlay */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    pointer-events:none;
+    background-image:
+      repeating-linear-gradient(45deg, rgba(255,255,255,0.015) 0 2px, transparent 2px 6px),
+      repeating-linear-gradient(-45deg, rgba(255,255,255,0.015) 0 2px, transparent 2px 6px);
+    z-index:0;
+  }
+  a{color:var(--gold-bright);}
+  ::selection{background:rgba(201,165,61,0.35);}
+
+  /* ---------- LOGIN ---------- */
+  #loginScreen{
+    position:fixed; inset:0; z-index:100;
+    display:flex; align-items:center; justify-content:center;
+    background:
+      radial-gradient(circle at 50% 20%, rgba(201,165,61,0.08), transparent 55%),
+      repeating-linear-gradient(115deg, #000 0px, #000 2px, #0c0d0e 2px, #0c0d0e 4px),
+      #060606;
+  }
+  .login-card{
+    width:360px; max-width:90vw;
+    background:linear-gradient(180deg,#141416,#0b0b0c);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:36px 30px 28px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.03);
+    text-align:center;
+  }
+  .login-card img.logo{width:64px;height:64px;border-radius:14px;margin-bottom:10px;
+    box-shadow:0 0 0 1px var(--line), 0 6px 20px rgba(201,165,61,0.15);}
+  .login-card h1{font-size:22px;letter-spacing:2px;margin:4px 0 2px;
+    background:linear-gradient(90deg,var(--gold-bright),var(--gold));
+    -webkit-background-clip:text;background-clip:text;color:transparent;}
+  .login-card p.tag{color:var(--muted);font-size:12px;margin:0 0 22px;letter-spacing:1px;}
+  .field{text-align:left;margin-bottom:14px;}
+  .field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;letter-spacing:.3px;}
+  .field input, .field select, .field textarea{
+    width:100%; padding:10px 12px; border-radius:8px;
+    background:#0e0f10; border:1px solid var(--line); color:var(--text);
+    font-size:14px; outline:none; transition:border-color .15s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{border-color:var(--gold);}
+  .btn{
+    cursor:pointer; border:none; border-radius:8px; padding:11px 16px;
+    font-size:14px; font-weight:600; letter-spacing:.3px;
+  }
+  .btn-gold{
+    background:linear-gradient(180deg,var(--gold-bright),var(--gold));
+    color:#191203; width:100%;
+  }
+  .btn-gold:hover{filter:brightness(1.08);}
+  .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--line);}
+  .btn-ghost:hover{color:var(--text);border-color:var(--gold);}
+  .login-links{margin-top:14px;font-size:12px;}
+  .login-links span{color:var(--gold-bright);cursor:pointer;text-decoration:underline;}
+  #loginError{color:var(--danger);font-size:12px;min-height:16px;margin-top:6px;}
+
+  /* generic modal */
+  .modal-overlay{
+    position:fixed; inset:0; z-index:200; display:none;
+    align-items:center; justify-content:center;
+    background:rgba(0,0,0,0.6); backdrop-filter:blur(2px);
+  }
+  .modal-overlay.show{display:flex;}
+  .modal-box{
+    width:380px; max-width:92vw;
+    background:#141516; border:1px solid var(--line); border-radius:12px;
+    padding:20px 22px 18px; box-shadow:0 20px 50px rgba(0,0,0,.6);
+  }
+  .modal-box h3{margin:0 0 16px;font-size:16px;color:var(--gold-bright);
+    display:flex;justify-content:space-between;align-items:center;}
+  .modal-close{cursor:pointer;color:var(--muted);font-size:16px;}
+  .modal-close:hover{color:var(--text);}
+  .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;}
+
+  /* ---------- ADMIN SHELL ---------- */
+  #adminPanel{display:none; position:relative; z-index:1; min-height:100vh;}
+  header.topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 26px; border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg,#121214,#0c0c0d);
+    position:sticky; top:0; z-index:10;
+  }
+  .brand{display:flex;align-items:center;gap:12px;}
+  .brand img{width:38px;height:38px;border-radius:9px;box-shadow:0 0 0 1px var(--line);}
+  .brand .name{font-weight:700;letter-spacing:2px;font-size:16px;
+    background:linear-gradient(90deg,var(--gold-bright),var(--gold));
+    -webkit-background-clip:text;background-clip:text;color:transparent;}
+  .brand .sub{font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:-2px;}
+  nav.tabs{display:flex;gap:6px;}
+  nav.tabs button{
+    background:transparent;border:1px solid transparent;color:var(--muted);
+    padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;
+  }
+  nav.tabs button.active{color:#191203;background:linear-gradient(180deg,var(--gold-bright),var(--gold));}
+  nav.tabs button:not(.active):hover{border-color:var(--line);color:var(--text);}
+  .userbox{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted);}
+  .userbox b{color:var(--text);}
+
+  main{max-width:1100px;margin:0 auto;padding:28px 22px 80px;}
+  .panel{
+    background:linear-gradient(180deg,#131315,#0d0d0e);
+    border:1px solid var(--line); border-radius:14px; padding:24px;
+    margin-bottom:22px;
+    box-shadow:0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,0.02);
+  }
+  .panel h2{margin:0 0 4px;font-size:17px;color:var(--gold-bright);}
+  .panel .hint{color:var(--muted);font-size:12px;margin:0 0 18px;}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media(max-width:720px){.grid2{grid-template-columns:1fr;}}
+
+  /* toolbar */
+  .toolbar{
+    display:flex; flex-wrap:wrap; gap:4px; padding:8px;
+    background:#0e0f10; border:1px solid var(--line); border-radius:10px 10px 0 0;
+    border-bottom:none;
+  }
+  .toolbar button{
+    background:transparent;border:1px solid transparent;color:var(--text);
+    width:34px;height:34px;border-radius:7px;cursor:pointer;font-size:15px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .toolbar button:hover{background:#1c1d20;border-color:var(--line);}
+  .toolbar .divider{width:1px;background:var(--line);margin:4px 4px;}
+  #editor{
+    min-height:260px; padding:16px; border:1px solid var(--line); border-top:none;
+    border-radius:0 0 10px 10px; background:#0b0c0d; line-height:1.7; font-size:14px;
+    outline:none; overflow-wrap:anywhere;
+  }
+  #editor img{max-width:100%;height:auto;display:block;border-radius:8px;margin:10px 0;}
+  #editor a{color:var(--gold-bright);text-decoration:underline;}
+  #editor:empty:before{content:attr(data-placeholder);color:var(--muted);}
+
+  .thumb-tabs{display:flex;gap:8px;margin-bottom:10px;}
+  .thumb-tabs button{
+    flex:1;background:#0e0f10;border:1px solid var(--line);color:var(--muted);
+    padding:9px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;
+  }
+  .thumb-tabs button.active{color:#191203;background:linear-gradient(180deg,var(--gold-bright),var(--gold));border-color:transparent;}
+  .thumb-pane{display:none;}
+  .thumb-pane.active{display:block;}
+  .thumb-preview{
+    margin-top:10px; border:1px dashed var(--line); border-radius:10px;
+    min-height:120px; max-height:340px; display:flex; align-items:center; justify-content:center;
+    overflow:hidden; background:#0a0a0b; padding:6px;
+  }
+  .thumb-preview img{max-width:100%; max-height:330px; width:auto; height:auto; object-fit:contain; border-radius:6px;}
+  .thumb-preview span{color:var(--muted);font-size:12px;}
+
+  .row-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;}
+
+  table.article-list{width:100%;border-collapse:collapse;font-size:13px;}
+  table.article-list th, table.article-list td{
+    text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);
+  }
+  table.article-list th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.5px;}
+  table.article-list img.mini{width:56px;height:38px;object-fit:cover;border-radius:6px;background:#0a0a0b;}
+  .pill{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;background:#1c1d20;color:var(--gold-bright);border:1px solid var(--line);}
+  .tbl-actions button{
+    background:transparent;border:1px solid var(--line);color:var(--muted);
+    padding:6px 10px;border-radius:6px;cursor:pointer;font-size:12px;margin-right:6px;
+  }
+  .tbl-actions button:hover{color:var(--text);border-color:var(--gold);}
+  .tbl-actions button.del:hover{color:var(--danger);border-color:var(--danger);}
+  .empty-row td{color:var(--muted);text-align:center;padding:24px 0;}
+
+  .header-preview{
+    border:1px solid var(--line);border-radius:10px;padding:0;overflow:hidden;
+    min-height:160px; background:#0a0a0b; margin-top:12px;
+  }
+  .header-preview img{width:100%;max-height:280px;object-fit:cover;display:block;}
+
+  .toast{
+    position:fixed; bottom:24px; right:24px; z-index:300;
+    background:linear-gradient(180deg,var(--gold-bright),var(--gold));
+    color:#191203; padding:12px 18px; border-radius:10px; font-size:13px; font-weight:600;
+    box-shadow:0 10px 30px rgba(0,0,0,.5); display:none;
+  }
+
+  /* Insert / Edit Link modal - styled like the reference screenshot */
+  #linkModal .modal-box{width:420px;}
+  #linkModal .field label{font-size:12px;color:var(--muted);margin-bottom:5px;}
+  #linkModal select{appearance:none;-webkit-appearance:none;background-image:
+     linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+     linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+     background-position: calc(100% - 18px) center, calc(100% - 13px) center;
+     background-size:5px 5px,5px 5px; background-repeat:no-repeat;}
+</style>
+</head>
+<body>
+
+<!-- ============== LOGIN SCREEN ============== -->
+<div id="loginScreen">
+  <div class="login-card">
+    <img class="logo" src="https://ik.imagekit.io/ehc8d8fve/icon-kajian4d.png?updatedAt=1781622585259" alt="KAJIAN4D">
+    <h1>KAJIAN4D</h1>
+    <p class="tag">ADMIN PANEL &middot; BERITA</p>
+    <div class="field">
+      <label>ID Admin</label>
+      <input type="text" id="loginId" placeholder="kajian-admin" autocomplete="username">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="btn btn-gold" onclick="doLogin()">Masuk</button>
+    <div id="loginError"></div>
+    <div class="login-links">
+      <span onclick="openResetModal()">Lupa Password?</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============== RESET PASSWORD MODAL ============== -->
+<div class="modal-overlay" id="resetModal">
+  <div class="modal-box">
+    <h3>Reset Password Admin <span class="modal-close" onclick="closeResetModal()">✕</span></h3>
+    <div class="field">
+      <label>Kode Reset (khusus admin)</label>
+      <input type="password" id="resetCode" placeholder="Masukkan kode reset">
+    </div>
+    <div class="field">
+      <label>Password Baru</label>
+      <input type="password" id="resetNewPass" placeholder="Password baru">
+    </div>
+    <div id="resetError" style="color:var(--danger);font-size:12px;min-height:16px;"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeResetModal()">Batal</button>
+      <button class="btn btn-gold" style="width:auto" onclick="doResetPassword()">Simpan Password</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============== INSERT / EDIT LINK MODAL ============== -->
+<div class="modal-overlay" id="linkModal">
+  <div class="modal-box">
+    <h3>Insert/Edit Link <span class="modal-close" onclick="closeLinkModal()">✕</span></h3>
+    <div class="field">
+      <label>URL</label>
+      <input type="text" id="linkUrl" placeholder="https://">
+    </div>
+    <div class="field">
+      <label>Text to display</label>
+      <input type="text" id="linkText" placeholder="Teks yang tampil">
+    </div>
+    <div class="field">
+      <label>Title</label>
+      <input type="text" id="linkTitle" placeholder="Judul link">
+    </div>
+    <div class="field">
+      <label>Open link in...</label>
+      <select id="linkTarget">
+        <option value="_self">Current window</option>
+        <option value="_blank">New window</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeLinkModal()">Cancel</button>
+      <button class="btn btn-gold" style="width:auto" onclick="insertLink()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============== ADMIN PANEL ============== -->
+<div id="adminPanel">
+  <header class="topbar">
+    <div class="brand">
+      <img src="https://ik.imagekit.io/ehc8d8fve/icon-kajian4d.png?updatedAt=1781622585259" alt="logo">
+      <div>
+        <div class="name">KAJIAN4D</div>
+        <div class="sub">ADMIN BERITA</div>
+      </div>
+    </div>
+    <nav class="tabs">
+      <button class="active" data-tab="write" onclick="switchTab('write')">Tulis Berita</button>
+      <button data-tab="header" onclick="switchTab('header')">Pengaturan Header</button>
+      <button data-tab="list" onclick="switchTab('list')">Daftar Berita</button>
+    </nav>
+    <div class="userbox">
+      <span>Login sebagai <b id="whoAmI">kajian-admin</b></span>
+      <button class="btn btn-ghost" onclick="doLogout()">Logout</button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ===== TAB: TULIS BERITA ===== -->
+    <section id="tab-write">
+      <div class="panel">
+        <h2>Tulis / Edit Artikel</h2>
+        <p class="hint">Isi detail artikel di bawah ini. Slug akan dibuat otomatis dari judul jika dikosongkan.</p>
+
+        <div class="grid2">
+          <div class="field">
+            <label>Judul Artikel</label>
+            <input type="text" id="fJudul" placeholder="Contoh: Jadwal Lengkap Piala Dunia 2026" oninput="autoSlug()">
+          </div>
+          <div class="field">
+            <label>Slug (URL artikel, otomatis jika kosong)</label>
+            <input type="text" id="fSlug" placeholder="jadwal-lengkap-piala-dunia-2026">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Excerpt / Ringkasan Artikel</label>
+          <textarea id="fExcerpt" rows="3" placeholder="Ringkasan singkat artikel yang tampil di daftar berita..."></textarea>
+        </div>
+
+        <div class="grid2">
+          <div class="field">
+            <label>Kategori</label>
+            <select id="fKategori">
+              <option>Piala Dunia 2026</option>
+              <option>Prediksi Togel</option>
+              <option>Promo &amp; Bonus</option>
+              <option>Berita Umum</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Tanggal Publish</label>
+            <input type="date" id="fTanggal" value="2026-07-06">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Thumbnail Artikel</label>
+          <div class="thumb-tabs">
+            <button type="button" class="active" id="tabLinkBtn" onclick="switchThumbMode('link')">Link Gambar (Media)</button>
+            <button type="button" id="tabUploadBtn" onclick="switchThumbMode('upload')">Upload dari Storage</button>
+          </div>
+          <div class="thumb-pane active" id="thumbPaneLink">
+            <input type="text" id="fThumbLink" placeholder="https://contoh.com/gambar-thumbnail.jpg" oninput="previewThumb('link')">
+          </div>
+          <div class="thumb-pane" id="thumbPaneUpload">
+            <input type="file" id="fThumbFile" accept="image/*" onchange="previewThumb('upload')">
+          </div>
+          <div class="thumb-preview" id="thumbPreview"><span>Belum ada gambar dipilih</span></div>
+        </div>
+
+        <div class="field">
+          <label>Isi Artikel</label>
+          <div class="toolbar">
+            <button type="button" title="Undo" onclick="exec('undo')">↺</button>
+            <button type="button" title="Redo" onclick="exec('redo')">↻</button>
+            <div class="divider"></div>
+            <button type="button" title="Bold" style="font-weight:800" onclick="exec('bold')">B</button>
+            <button type="button" title="Italic" style="font-style:italic" onclick="exec('italic')">I</button>
+            <button type="button" title="Underline" style="text-decoration:underline" onclick="exec('underline')">U</button>
+            <div class="divider"></div>
+            <button type="button" title="Bullet List" onclick="exec('insertUnorderedList')">•≡</button>
+            <button type="button" title="Numbered List" onclick="exec('insertOrderedList')">1≡</button>
+            <div class="divider"></div>
+            <button type="button" title="Insert/Edit Link" onclick="openLinkModal()">🔗</button>
+          </div>
+          <div id="editor" contenteditable="true" data-placeholder="Mulai tulis isi berita di sini..."></div>
+        </div>
+
+        <div class="row-actions">
+          <button class="btn btn-gold" style="width:auto" onclick="saveArticle()">Simpan Berita</button>
+          <button class="btn btn-ghost" onclick="clearForm()">Bersihkan Form</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== TAB: PENGATURAN HEADER ===== -->
+    <section id="tab-header" style="display:none;">
+      <div class="panel">
+        <h2>Pengaturan Header Berita</h2>
+        <p class="hint">Atur gambar header dan latar belakang khusus (custom HTML/CSS) untuk halaman berita.</p>
+
+        <div class="thumb-tabs">
+          <button type="button" class="active" id="hTabLinkBtn" onclick="switchHeaderMode('link')">Link Gambar</button>
+          <button type="button" id="hTabUploadBtn" onclick="switchHeaderMode('upload')">Upload dari Storage</button>
+        </div>
+        <div class="thumb-pane active" id="headerPaneLink">
+          <input type="text" id="hLink" placeholder="https://contoh.com/header-berita.jpg" oninput="previewHeader('link')">
+        </div>
+        <div class="thumb-pane" id="headerPaneUpload">
+          <input type="file" id="hFile" accept="image/*" onchange="previewHeader('upload')">
+        </div>
+        <div class="header-preview" id="headerPreview"><span style="display:block;text-align:center;padding:60px 0;color:var(--muted);">Belum ada gambar header</span></div>
+
+        <div class="field" style="margin-top:18px;">
+          <label>Custom HTML untuk Latar Belakang Berita</label>
+          <textarea id="hCustomHtml" rows="6" placeholder="&lt;div style='background:linear-gradient(...)'&gt;...&lt;/div&gt;"></textarea>
+        </div>
+
+        <div class="row-actions">
+          <button class="btn btn-gold" style="width:auto" onclick="saveHeaderSettings()">Simpan Pengaturan Header</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== TAB: DAFTAR BERITA ===== -->
+    <section id="tab-list" style="display:none;">
+      <div class="panel">
+        <h2>Daftar Berita Tersimpan</h2>
+        <p class="hint">Semua artikel yang sudah disimpan pada perangkat ini.</p>
+        <table class="article-list">
+          <thead>
+            <tr><th>Thumb</th><th>Judul</th><th>Kategori</th><th>Tanggal</th><th>Slug</th><th>Aksi</th></tr>
+          </thead>
+          <tbody id="articleTableBody">
+            <tr class="empty-row"><td colspan="6">Belum ada artikel tersimpan.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================
+   AUTH / LOGIN  (backend asli via /api/login & /api/reset-password)
+===================================================== */
+function getToken(){
+  return sessionStorage.getItem('kajian4d_token') || '';
+}
+
+async function doLogin(){
+  const id = document.getElementById('loginId').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const err = document.getElementById('loginError');
+  err.textContent = '';
+  try{
+    const resp = await fetch('/api/login', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ id, password: pass })
+    });
+    const json = await resp.json();
+    if(!resp.ok){
+      err.textContent = json.error || 'ID atau password salah.';
+      return;
+    }
+    sessionStorage.setItem('kajian4d_token', json.token || '');
+    sessionStorage.setItem('kajian4d_logged_in','1');
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'block';
+    document.getElementById('whoAmI').textContent = id;
+    renderArticleList();
+    loadHeaderSettings();
+  }catch(e){
+    err.textContent = 'Tidak bisa menghubungi server: ' + e.message;
+  }
+}
+
+function doLogout(){
+  sessionStorage.removeItem('kajian4d_logged_in');
+  sessionStorage.removeItem('kajian4d_token');
+  document.getElementById('adminPanel').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('loginPass').value = '';
+}
+
+function openResetModal(){
+  document.getElementById('resetCode').value = '';
+  document.getElementById('resetNewPass').value = '';
+  document.getElementById('resetError').textContent = '';
+  document.getElementById('resetModal').classList.add('show');
+}
+function closeResetModal(){
+  document.getElementById('resetModal').classList.remove('show');
+}
+async function doResetPassword(){
+  const code = document.getElementById('resetCode').value.trim();
+  const newPass = document.getElementById('resetNewPass').value;
+  const err = document.getElementById('resetError');
+  err.textContent = '';
+  try{
+    const resp = await fetch('/api/reset-password', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ code, newPassword: newPass })
+    });
+    const json = await resp.json();
+    if(!resp.ok){
+      err.textContent = json.error || 'Gagal mereset password.';
+      return;
+    }
+    closeResetModal();
+    showToast('Password berhasil direset. Silakan login dengan password baru.');
+  }catch(e){
+    err.textContent = 'Tidak bisa menghubungi server: ' + e.message;
+  }
+}
+
+// keep session across reload (same tab)
+window.addEventListener('DOMContentLoaded', ()=>{
+  if(sessionStorage.getItem('kajian4d_logged_in') === '1'){
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'block';
+    renderArticleList();
+    loadHeaderSettings();
+  }
+});
+
+/* =====================================================
+   TABS
+===================================================== */
+function switchTab(name){
+  document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
+  document.querySelector(`nav.tabs button[data-tab="${name}"]`).classList.add('active');
+  document.getElementById('tab-write').style.display  = name==='write'  ? 'block' : 'none';
+  document.getElementById('tab-header').style.display  = name==='header' ? 'block' : 'none';
+  document.getElementById('tab-list').style.display    = name==='list'  ? 'block' : 'none';
+  if(name==='list') renderArticleList();
+}
+
+/* =====================================================
+   RICH TEXT TOOLBAR
+===================================================== */
+const editor = document.getElementById('editor');
+function exec(cmd){
+  editor.focus();
+  document.execCommand(cmd, false, null);
+}
+
+/* =====================================================
+   SLUG AUTO GENERATE
+===================================================== */
+let slugAuto = true;
+document.getElementById('fSlug').addEventListener('input', ()=>{ slugAuto = false; });
+function slugify(str){
+  return str.toString().toLowerCase().trim()
+    .replace(/[^\w\s-]/g,'')
+    .replace(/[\s_]+/g,'-')
+    .replace(/^-+|-+$/g,'');
+}
+function autoSlug(){
+  if(slugAuto){
+    document.getElementById('fSlug').value = slugify(document.getElementById('fJudul').value);
+  }
+}
+
+/* =====================================================
+   INSERT / EDIT LINK
+===================================================== */
+let savedRange = null;
+
+function openLinkModal(){
+  const sel = window.getSelection();
+  if(sel.rangeCount > 0 && editor.contains(sel.anchorNode)){
+    savedRange = sel.getRangeAt(0).cloneRange();
+  } else {
+    savedRange = null;
+  }
+
+  // check if selection/cursor is inside an existing link -> edit mode
+  let node = sel.anchorNode;
+  let linkEl = null;
+  while(node && node !== editor){
+    if(node.nodeName === 'A'){ linkEl = node; break; }
+    node = node.parentNode;
+  }
+
+  if(linkEl){
+    document.getElementById('linkUrl').value = linkEl.getAttribute('href') || '';
+    document.getElementById('linkText').value = linkEl.textContent || '';
+    document.getElementById('linkTitle').value = linkEl.getAttribute('title') || '';
+    document.getElementById('linkTarget').value = linkEl.getAttribute('target') || '_self';
+    const r = document.createRange();
+    r.selectNode(linkEl);
+    savedRange = r;
+  } else {
+    document.getElementById('linkUrl').value = '';
+    document.getElementById('linkText').value = sel.toString() || '';
+    document.getElementById('linkTitle').value = '';
+    document.getElementById('linkTarget').value = '_self';
+  }
+
+  document.getElementById('linkModal').classList.add('show');
+}
+
+function closeLinkModal(){
+  document.getElementById('linkModal').classList.remove('show');
+}
+
+function insertLink(){
+  const url = document.getElementById('linkUrl').value.trim();
+  const text = document.getElementById('linkText').value.trim() || url;
+  const title = document.getElementById('linkTitle').value.trim();
+  const target = document.getElementById('linkTarget').value;
+
+  if(!url){
+    document.getElementById('linkUrl').focus();
+    return;
+  }
+
+  const a = document.createElement('a');
+  a.setAttribute('href', url);
+  if(title) a.setAttribute('title', title);
+  a.setAttribute('target', target);
+  if(target === '_blank') a.setAttribute('rel','noopener noreferrer');
+  a.textContent = text; // plain readable text, not raw code
+
+  editor.focus();
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  if(savedRange){
+    sel.addRange(savedRange);
+    savedRange.deleteContents();
+    savedRange.insertNode(a);
+    // move caret after the link
+    const r2 = document.createRange();
+    r2.setStartAfter(a);
+    r2.collapse(true);
+    sel.removeAllRanges();
+    sel.addRange(r2);
+  } else {
+    editor.appendChild(a);
+  }
+
+  closeLinkModal();
+}
+
+/* =====================================================
+   THUMBNAIL (artikel)
+===================================================== */
+function switchThumbMode(mode){
+  document.getElementById('tabLinkBtn').classList.toggle('active', mode==='link');
+  document.getElementById('tabUploadBtn').classList.toggle('active', mode==='upload');
+  document.getElementById('thumbPaneLink').classList.toggle('active', mode==='link');
+  document.getElementById('thumbPaneUpload').classList.toggle('active', mode==='upload');
+}
+
+let currentThumbDataUrl = '';
+function previewThumb(mode){
+  const box = document.getElementById('thumbPreview');
+  if(mode === 'link'){
+    const url = document.getElementById('fThumbLink').value.trim();
+    if(!url){ box.innerHTML = '<span>Belum ada gambar dipilih</span>'; currentThumbDataUrl=''; return; }
+    currentThumbDataUrl = url;
+    box.innerHTML = `<img src="${url}" alt="thumbnail">`;
+  } else {
+    const file = document.getElementById('fThumbFile').files[0];
+    if(!file){ return; }
+    const reader = new FileReader();
+    reader.onload = e => {
+      currentThumbDataUrl = e.target.result;
+      box.innerHTML = `<img src="${e.target.result}" alt="thumbnail">`;
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+/* =====================================================
+   HEADER SETTINGS
+===================================================== */
+function switchHeaderMode(mode){
+  document.getElementById('hTabLinkBtn').classList.toggle('active', mode==='link');
+  document.getElementById('hTabUploadBtn').classList.toggle('active', mode==='upload');
+  document.getElementById('headerPaneLink').classList.toggle('active', mode==='link');
+  document.getElementById('headerPaneUpload').classList.toggle('active', mode==='upload');
+}
+
+let currentHeaderDataUrl = '';
+function previewHeader(mode){
+  const box = document.getElementById('headerPreview');
+  if(mode === 'link'){
+    const url = document.getElementById('hLink').value.trim();
+    if(!url) return;
+    currentHeaderDataUrl = url;
+    box.innerHTML = `<img src="${url}" alt="header">`;
+  } else {
+    const file = document.getElementById('hFile').files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      currentHeaderDataUrl = e.target.result;
+      box.innerHTML = `<img src="${e.target.result}" alt="header">`;
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+async function uploadIfNeeded(value, filenameHint){
+  if(!value) return '';
+  if(value.startsWith('data:')){
+    const match = value.match(/^data:(.*?);base64,(.*)$/);
+    if(!match) return '';
+    const contentType = match[1];
+    const base64 = match[2];
+    const resp = await fetch('/api/upload', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+getToken()},
+      body: JSON.stringify({ filename: filenameHint || ('image-'+Date.now()+'.jpg'), dataBase64: base64, contentType })
+    });
+    const json = await resp.json();
+    if(!resp.ok) throw new Error(json.error || 'Upload gambar gagal');
+    return json.url;
+  }
+  return value; // sudah berupa URL biasa
+}
+
+async function saveHeaderSettings(){
+  try{
+    const headerUrl = await uploadIfNeeded(currentHeaderDataUrl, 'header-berita.jpg');
+    const resp = await fetch('/api/settings', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+getToken()},
+      body: JSON.stringify({
+        header_image: headerUrl,
+        custom_html: document.getElementById('hCustomHtml').value
+      })
+    });
+    const json = await resp.json();
+    if(!resp.ok) throw new Error(json.error || 'Gagal menyimpan');
+    currentHeaderDataUrl = headerUrl;
+    showToast('Pengaturan header berhasil disimpan.');
+  }catch(e){
+    showToast('Gagal: ' + e.message);
+  }
+}
+
+async function loadHeaderSettings(){
+  try{
+    const resp = await fetch('/api/settings');
+    const data = await resp.json();
+    if(!resp.ok) return;
+    if(data.header_image){
+      currentHeaderDataUrl = data.header_image;
+      document.getElementById('headerPreview').innerHTML = `<img src="${data.header_image}" alt="header">`;
+      document.getElementById('hLink').value = data.header_image;
+    }
+    if(data.custom_html){
+      document.getElementById('hCustomHtml').value = data.custom_html;
+    }
+  }catch(e){}
+}
+
+/* =====================================================
+   ARTICLES: SAVE / LIST / EDIT / DELETE
+===================================================== */
+let editingSlug = null;
+let cachedArticles = [];
+
+async function saveArticle(){
+  const judul = document.getElementById('fJudul').value.trim();
+  let slug = document.getElementById('fSlug').value.trim();
+  const excerpt = document.getElementById('fExcerpt').value.trim();
+  const kategori = document.getElementById('fKategori').value;
+  const tanggal = document.getElementById('fTanggal').value;
+  const konten = editor.innerHTML;
+
+  if(!judul){ showToast('Judul artikel wajib diisi.'); return; }
+  if(!slug) slug = slugify(judul);
+
+  try{
+    const thumbUrl = await uploadIfNeeded(currentThumbDataUrl, slug + '-thumb.jpg');
+    const resp = await fetch('/api/articles', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+getToken()},
+      body: JSON.stringify({ judul, slug, excerpt, kategori, tanggal, thumbnail: thumbUrl, konten })
+    });
+    const json = await resp.json();
+    if(!resp.ok) throw new Error(json.error || 'Gagal menyimpan berita');
+    showToast('Berita berhasil disimpan.');
+    clearForm();
+    renderArticleList();
+  }catch(e){
+    showToast('Gagal: ' + e.message);
+  }
+}
+
+function clearForm(){
+  document.getElementById('fJudul').value = '';
+  document.getElementById('fSlug').value = '';
+  document.getElementById('fExcerpt').value = '';
+  document.getElementById('fKategori').selectedIndex = 0;
+  document.getElementById('fTanggal').value = '2026-07-06';
+  document.getElementById('fThumbLink').value = '';
+  document.getElementById('fThumbFile').value = '';
+  document.getElementById('thumbPreview').innerHTML = '<span>Belum ada gambar dipilih</span>';
+  currentThumbDataUrl = '';
+  editor.innerHTML = '';
+  slugAuto = true;
+  editingSlug = null;
+}
+
+async function renderArticleList(){
+  const tbody = document.getElementById('articleTableBody');
+  try{
+    const resp = await fetch('/api/articles');
+    const articles = await resp.json();
+    if(!resp.ok) throw new Error(articles.error || 'Gagal memuat daftar berita');
+    cachedArticles = Array.isArray(articles) ? articles : [];
+    if(cachedArticles.length === 0){
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Belum ada artikel tersimpan.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = cachedArticles.map((a) => `
+      <tr>
+        <td>${a.thumbnail ? `<img class="mini" src="${a.thumbnail}">` : '—'}</td>
+        <td>${escapeHtml(a.judul)}</td>
+        <td><span class="pill">${escapeHtml(a.kategori || '')}</span></td>
+        <td>${a.tanggal ? String(a.tanggal).slice(0,10) : '-'}</td>
+        <td>${escapeHtml(a.slug)}</td>
+        <td class="tbl-actions">
+          <button onclick="editArticle('${a.slug}')">Edit</button>
+          <button class="del" onclick="deleteArticle('${a.slug}')">Hapus</button>
+        </td>
+      </tr>
+    `).join('');
+  }catch(e){
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="6">Gagal memuat: ${escapeHtml(e.message)}</td></tr>`;
+  }
+}
+
+function editArticle(slug){
+  const a = cachedArticles.find(x => x.slug === slug);
+  if(!a) return;
+  editingSlug = slug;
+  document.getElementById('fJudul').value = a.judul;
+  document.getElementById('fSlug').value = a.slug;
+  document.getElementById('fExcerpt').value = a.excerpt || '';
+  document.getElementById('fKategori').value = a.kategori || '';
+  document.getElementById('fTanggal').value = a.tanggal ? String(a.tanggal).slice(0,10) : '';
+  currentThumbDataUrl = a.thumbnail || '';
+  document.getElementById('thumbPreview').innerHTML = a.thumbnail ? `<img src="${a.thumbnail}">` : '<span>Belum ada gambar dipilih</span>';
+  editor.innerHTML = a.konten || '';
+  slugAuto = false;
+  switchTab('write');
+}
+
+async function deleteArticle(slug){
+  if(!confirm('Hapus artikel ini?')) return;
+  try{
+    const resp = await fetch('/api/articles?slug=' + encodeURIComponent(slug), {
+      method:'DELETE',
+      headers:{'Authorization':'Bearer '+getToken()}
+    });
+    const json = await resp.json();
+    if(!resp.ok) throw new Error(json.error || 'Gagal menghapus');
+    renderArticleList();
+    showToast('Artikel dihapus.');
+  }catch(e){
+    showToast('Gagal: ' + e.message);
+  }
+}
+
+function escapeHtml(str){
+  return (str||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+/* =====================================================
+   TOAST
+===================================================== */
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>{ t.style.display = 'none'; }, 2600);
+}
+</script>
+</body>
+</html>

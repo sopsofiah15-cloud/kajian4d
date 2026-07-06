@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Berita - KAJIAN4D</title>
+<meta name="description" content="Kumpulan berita dan update terbaru seputar Piala Dunia 2026 dari KAJIAN4D.">
+<link rel="icon" type="image/png" href="https://ik.imagekit.io/ehc8d8fve/icon-kajian4d.png?updatedAt=1781622585259">
+<style>
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh; color:#e9e7e0;
+    font-family:'Segoe UI',Roboto,Arial,sans-serif;
+    background:
+      repeating-linear-gradient(115deg, #000 0px, #000 2px, #0c0d0e 2px, #0c0d0e 4px),
+      linear-gradient(160deg,#050505,#111213 55%,#050505);
+  }
+  header{
+    padding:26px 20px; text-align:center; border-bottom:1px solid #2a2b2e;
+    background:linear-gradient(180deg,#121214,#0c0c0d);
+  }
+  header img{width:48px;height:48px;border-radius:11px;margin-bottom:8px;}
+  header h1{margin:0;font-size:20px;letter-spacing:2px;
+    background:linear-gradient(90deg,#e8c766,#c9a53d);
+    -webkit-background-clip:text;background-clip:text;color:transparent;}
+  header p{margin:4px 0 0;color:#9a978d;font-size:12px;letter-spacing:.5px;}
+  .wrap{max-width:960px;margin:0 auto;padding:30px 20px 90px;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;}
+  .card{
+    background:linear-gradient(180deg,#131315,#0d0d0e);
+    border:1px solid #2a2b2e; border-radius:14px; overflow:hidden; text-decoration:none; color:inherit;
+    display:flex; flex-direction:column; transition:transform .15s, border-color .15s;
+  }
+  .card:hover{transform:translateY(-3px); border-color:#c9a53d;}
+  .card .thumb{width:100%;aspect-ratio:16/9;background:#0a0a0b;overflow:hidden;}
+  .card .thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .card .body{padding:14px 16px 16px;flex:1;display:flex;flex-direction:column;gap:8px;}
+  .pill{display:inline-block;width:fit-content;padding:3px 10px;border-radius:20px;font-size:11px;background:#1c1d20;color:#e8c766;border:1px solid #2a2b2e;}
+  .card h2{font-size:15px;margin:0;line-height:1.4;color:#f1efe8;}
+  .card .excerpt{font-size:12.5px;color:#9a978d;line-height:1.6;margin:0;}
+  .card .date{font-size:11px;color:#6b6960;margin-top:auto;}
+  .empty, .loading{text-align:center;color:#9a978d;padding:60px 0;font-size:13px;}
+</style>
+</head>
+<body>
+<header>
+  <img src="https://ik.imagekit.io/ehc8d8fve/icon-kajian4d.png?updatedAt=1781622585259" alt="KAJIAN4D">
+  <h1>KAJIAN4D</h1>
+  <p>BERITA &middot; PIALA DUNIA 2026</p>
+</header>
+<div class="wrap">
+  <div id="content" class="loading">Memuat berita...</div>
+</div>
+
+<script>
+async function loadArticles(){
+  const el = document.getElementById('content');
+  try{
+    const res = await fetch('/api/articles');
+    const articles = await res.json();
+    if(!Array.isArray(articles) || articles.length === 0){
+      el.className = 'empty';
+      el.textContent = 'Belum ada berita yang dipublikasikan.';
+      return;
+    }
+    el.className = 'grid';
+    el.innerHTML = articles.map(a => {
+      const tanggal = a.tanggal ? new Date(a.tanggal).toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'}) : '';
+      return `
+        <a class="card" href="/berita/${encodeURIComponent(a.slug)}">
+          <div class="thumb">${a.thumbnail ? `<img src="${a.thumbnail}" alt="${escapeHtml(a.judul)}" loading="lazy">` : ''}</div>
+          <div class="body">
+            <span class="pill">${escapeHtml(a.kategori || '')}</span>
+            <h2>${escapeHtml(a.judul)}</h2>
+            <p class="excerpt">${escapeHtml(a.excerpt || '')}</p>
+            <span class="date">${tanggal}</span>
+          </div>
+        </a>`;
+    }).join('');
+  }catch(err){
+    el.className = 'empty';
+    el.textContent = 'Gagal memuat berita: ' + err.message;
+  }
+}
+function escapeHtml(str){
+  return (str||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+loadArticles();
+</script>
+</body>
+</html>

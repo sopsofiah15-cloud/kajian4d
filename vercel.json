@@ -1,0 +1,7 @@
+{
+  "rewrites": [
+    { "source": "/berita", "destination": "/berita/index.html" },
+    { "source": "/berita/", "destination": "/berita/index.html" },
+    { "source": "/berita/:slug", "destination": "/api/berita?slug=:slug" }
+  ]
+}

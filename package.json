@@ -1,0 +1,10 @@
+{
+  "name": "kajian4d-berita",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Backend + admin panel berita KAJIAN4D untuk Vercel",
+  "dependencies": {
+    "@neondatabase/serverless": "^0.10.4",
+    "@vercel/blob": "^0.27.1"
+  }
+}
