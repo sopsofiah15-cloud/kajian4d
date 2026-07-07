@@ -1,92 +1,599 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta name="google-site-verification" content="sA5cCO4y5WAt8EmKdHA0PndPR4Dl_ysBLMKQS9G53MM" />
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Berita - KAJIAN4D</title>
-<meta name="description" content="Kumpulan berita dan update terbaru seputar Piala Dunia 2026 dari KAJIAN4D.">
+<meta name="google-site-verification" content="sA5cCO4y5WAt8EmKdHA0PndPR4Dl_ysBLMKQS9G53MM" />
+<title>KAJIAN4D NEWS</title>
 <link rel="icon" type="image/png" href="https://ik.imagekit.io/ehc8d8fve/icon-kajian4d.png?updatedAt=1781622585259">
 <style>
-  *{box-sizing:border-box;}
+  :root{
+    --bg-carbon: #0b0d10;
+    --bg-carbon-2: #14171b;
+    --line-diag: rgba(255,255,255,0.025);
+    --card-bg: #15181d;
+    --card-border: rgba(58,143,217,0.18);
+    --text-main: #e7ebf0;
+    --text-dim: #8b96a3;
+    --text-faint: #5b6572;
+    --blue-navy: #0d2a4a;
+    --blue-deep: #123a63;
+    --blue-accent: #3a8fd9;
+    --blue-bright: #5fb3ff;
+    --font-display: 'Georgia', 'Times New Roman', serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
   body{
-    margin:0; min-height:100vh; color:#e9e7e0;
-    font-family:'Segoe UI',Roboto,Arial,sans-serif;
-    background:
-      repeating-linear-gradient(115deg, #000 0px, #000 2px, #0c0d0e 2px, #0c0d0e 4px),
-      linear-gradient(160deg,#050505,#111213 55%,#050505);
+    background-color: var(--bg-carbon);
+    background-image:
+      repeating-linear-gradient(135deg, var(--line-diag) 0px, var(--line-diag) 1px, transparent 1px, transparent 26px),
+      radial-gradient(ellipse at top, #171b20 0%, #0b0d10 60%);
+    color: var(--text-main);
+    font-family: var(--font-body);
+    line-height: 1.5;
+    min-height:100vh;
   }
-  header{
-    padding:26px 20px; text-align:center; border-bottom:1px solid #2a2b2e;
-    background:linear-gradient(180deg,#121214,#0c0c0d);
+  a{ color:inherit; text-decoration:none; }
+  img{ max-width:100%; display:block; }
+  .wrap{ max-width:1240px; margin:0 auto; padding:0 20px; }
+
+  header.site{
+    border-bottom: 1px solid rgba(58,143,217,0.15);
+    background: linear-gradient(180deg, rgba(18,58,99,0.15), transparent);
   }
-  header img{width:48px;height:48px;border-radius:11px;margin-bottom:8px;}
-  header h1{margin:0;font-size:20px;letter-spacing:2px;
-    background:linear-gradient(90deg,#e8c766,#c9a53d);
-    -webkit-background-clip:text;background-clip:text;color:transparent;}
-  header p{margin:4px 0 0;color:#9a978d;font-size:12px;letter-spacing:.5px;}
-  .wrap{max-width:960px;margin:0 auto;padding:30px 20px 90px;}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;}
-  .card{
-    background:linear-gradient(180deg,#131315,#0d0d0e);
-    border:1px solid #2a2b2e; border-radius:14px; overflow:hidden; text-decoration:none; color:inherit;
-    display:flex; flex-direction:column; transition:transform .15s, border-color .15s;
+  .header-top{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:22px 0 16px; gap:20px; flex-wrap:wrap;
   }
-  .card:hover{transform:translateY(-3px); border-color:#c9a53d;}
-  .card .thumb{width:100%;aspect-ratio:16/9;background:#0a0a0b;overflow:hidden;}
-  .card .thumb img{width:100%;height:100%;object-fit:cover;display:block;}
-  .card .body{padding:14px 16px 16px;flex:1;display:flex;flex-direction:column;gap:8px;}
-  .pill{display:inline-block;width:fit-content;padding:3px 10px;border-radius:20px;font-size:11px;background:#1c1d20;color:#e8c766;border:1px solid #2a2b2e;}
-  .card h2{font-size:15px;margin:0;line-height:1.4;color:#f1efe8;}
-  .card .excerpt{font-size:12.5px;color:#9a978d;line-height:1.6;margin:0;}
-  .card .date{font-size:11px;color:#6b6960;margin-top:auto;}
-  .empty, .loading{text-align:center;color:#9a978d;padding:60px 0;font-size:13px;}
+  .brand{ display:flex; align-items:center; gap:14px; flex-shrink:0; }
+  .brand-logo{
+    width:52px; height:52px; border-radius:10px;
+    background: linear-gradient(135deg, var(--blue-deep), var(--bg-carbon-2));
+    border:1px solid var(--card-border);
+    display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0;
+  }
+  .brand-logo img{ width:100%; height:100%; object-fit:contain; }
+  .brand-name{ display:flex; align-items:baseline; gap:6px; font-family: var(--font-display); }
+  .brand-name .txt-kajian{ font-size:22px; font-weight:700; letter-spacing:0.3px; color:var(--text-main); }
+  .brand-name .badge-4d{ display:inline-flex; align-items:baseline; gap:1px; }
+  .brand-name .badge-4d .num4{ font-size:26px; font-weight:800; color:var(--blue-accent); line-height:1; }
+  .brand-name .badge-4d .letd{ font-size:16px; font-weight:700; color:var(--blue-accent); }
+  .brand-name .txt-news{ font-size:22px; font-weight:700; letter-spacing:0.3px; color:var(--blue-accent); }
+  .brand-stack{ display:flex; flex-direction:column; }
+  .brand-tagline{ font-size:10.5px; color:var(--text-faint); letter-spacing:0.6px; margin-top:2px; }
+
+  .header-banner{
+    flex:1; max-width:468px; width:100%; height:72px; border-radius:8px;
+    background: linear-gradient(120deg, var(--blue-navy), var(--blue-deep) 60%, #0a1f38);
+    border:1px solid var(--card-border); position:relative; overflow:hidden;
+    display:flex; align-items:center; justify-content:space-between; padding:0 18px;
+    font-size:12px; color:var(--text-dim);
+  }
+  .header-banner img.banner-img{ position:absolute; inset:0; width:100%; height:100%; object-fit:contain; z-index:1; }
+  .header-banner .banner-fallback-text,
+  .header-banner .cta-btn{ position:relative; z-index:2; }
+  .header-banner .cta-btn{
+    background:var(--blue-accent); color:#fff; padding:8px 16px; border-radius:6px;
+    font-size:12px; font-weight:600; letter-spacing:0.3px; flex-shrink:0;
+  }
+  @media(max-width:640px){ .header-banner{ max-width:100%; height:60px; } }
+
+  nav.categories{ border-top:1px solid rgba(255,255,255,0.05); padding:16px 0; }
+  nav.categories ul{ list-style:none; display:flex; gap:10px; flex-wrap:wrap; }
+  nav.categories button{
+    display:inline-block; font-size:12.5px; font-weight:600; letter-spacing:0.2px;
+    color:var(--text-dim); background:var(--card-bg); border:1px solid var(--card-border);
+    padding:8px 18px; border-radius:999px; cursor:pointer; transition:all .2s; font-family:inherit;
+  }
+  nav.categories button:hover{ border-color:var(--blue-accent); color:var(--blue-bright); }
+  nav.categories button.active{ background:var(--blue-accent); color:#fff; border-color:var(--blue-accent); }
+
+  .layout{ display:grid; grid-template-columns: 1fr 300px; gap:32px; padding:30px 0 60px; align-items:start; }
+  @media(max-width:900px){ .layout{ grid-template-columns:1fr; } }
+
+  .section-label{ display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+  .section-label .tag{
+    background:var(--blue-accent); color:#fff; font-size:11px; font-weight:700;
+    letter-spacing:1px; text-transform:uppercase; padding:5px 10px; border-radius:4px;
+  }
+  .section-label h2{ font-family:var(--font-display); font-size:18px; color:var(--text-main); font-weight:400; }
+
+  .highlight-grid{ display:grid; grid-template-columns: 1.4fr 1fr; gap:16px; margin-bottom:44px; }
+  @media(max-width:640px){ .highlight-grid{ grid-template-columns:1fr; } }
+  .hl-main{ position:relative; border-radius:10px; overflow:hidden; min-height:360px; border:1px solid var(--card-border); background:var(--card-bg); }
+  .hl-main img{ width:100%; height:100%; object-fit:cover; position:absolute; inset:0; }
+  .hl-small-stack{ display:flex; flex-direction:column; gap:16px; }
+  .hl-small{ position:relative; border-radius:10px; overflow:hidden; min-height:172px; border:1px solid var(--card-border); background:var(--card-bg); }
+  .hl-small img{ width:100%; height:100%; object-fit:cover; position:absolute; inset:0; transition:opacity .5s ease; }
+  .hl-small .card-overlay{ transition:opacity .5s ease; }
+  .hl-small.fading .carousel-img, .hl-small.fading .card-overlay{ opacity:0; }
+
+  .card-overlay{
+    position:relative; z-index:2; height:100%; display:flex; flex-direction:column; justify-content:flex-end; padding:18px;
+    background: linear-gradient(180deg, transparent 30%, rgba(6,10,16,0.55) 65%, rgba(6,10,16,0.92) 100%);
+  }
+  .badge-row{ display:flex; gap:8px; align-items:center; margin-bottom:10px; flex-wrap:wrap; }
+  .badge{
+    background:var(--blue-accent); color:#fff; font-size:10px; font-weight:700;
+    letter-spacing:0.8px; text-transform:uppercase; padding:4px 9px; border-radius:4px;
+  }
+  .badge.highlight-badge{ background:var(--blue-bright); color:#08131f; }
+  .card-title{ font-family:var(--font-display); font-size:20px; line-height:1.25; margin-bottom:8px; }
+  .hl-small .card-title{ font-size:14px; }
+  .meta-row{ display:flex; align-items:center; gap:14px; font-size:12px; color:var(--text-dim); flex-wrap:wrap; }
+  .views{ display:flex; align-items:center; gap:5px; color:var(--blue-bright); }
+  .views svg{ width:13px; height:13px; }
+
+  .dontmiss{ display:grid; grid-template-columns: 1fr 1fr; gap:24px; margin-bottom:20px; }
+  @media(max-width:640px){ .dontmiss{ grid-template-columns:1fr; } }
+  .dm-featured{ border-radius:10px; overflow:hidden; position:relative; min-height:300px; border:1px solid var(--card-border); background:var(--card-bg); }
+  .dm-featured img{ width:100%; height:100%; object-fit:cover; position:absolute; inset:0; }
+  .dm-list{ display:flex; flex-direction:column; gap:16px; }
+  .dm-item{ display:flex; gap:12px; align-items:flex-start; padding-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.06); }
+  .dm-thumb{ width:76px; height:60px; border-radius:6px; overflow:hidden; flex-shrink:0; border:1px solid var(--card-border); background:var(--card-bg); }
+  .dm-thumb img{ width:100%; height:100%; object-fit:cover; }
+  .dm-item h4{ font-size:14px; font-weight:600; line-height:1.35; margin-bottom:6px; color:var(--text-main); }
+
+  aside.sidebar{
+    background:var(--card-bg); border:1px solid var(--card-border); border-radius:12px; padding:20px; position:sticky; top:20px;
+  }
+  .sidebar-title{
+    font-size:12px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--blue-bright);
+    margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid rgba(58,143,217,0.2);
+  }
+  .accordion-item{ border-bottom:1px solid rgba(255,255,255,0.06); }
+  .accordion-item:last-child{ border-bottom:none; }
+  .accordion-head{
+    width:100%; background:none; border:none; color:var(--text-main); cursor:pointer;
+    display:flex; align-items:center; justify-content:space-between; padding:13px 2px;
+    font-size:13.5px; font-weight:600; text-align:left; font-family:inherit;
+  }
+  .accordion-head .count{ color:var(--text-faint); font-weight:400; font-size:12px; }
+  .accordion-head .chevron{ transition:transform .2s; color:var(--blue-accent); font-size:11px; }
+  .accordion-item.open .chevron{ transform:rotate(180deg); }
+  .accordion-body{ max-height:0; overflow:hidden; transition:max-height .25s ease; }
+  .accordion-item.open .accordion-body{ max-height:600px; }
+  .arch-item{ display:flex; gap:10px; padding:10px 2px 10px 4px; align-items:center; }
+  .arch-thumb{ width:52px; height:42px; border-radius:5px; overflow:hidden; flex-shrink:0; border:1px solid var(--card-border); background:var(--bg-carbon-2); }
+  .arch-thumb img{ width:100%; height:100%; object-fit:cover; }
+  .arch-item h5{ font-size:12.5px; font-weight:500; line-height:1.3; color:var(--text-dim); }
+  .arch-item:hover h5{ color:var(--blue-bright); }
+
+  footer.site{
+    border-top:1px solid rgba(58,143,217,0.18);
+    background: linear-gradient(180deg, rgba(13,42,74,0.25), var(--bg-carbon-2));
+    margin-top:20px;
+  }
+  .footer-notice{ max-width:1240px; margin:0 auto; padding:24px 20px; font-size:13px; color:var(--text-dim); border-bottom:1px solid rgba(255,255,255,0.06); }
+  .footer-notice b{ color:var(--blue-bright); }
+  .footer-grid{ max-width:1240px; margin:0 auto; padding:36px 20px; display:grid; grid-template-columns: 1.3fr 1fr 1fr 1fr; gap:30px; }
+  @media(max-width:800px){ .footer-grid{ grid-template-columns:1fr 1fr; } }
+  .footer-col h4{ font-size:12px; letter-spacing:1px; text-transform:uppercase; color:var(--blue-bright); margin-bottom:16px; display:flex; align-items:center; gap:6px; }
+  .footer-col p{ font-size:13px; color:var(--text-dim); line-height:1.6; }
+  .footer-col ul{ list-style:none; display:flex; flex-direction:column; gap:10px; }
+  .footer-col ul a{ font-size:13px; color:var(--text-dim); }
+  .footer-col ul a:hover{ color:var(--blue-bright); }
+  .footer-bottom{ text-align:center; padding:22px 20px; border-top:1px solid rgba(255,255,255,0.06); }
+  .footer-bottom .k4d-big{ font-family:var(--font-display); font-size:22px; letter-spacing:2px; color:var(--text-main); }
+  .footer-bottom .tagline{ font-size:11px; color:var(--text-faint); margin:4px 0 12px; letter-spacing:0.5px; }
+  .footer-bottom .copy{ font-size:11px; color:var(--text-faint); margin-bottom:14px; }
+  .trust-badges{ display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
+  .trust-badges span{ font-size:11px; padding:6px 12px; border:1px solid var(--card-border); border-radius:20px; color:var(--text-dim); }
+
+  .empty-state{ padding:40px 20px; text-align:center; color:var(--text-faint); font-size:13px; }
+  .loading-state{ padding:40px 20px; text-align:center; color:var(--text-dim); font-size:13px; }
+  .note-banner{
+    max-width:1240px; margin:20px auto 0; padding:12px 20px; font-size:12px;
+    color:var(--text-faint); text-align:center; display:none;
+  }
 </style>
 </head>
 <body>
-<header>
-  <img src="https://ik.imagekit.io/ehc8d8fve/icon-kajian4d.png?updatedAt=1781622585259" alt="KAJIAN4D">
-  <h1>KAJIAN4D</h1>
-  <p>BERITA &middot; PIALA DUNIA 2026</p>
+
+<header class="site">
+  <div class="wrap header-top">
+    <a class="brand" href="/">
+      <div class="brand-logo">
+        <img src="https://ik.imagekit.io/ehc8d8fve/icon-kajian4d.png?updatedAt=1781622585259" alt="Logo">
+      </div>
+      <div class="brand-stack">
+        <div class="brand-name">
+          <span class="txt-kajian">KAJIAN</span>
+          <span class="badge-4d"><span class="num4">4</span><span class="letd">D</span></span>
+          <span class="txt-news">NEWS</span>
+        </div>
+        <div class="brand-tagline">Portal Berita Update 2026</div>
+      </div>
+    </a>
+    <a href="#" class="header-banner" id="headerBanner">
+      <img class="banner-img" id="headerBannerImg" src="" alt="Banner promosi" style="display:none;">
+      <span class="banner-fallback-text">Update Prediksi &amp; Skor Real-Time</span>
+      <span class="cta-btn">Lihat Jadwal</span>
+    </a>
+  </div>
+  <nav class="wrap categories">
+    <ul id="categoryTabs"></ul>
+  </nav>
 </header>
-<div class="wrap">
-  <div id="content" class="loading">Memuat berita...</div>
+
+<div class="wrap layout">
+  <main>
+
+    <div class="section-label">
+      <span class="tag">Sorotan</span>
+      <h2 id="highlightSectionTitle">Highlight Hari Ini</h2>
+    </div>
+    <div class="highlight-grid" id="highlightGrid">
+      <div class="loading-state">Memuat highlight...</div>
+    </div>
+
+    <div class="section-label">
+      <span class="tag">Info Terkini</span>
+      <h2>Jangan Lewatkan</h2>
+    </div>
+    <div class="dontmiss" id="dontMissGrid">
+      <div class="loading-state">Memuat berita...</div>
+    </div>
+
+  </main>
+
+  <aside class="sidebar">
+    <div class="sidebar-title">Arsip Berita</div>
+    <div id="accordion"><div class="loading-state">Memuat arsip...</div></div>
+  </aside>
 </div>
 
+<footer class="site">
+  <div class="footer-notice">
+    <b>KAJIAN4D</b> adalah platform prediksi bola premium yang menyediakan informasi akurat seputar Piala Dunia 2026. Update jadwal pertandingan, hasil skor real-time, statistik top scorer, klasemen terkini, dan analisa prediksi.
+  </div>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <h4>◆ Kajian4d</h4>
+      <p>Platform prediksi bola #1 Indonesia dengan data real-time Piala Dunia 2026.</p>
+    </div>
+    <div class="footer-col">
+      <h4>≡ Menu</h4>
+      <ul>
+        <li><a href="#">Jadwal WC 2026</a></li>
+        <li><a href="#">Top Scorer</a></li>
+        <li><a href="#">Klasemen</a></li>
+        <li><a href="#">Informasi</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>★ Layanan</h4>
+      <ul>
+        <li><a href="#">Prediksi Bola</a></li>
+        <li><a href="#">Handicap Asia</a></li>
+        <li><a href="#">Over/Under</a></li>
+        <li><a href="#">Live Score</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>✉ Kontak</h4>
+      <ul>
+        <li><a href="#">WA Kajian4d</a></li>
+        <li><a href="#">Telegram: @kajian4d_bot</a></li>
+        <li><a href="#">Official KAJIAN4</a></li>
+        <li><a href="#">Pusat Pengaduan</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="k4d-big">KAJIAN4D</div>
+    <div class="tagline">Prediksi Bola Paling Akurat &amp; Terpercaya</div>
+    <div class="copy">© 2026 KAJIAN4D. All Rights Reserved. Platform Prediksi Bola Terpercaya Sejak 2020</div>
+    <div class="trust-badges">
+      <span>✔ Lisensi Resmi</span>
+      <span>🔒 SSL Secure</span>
+      <span>🕐 24/7 Online</span>
+    </div>
+  </div>
+</footer>
+
+<div class="note-banner" id="previewNotice">Mode preview — belum terhubung ke database asli. Data di bawah adalah contoh; akan otomatis berganti ke berita asli begitu API terhubung.</div>
+
 <script>
-async function loadArticles(){
-  const el = document.getElementById('content');
-  try{
+  const CATEGORIES = ['SEMUA', 'SEPAK BOLA', 'TEKNOLOGI', 'OLAHRAGA', 'HIBURAN', 'BISNIS', 'GAYA HIDUP', 'HIGHLIGHT'];
+  const CAROUSEL_INTERVAL_MS = 20000;
+  const EYE_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>';
+
+  let allArticles = [];
+  let currentCategory = 'SEMUA';
+  let carouselTimer = null;
+  let isDemoMode = false;
+
+  // Data contoh — dipakai HANYA kalau /api/articles belum tersedia atau masih kosong,
+  // supaya preview visual tetap identik dengan referensi desain sebelum database aktif.
+  const DEMO_ARTICLES = [
+    { slug:'argentina-vs-brazil', judul:'Argentina vs Brazil: Duel Panas Perebutan Puncak Grup',
+      kategori:['SEPAK BOLA'], tanggal:'2026-07-07', is_highlight:true, views:'2.481',
+      thumbnail:'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=900&q=60' },
+    { slug:'prediksi-portugal-spanyol', judul:'Prediksi Skor Portugal vs Spanyol',
+      kategori:['SEPAK BOLA'], tanggal:'2026-07-07', is_highlight:false, views:'934',
+      thumbnail:'https://images.unsplash.com/photo-1517466787929-bc90951d0974?w=500&q=60' },
+    { slug:'live-score-sync', judul:'Update Sistem Live Score Tersinkron Otomatis',
+      kategori:['TEKNOLOGI'], tanggal:'2026-07-06', is_highlight:false, views:'611',
+      thumbnail:'https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&q=60' },
+    { slug:'atletik-musim-ini', judul:'Persaingan Ketat Cabang Atletik Musim Ini',
+      kategori:['OLAHRAGA'], tanggal:'2026-07-06', is_highlight:false, views:'742',
+      thumbnail:'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=500&q=60' },
+    { slug:'konser-amal-semifinal', judul:'Konser Amal Sambut Semifinal Piala Dunia',
+      kategori:['HIBURAN'], tanggal:'2026-07-05', is_highlight:false, views:'519',
+      thumbnail:'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=500&q=60' },
+    { slug:'sponsor-baru-final', judul:'Sponsor Baru Masuk Jelang Babak Final',
+      kategori:['BISNIS'], tanggal:'2026-07-05', is_highlight:false, views:'388',
+      thumbnail:'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=500&q=60' },
+    { slug:'merchandise-suporter', judul:'Tren Merchandise Suporter Paling Dicari',
+      kategori:['GAYA HIDUP'], tanggal:'2026-07-04', is_highlight:false, views:'301',
+      thumbnail:'https://images.unsplash.com/photo-1483721310020-03333e577078?w=500&q=60' },
+    { slug:'rekap-16-besar', judul:'Rekap Lengkap Babak 16 Besar',
+      kategori:['SEPAK BOLA'], tanggal:'2026-07-07', is_highlight:false, views:'1.203',
+      thumbnail:'https://images.unsplash.com/photo-1517927033932-b3d18e61fb3a?w=700&q=60' },
+    { slug:'chip-hemat-daya', judul:'Chip Terbaru Diklaim 2x Lebih Hemat Daya',
+      kategori:['TEKNOLOGI'], tanggal:'2026-07-06', is_highlight:false, views:'402',
+      thumbnail:'https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=200&q=60' },
+    { slug:'kuliner-kekinian', judul:'5 Rekomendasi Kuliner Kekinian Akhir Pekan',
+      kategori:['GAYA HIDUP'], tanggal:'2026-07-05', is_highlight:false, views:'288',
+      thumbnail:'https://images.unsplash.com/photo-1553778263-73a83bab9b0c?w=200&q=60' },
+    { slug:'startup-seri-a', judul:'Startup Lokal Raih Pendanaan Seri A',
+      kategori:['BISNIS'], tanggal:'2026-07-04', is_highlight:false, views:'174',
+      thumbnail:'https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=200&q=60' },
+    { slug:'preview-jerman-belanda', judul:'Preview Semifinal: Jerman vs Belanda',
+      kategori:['SEPAK BOLA'], tanggal:'2026-07-06', is_highlight:false, views:'—',
+      thumbnail:'https://images.unsplash.com/photo-1571056641869-6a67cd44b935?w=200&q=60' },
+    { slug:'cedera-pemain-kunci', judul:'Update Cedera Pemain Kunci',
+      kategori:['SEPAK BOLA'], tanggal:'2026-07-06', is_highlight:false, views:'—',
+      thumbnail:'https://images.unsplash.com/photo-1600679472233-4d2c9e4dae51?w=200&q=60' },
+    { slug:'adu-penalti-16-besar', judul:'Hasil Adu Penalti Babak 16 Besar',
+      kategori:['SEPAK BOLA'], tanggal:'2026-07-05', is_highlight:false, views:'—',
+      thumbnail:'https://images.unsplash.com/photo-1522778034537-20a2486be803?w=200&q=60' },
+    { slug:'susunan-pemain-prancis', judul:'Prediksi Susunan Pemain Prancis',
+      kategori:['SEPAK BOLA'], tanggal:'2026-07-03', is_highlight:false, views:'—',
+      thumbnail:'https://images.unsplash.com/photo-1517927033932-b3d18e61fb3a?w=200&q=60' },
+    { slug:'var-8-besar', judul:'Wasit VAR Ditambah di Babak 8 Besar',
+      kategori:['SEPAK BOLA'], tanggal:'2026-07-03', is_highlight:false, views:'—',
+      thumbnail:'https://images.unsplash.com/photo-1517466787929-bc90951d0974?w=200&q=60' },
+    { slug:'rekap-fase-grup', judul:'Rekap Fase Grup Selesai',
+      kategori:['SEPAK BOLA'], tanggal:'2026-07-02', is_highlight:false, views:'—',
+      thumbnail:'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=200&q=60' },
+    { slug:'prediksi-awal-16-besar', judul:'Prediksi Awal 16 Besar',
+      kategori:['SEPAK BOLA'], tanggal:'2026-07-01', is_highlight:false, views:'—',
+      thumbnail:'https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=200&q=60' },
+  ];
+
+  function esc(str){
+    return (str || '').toString().replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+  function fmtDate(d){
+    if(!d) return '';
+    return new Date(d).toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
+  }
+  function katList(a){
+    return Array.isArray(a.kategori) ? a.kategori : (a.kategori ? [a.kategori] : []);
+  }
+  function primaryKat(a){
+    const k = katList(a);
+    return k.length ? k[0] : 'BERITA';
+  }
+  function articleUrl(a){ return `/berita/${a.slug}`; }
+
+  async function fetchArticles(){
     const res = await fetch('/api/articles');
-    const articles = await res.json();
-    if(!Array.isArray(articles) || articles.length === 0){
-      el.className = 'empty';
-      el.textContent = 'Belum ada berita yang dipublikasikan.';
+    if(!res.ok) throw new Error('Gagal memuat artikel');
+    return res.json();
+  }
+
+  function renderTabs(){
+    const ul = document.getElementById('categoryTabs');
+    ul.innerHTML = CATEGORIES.map(c =>
+      `<li><button data-cat="${esc(c)}" class="${c === currentCategory ? 'active' : ''}">${esc(c)}</button></li>`
+    ).join('');
+    ul.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentCategory = btn.dataset.cat;
+        renderTabs();
+        renderAll();
+      });
+    });
+  }
+
+  function filteredByTab(){
+    if(currentCategory === 'SEMUA') return allArticles;
+    if(currentCategory === 'HIGHLIGHT') return allArticles.filter(a => a.is_highlight);
+    return allArticles.filter(a => katList(a).includes(currentCategory));
+  }
+
+  function renderHighlight(){
+    const grid = document.getElementById('highlightGrid');
+    const title = document.getElementById('highlightSectionTitle');
+    clearInterval(carouselTimer);
+
+    const pool = filteredByTab();
+    title.textContent = currentCategory === 'SEMUA' ? 'Highlight Hari Ini' : `Highlight — ${currentCategory}`;
+
+    if(!pool.length){
+      grid.innerHTML = '<div class="empty-state">Belum ada berita di kategori ini.</div>';
       return;
     }
-    el.className = 'grid';
-    el.innerHTML = articles.map(a => {
-      const tanggal = a.tanggal ? new Date(a.tanggal).toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'}) : '';
-      return `
-        <a class="card" href="/berita/${encodeURIComponent(a.slug)}">
-          <div class="thumb">${a.thumbnail ? `<img src="${a.thumbnail}" alt="${escapeHtml(a.judul)}" loading="lazy">` : ''}</div>
-          <div class="body">
-            <span class="pill">${escapeHtml(a.kategori || '')}</span>
-            <h2>${escapeHtml(a.judul)}</h2>
-            <p class="excerpt">${escapeHtml(a.excerpt || '')}</p>
-            <span class="date">${tanggal}</span>
+
+    // Hybrid: utamakan artikel is_highlight, isi sisa slot dari yang terbaru
+    const highlighted = pool.filter(a => a.is_highlight);
+    const rest = pool.filter(a => !a.is_highlight);
+    const ordered = [...highlighted, ...rest];
+
+    const main = ordered[0];
+    const smallPool = ordered.slice(1);
+
+    grid.innerHTML = `
+      <a href="${articleUrl(main)}" class="hl-main">
+        <img src="${esc(main.thumbnail || '')}" alt="">
+        <div class="card-overlay">
+          <div class="badge-row">
+            ${main.is_highlight ? '<span class="badge highlight-badge">Manual · Highlight</span>' : ''}
+            <span class="badge">${esc(primaryKat(main))}</span>
           </div>
-        </a>`;
-    }).join('');
-  }catch(err){
-    el.className = 'empty';
-    el.textContent = 'Gagal memuat berita: ' + err.message;
+          <div class="card-title">${esc(main.judul)}</div>
+          <div class="meta-row"><span>${fmtDate(main.tanggal)}</span>${main.views ? `<span class="views">${EYE_SVG} ${esc(main.views)}</span>` : ''}</div>
+        </div>
+      </a>
+      <div class="hl-small-stack">
+        <a href="#" class="hl-small" id="carousel-top"><img class="carousel-img" src="" alt="">
+          <div class="card-overlay"><div class="badge-row"><span class="badge carousel-badge"></span></div>
+          <div class="card-title carousel-title"></div>
+          <div class="meta-row"><span class="carousel-date"></span><span class="views carousel-views-wrap">${EYE_SVG} <span class="carousel-views"></span></span></div></div>
+        </a>
+        <a href="#" class="hl-small" id="carousel-bottom"><img class="carousel-img" src="" alt="">
+          <div class="card-overlay"><div class="badge-row"><span class="badge carousel-badge"></span></div>
+          <div class="card-title carousel-title"></div>
+          <div class="meta-row"><span class="carousel-date"></span><span class="views carousel-views-wrap">${EYE_SVG} <span class="carousel-views"></span></span></div></div>
+        </a>
+      </div>
+    `;
+
+    if(smallPool.length === 0) return;
+
+    // pasangkan artikel jadi grup 2 untuk carousel bergilir
+    const pairs = [];
+    for(let i = 0; i < smallPool.length; i += 2){
+      pairs.push([smallPool[i], smallPool[i+1] || smallPool[i]]);
+    }
+
+    const topEl = document.getElementById('carousel-top');
+    const bottomEl = document.getElementById('carousel-bottom');
+    let idx = 0;
+
+    function fillSlot(el, art){
+      el.href = articleUrl(art);
+      el.querySelector('.carousel-img').src = art.thumbnail || '';
+      el.querySelector('.carousel-badge').textContent = primaryKat(art);
+      el.querySelector('.carousel-title').textContent = art.judul;
+      el.querySelector('.carousel-date').textContent = fmtDate(art.tanggal);
+      const viewsWrap = el.querySelector('.carousel-views-wrap');
+      const viewsVal = el.querySelector('.carousel-views');
+      if(art.views){ viewsVal.textContent = art.views; viewsWrap.style.display = ''; }
+      else { viewsWrap.style.display = 'none'; }
+    }
+
+    fillSlot(topEl, pairs[0][0]);
+    fillSlot(bottomEl, pairs[0][1]);
+
+    if(pairs.length > 1){
+      carouselTimer = setInterval(() => {
+        idx = (idx + 1) % pairs.length;
+        [topEl, bottomEl].forEach(el => el.classList.add('fading'));
+        setTimeout(() => {
+          fillSlot(topEl, pairs[idx][0]);
+          fillSlot(bottomEl, pairs[idx][1]);
+          [topEl, bottomEl].forEach(el => el.classList.remove('fading'));
+        }, 500);
+      }, CAROUSEL_INTERVAL_MS);
+    }
   }
-}
-function escapeHtml(str){
-  return (str||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-}
-loadArticles();
+
+  function renderDontMiss(){
+    const grid = document.getElementById('dontMissGrid');
+    const pool = filteredByTab();
+
+    if(!pool.length){
+      grid.innerHTML = '';
+      return;
+    }
+
+    const featured = pool[0];
+    const listItems = pool.slice(1, 4);
+
+    grid.innerHTML = `
+      <a href="${articleUrl(featured)}" class="dm-featured">
+        <img src="${esc(featured.thumbnail || '')}" alt="">
+        <div class="card-overlay">
+          <div class="badge-row"><span class="badge">${esc(primaryKat(featured))}</span></div>
+          <div class="card-title">${esc(featured.judul)}</div>
+          <div class="meta-row"><span>${fmtDate(featured.tanggal)}</span>${featured.views ? `<span class="views">${EYE_SVG} ${esc(featured.views)}</span>` : ''}</div>
+        </div>
+      </a>
+      <div class="dm-list">
+        ${listItems.map(a => `
+          <a href="${articleUrl(a)}" class="dm-item">
+            <div class="dm-thumb"><img src="${esc(a.thumbnail || '')}" alt=""></div>
+            <div>
+              <h4>${esc(a.judul)}</h4>
+              <div class="meta-row"><span class="badge" style="font-size:9px;padding:2px 7px;">${esc(primaryKat(a))}</span><span>${fmtDate(a.tanggal)}</span>${a.views ? `<span class="views">${EYE_SVG} ${esc(a.views)}</span>` : ''}</div>
+            </div>
+          </a>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  function renderArchive(){
+    const container = document.getElementById('accordion');
+    if(!allArticles.length){
+      container.innerHTML = '<div class="empty-state">Belum ada arsip.</div>';
+      return;
+    }
+
+    const groups = {};
+    allArticles.forEach(a => {
+      const key = fmtDate(a.tanggal) || 'Tanpa Tanggal';
+      groups[key] = groups[key] || [];
+      groups[key].push(a);
+    });
+
+    container.innerHTML = '';
+    Object.keys(groups).forEach((date, idx) => {
+      const item = document.createElement('div');
+      item.className = 'accordion-item' + (idx === 0 ? ' open' : '');
+
+      const head = document.createElement('button');
+      head.className = 'accordion-head';
+      head.innerHTML = `<span>${esc(date)} <span class="count">(${groups[date].length})</span></span><span class="chevron">▾</span>`;
+      head.onclick = () => item.classList.toggle('open');
+
+      const body = document.createElement('div');
+      body.className = 'accordion-body';
+      body.innerHTML = groups[date].map(a => `
+        <a href="${articleUrl(a)}" class="arch-item">
+          <div class="arch-thumb"><img src="${esc(a.thumbnail || '')}" alt=""></div>
+          <h5>${esc(a.judul)}</h5>
+        </a>
+      `).join('');
+
+      item.appendChild(head);
+      item.appendChild(body);
+      container.appendChild(item);
+    });
+  }
+
+  function renderAll(){
+    renderHighlight();
+    renderDontMiss();
+  }
+
+  async function init(){
+    renderTabs();
+    try{
+      const data = await fetchArticles();
+      if(Array.isArray(data) && data.length > 0){
+        allArticles = data;
+      }else{
+        throw new Error('API kosong');
+      }
+    }catch(e){
+      // API belum tersambung / belum ada artikel -> pakai data contoh
+      // supaya tampilan tetap sesuai skema desain.
+      allArticles = DEMO_ARTICLES;
+      isDemoMode = true;
+      document.getElementById('previewNotice').style.display = 'block';
+    }
+    renderAll();
+    renderArchive();
+  }
+
+  init();
 </script>
+
 </body>
 </html>
