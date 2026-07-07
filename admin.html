@@ -146,6 +146,29 @@
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
   @media(max-width:720px){.grid2{grid-template-columns:1fr;}}
 
+  /* kategori checkboxes */
+  .kategori-checkboxes{
+    display:flex; flex-wrap:wrap; gap:8px 12px;
+    background:#0e0f10; border:1px solid var(--line); border-radius:8px;
+    padding:12px 14px;
+  }
+  .chk-item{
+    display:flex; align-items:center; gap:7px;
+    font-size:13px; color:var(--text); cursor:pointer;
+    user-select:none;
+  }
+  .chk-item input[type="checkbox"]{
+    width:16px; height:16px; accent-color:var(--gold); cursor:pointer;
+  }
+  .highlight-toggle{
+    display:flex; align-items:center; gap:9px; cursor:pointer;
+    background:#0e0f10; border:1px solid var(--line); border-radius:8px;
+    padding:12px 14px; font-size:13px; color:var(--text); user-select:none;
+  }
+  .highlight-toggle input[type="checkbox"]{
+    width:17px; height:17px; accent-color:var(--gold-bright); cursor:pointer;
+  }
+
   /* toolbar */
   .toolbar{
     display:flex; flex-wrap:wrap; gap:4px; padding:8px;
@@ -192,7 +215,8 @@
   }
   table.article-list th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.5px;}
   table.article-list img.mini{width:56px;height:38px;object-fit:cover;border-radius:6px;background:#0a0a0b;}
-  .pill{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;background:#1c1d20;color:var(--gold-bright);border:1px solid var(--line);}
+  .pill{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;background:#1c1d20;color:var(--gold-bright);border:1px solid var(--line);margin:2px 3px 2px 0;}
+  .pill.pill-highlight{color:var(--ok);border-color:var(--ok);}
   .tbl-actions button{
     background:transparent;border:1px solid var(--line);color:var(--muted);
     padding:6px 10px;border-radius:6px;cursor:pointer;font-size:12px;margin-right:6px;
@@ -345,18 +369,27 @@
 
         <div class="grid2">
           <div class="field">
-            <label>Kategori</label>
-            <select id="fKategori">
-              <option>Piala Dunia 2026</option>
-              <option>Prediksi Togel</option>
-              <option>Promo &amp; Bonus</option>
-              <option>Berita Umum</option>
-            </select>
+            <label>Kategori (boleh pilih lebih dari satu)</label>
+            <div class="kategori-checkboxes">
+              <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="SEPAK BOLA"> Sepak Bola</label>
+              <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="TEKNOLOGI"> Teknologi</label>
+              <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="OLAHRAGA"> Olahraga</label>
+              <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="HIBURAN"> Hiburan</label>
+              <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="BISNIS"> Bisnis</label>
+              <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="GAYA HIDUP"> Gaya Hidup</label>
+            </div>
           </div>
           <div class="field">
             <label>Tanggal Publish</label>
             <input type="date" id="fTanggal" value="2026-07-06">
           </div>
+        </div>
+
+        <div class="field">
+          <label class="highlight-toggle">
+            <input type="checkbox" id="fHighlight">
+            Jadikan Highlight (tampil di kartu highlight utama / carousel beranda)
+          </label>
         </div>
 
         <div class="field">
@@ -775,15 +808,30 @@ async function loadHeaderSettings(){
 let editingSlug = null;
 let cachedArticles = [];
 
+function getKategoriChecked(){
+  return Array.from(document.querySelectorAll('.fKategoriChk:checked')).map(c => c.value);
+}
+
+function setKategoriChecked(kategoriValue){
+  const arr = Array.isArray(kategoriValue)
+    ? kategoriValue
+    : (kategoriValue ? String(kategoriValue).split(',').map(s => s.trim()) : []);
+  document.querySelectorAll('.fKategoriChk').forEach(c => {
+    c.checked = arr.includes(c.value);
+  });
+}
+
 async function saveArticle(){
   const judul = document.getElementById('fJudul').value.trim();
   let slug = document.getElementById('fSlug').value.trim();
   const excerpt = document.getElementById('fExcerpt').value.trim();
-  const kategori = document.getElementById('fKategori').value;
+  const kategori = getKategoriChecked();
+  const isHighlight = document.getElementById('fHighlight').checked;
   const tanggal = document.getElementById('fTanggal').value;
   const konten = editor.innerHTML;
 
   if(!judul){ showToast('Judul artikel wajib diisi.'); return; }
+  if(kategori.length === 0){ showToast('Pilih minimal 1 kategori.'); return; }
   if(!slug) slug = slugify(judul);
 
   try{
@@ -791,7 +839,11 @@ async function saveArticle(){
     const resp = await fetch('/api/articles', {
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+getToken()},
-      body: JSON.stringify({ judul, slug, excerpt, kategori, tanggal, thumbnail: thumbUrl, konten })
+      body: JSON.stringify({
+        judul, slug, excerpt, kategori, tanggal,
+        thumbnail: thumbUrl, konten,
+        is_highlight: isHighlight
+      })
     });
     const json = await resp.json();
     if(!resp.ok) throw new Error(json.error || 'Gagal menyimpan berita');
@@ -807,7 +859,8 @@ function clearForm(){
   document.getElementById('fJudul').value = '';
   document.getElementById('fSlug').value = '';
   document.getElementById('fExcerpt').value = '';
-  document.getElementById('fKategori').selectedIndex = 0;
+  document.querySelectorAll('.fKategoriChk').forEach(c => c.checked = false);
+  document.getElementById('fHighlight').checked = false;
   document.getElementById('fTanggal').value = '2026-07-06';
   document.getElementById('fThumbLink').value = '';
   document.getElementById('fThumbFile').value = '';
@@ -829,11 +882,17 @@ async function renderArticleList(){
       tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Belum ada artikel tersimpan.</td></tr>';
       return;
     }
-    tbody.innerHTML = cachedArticles.map((a) => `
+    tbody.innerHTML = cachedArticles.map((a) => {
+      const kategoriArr = Array.isArray(a.kategori)
+        ? a.kategori
+        : (a.kategori ? String(a.kategori).split(',').map(s => s.trim()).filter(Boolean) : []);
+      const kategoriPills = kategoriArr.map(k => `<span class="pill">${escapeHtml(k)}</span>`).join('') || '—';
+      const highlightBadge = a.is_highlight ? '<span class="pill pill-highlight">HIGHLIGHT</span>' : '';
+      return `
       <tr>
         <td>${a.thumbnail ? `<img class="mini" src="${a.thumbnail}">` : '—'}</td>
         <td>${escapeHtml(a.judul)}</td>
-        <td><span class="pill">${escapeHtml(a.kategori || '')}</span></td>
+        <td>${kategoriPills}${highlightBadge}</td>
         <td>${a.tanggal ? String(a.tanggal).slice(0,10) : '-'}</td>
         <td>${escapeHtml(a.slug)}</td>
         <td class="tbl-actions">
@@ -841,7 +900,8 @@ async function renderArticleList(){
           <button class="del" onclick="deleteArticle('${a.slug}')">Hapus</button>
         </td>
       </tr>
-    `).join('');
+    `;
+    }).join('');
   }catch(e){
     tbody.innerHTML = `<tr class="empty-row"><td colspan="6">Gagal memuat: ${escapeHtml(e.message)}</td></tr>`;
   }
@@ -854,7 +914,8 @@ function editArticle(slug){
   document.getElementById('fJudul').value = a.judul;
   document.getElementById('fSlug').value = a.slug;
   document.getElementById('fExcerpt').value = a.excerpt || '';
-  document.getElementById('fKategori').value = a.kategori || '';
+  setKategoriChecked(a.kategori);
+  document.getElementById('fHighlight').checked = !!a.is_highlight;
   document.getElementById('fTanggal').value = a.tanggal ? String(a.tanggal).slice(0,10) : '';
   currentThumbDataUrl = a.thumbnail || '';
   document.getElementById('thumbPreview').innerHTML = a.thumbnail ? `<img src="${a.thumbnail}">` : '<span>Belum ada gambar dipilih</span>';
