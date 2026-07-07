@@ -189,6 +189,7 @@
   }
   #editor img{max-width:100%;height:auto;display:block;border-radius:8px;margin:10px 0;}
   #editor a{color:var(--gold-bright);text-decoration:underline;}
+  #editor a img{border-radius:8px;}
   #editor:empty:before{content:attr(data-placeholder);color:var(--muted);}
 
   .thumb-tabs{display:flex;gap:8px;margin-bottom:10px;}
@@ -246,6 +247,17 @@
      linear-gradient(135deg, var(--muted) 50%, transparent 50%);
      background-position: calc(100% - 18px) center, calc(100% - 13px) center;
      background-size:5px 5px,5px 5px; background-repeat:no-repeat;}
+
+  /* Insert Image modal */
+  #imageModal .modal-box{width:420px;}
+  #imageModal .thumb-tabs{margin-top:2px;}
+  #imgInsertPreview{
+    margin-top:10px; border:1px dashed var(--line); border-radius:10px;
+    min-height:90px; max-height:220px; display:flex; align-items:center; justify-content:center;
+    overflow:hidden; background:#0a0a0b; padding:6px;
+  }
+  #imgInsertPreview img{max-width:100%; max-height:210px; width:auto; height:auto; object-fit:contain; border-radius:6px;}
+  #imgInsertPreview span{color:var(--muted);font-size:12px;}
 </style>
 </head>
 <body>
@@ -318,6 +330,43 @@
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeLinkModal()">Cancel</button>
       <button class="btn btn-gold" style="width:auto" onclick="insertLink()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============== INSERT IMAGE MODAL ============== -->
+<div class="modal-overlay" id="imageModal">
+  <div class="modal-box">
+    <h3>Sisipkan Gambar <span class="modal-close" onclick="closeImageModal()">✕</span></h3>
+
+    <div class="thumb-tabs">
+      <button type="button" class="active" id="imgTabLinkBtn" onclick="switchImageMode('link')">Link Gambar</button>
+      <button type="button" id="imgTabUploadBtn" onclick="switchImageMode('upload')">Upload dari Storage</button>
+    </div>
+    <div class="thumb-pane active" id="imgPaneLink">
+      <div class="field" style="margin-bottom:0;">
+        <input type="text" id="imgUrlInput" placeholder="https://contoh.com/gambar.jpg" oninput="previewInsertImage('link')">
+      </div>
+    </div>
+    <div class="thumb-pane" id="imgPaneUpload">
+      <div class="field" style="margin-bottom:0;">
+        <input type="file" id="imgFileInput" accept="image/*" onchange="previewInsertImage('upload')">
+      </div>
+    </div>
+    <div id="imgInsertPreview"><span>Belum ada gambar dipilih</span></div>
+
+    <div class="field" style="margin-top:14px;">
+      <label>Teks Alt (opsional)</label>
+      <input type="text" id="imgAltInput" placeholder="Deskripsi singkat gambar">
+    </div>
+    <div class="field">
+      <label>Link tujuan saat gambar diklik (opsional)</label>
+      <input type="text" id="imgLinkInput" placeholder="https://contoh.com (kosongkan jika tidak perlu link)">
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeImageModal()">Cancel</button>
+      <button class="btn btn-gold" style="width:auto" onclick="insertImageIntoEditor()">Sisipkan</button>
     </div>
   </div>
 </div>
@@ -421,6 +470,7 @@
             <button type="button" title="Numbered List" onclick="exec('insertOrderedList')">1≡</button>
             <div class="divider"></div>
             <button type="button" title="Insert/Edit Link" onclick="openLinkModal()">🔗</button>
+            <button type="button" title="Sisipkan Gambar" onclick="openImageModal()">🖼️</button>
           </div>
           <div id="editor" contenteditable="true" data-placeholder="Mulai tulis isi berita di sini..."></div>
         </div>
@@ -449,6 +499,12 @@
           <input type="file" id="hFile" accept="image/*" onchange="previewHeader('upload')">
         </div>
         <div class="header-preview" id="headerPreview"><span style="display:block;text-align:center;padding:60px 0;color:var(--muted);">Belum ada gambar header</span></div>
+
+        <div class="field" style="margin-top:18px;">
+          <label>Link Tombol "Lihat Jadwal" (banner beranda)</label>
+          <input type="text" id="hBannerLink" placeholder="https://contoh.com/jadwal">
+          <p class="hint" style="margin:6px 0 0;">Hanya tombol "Lihat Jadwal" di banner beranda yang akan bisa diklik menuju link ini.</p>
+        </div>
 
         <div class="field" style="margin-top:18px;">
           <label>Custom HTML untuk Latar Belakang Berita</label>
@@ -611,6 +667,31 @@ function autoSlug(){
 ===================================================== */
 let savedRange = null;
 
+function saveCurrentSelection(){
+  const sel = window.getSelection();
+  if(sel.rangeCount > 0 && editor.contains(sel.anchorNode)){
+    savedRange = sel.getRangeAt(0).cloneRange();
+  } else {
+    savedRange = null;
+  }
+}
+
+function restoreSelection(){
+  editor.focus();
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  if(savedRange){
+    sel.addRange(savedRange);
+  } else {
+    // place caret at end of editor
+    const r = document.createRange();
+    r.selectNodeContents(editor);
+    r.collapse(false);
+    sel.addRange(r);
+    savedRange = r;
+  }
+}
+
 function openLinkModal(){
   const sel = window.getSelection();
   if(sel.rangeCount > 0 && editor.contains(sel.anchorNode)){
@@ -685,6 +766,100 @@ function insertLink(){
   }
 
   closeLinkModal();
+}
+
+/* =====================================================
+   INSERT IMAGE (di dalam isi artikel)
+===================================================== */
+let currentInsertImageUrl = '';
+
+function openImageModal(){
+  saveCurrentSelection();
+  document.getElementById('imgUrlInput').value = '';
+  document.getElementById('imgFileInput').value = '';
+  document.getElementById('imgAltInput').value = '';
+  document.getElementById('imgLinkInput').value = '';
+  document.getElementById('imgInsertPreview').innerHTML = '<span>Belum ada gambar dipilih</span>';
+  currentInsertImageUrl = '';
+  switchImageMode('link');
+  document.getElementById('imageModal').classList.add('show');
+}
+
+function closeImageModal(){
+  document.getElementById('imageModal').classList.remove('show');
+}
+
+function switchImageMode(mode){
+  document.getElementById('imgTabLinkBtn').classList.toggle('active', mode==='link');
+  document.getElementById('imgTabUploadBtn').classList.toggle('active', mode==='upload');
+  document.getElementById('imgPaneLink').classList.toggle('active', mode==='link');
+  document.getElementById('imgPaneUpload').classList.toggle('active', mode==='upload');
+}
+
+function previewInsertImage(mode){
+  const box = document.getElementById('imgInsertPreview');
+  if(mode === 'link'){
+    const url = document.getElementById('imgUrlInput').value.trim();
+    if(!url){ box.innerHTML = '<span>Belum ada gambar dipilih</span>'; currentInsertImageUrl=''; return; }
+    currentInsertImageUrl = url;
+    box.innerHTML = `<img src="${url}" alt="preview">`;
+  } else {
+    const file = document.getElementById('imgFileInput').files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      currentInsertImageUrl = e.target.result;
+      box.innerHTML = `<img src="${e.target.result}" alt="preview">`;
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+async function insertImageIntoEditor(){
+  if(!currentInsertImageUrl){
+    showToast('Pilih gambar terlebih dahulu.');
+    return;
+  }
+  const alt = document.getElementById('imgAltInput').value.trim();
+  const linkUrl = document.getElementById('imgLinkInput').value.trim();
+
+  try{
+    const finalUrl = await uploadIfNeeded(currentInsertImageUrl, 'artikel-img-' + Date.now() + '.jpg');
+
+    const img = document.createElement('img');
+    img.setAttribute('src', finalUrl);
+    if(alt) img.setAttribute('alt', alt);
+
+    let nodeToInsert = img;
+    if(linkUrl){
+      const a = document.createElement('a');
+      a.setAttribute('href', linkUrl);
+      a.setAttribute('target', '_blank');
+      a.setAttribute('rel', 'noopener noreferrer');
+      a.appendChild(img);
+      nodeToInsert = a;
+    }
+
+    restoreSelection();
+    const sel = window.getSelection();
+    const range = sel.getRangeAt(0);
+    range.deleteContents();
+    range.insertNode(nodeToInsert);
+
+    // move caret after inserted node + add a line break so typing continues below the image
+    const br = document.createElement('br');
+    nodeToInsert.after(br);
+    const r2 = document.createRange();
+    r2.setStartAfter(br);
+    r2.collapse(true);
+    sel.removeAllRanges();
+    sel.addRange(r2);
+
+    closeImageModal();
+    showToast('Gambar berhasil disisipkan.');
+  }catch(e){
+    showToast('Gagal menyisipkan gambar: ' + e.message);
+  }
 }
 
 /* =====================================================
@@ -774,6 +949,7 @@ async function saveHeaderSettings(){
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+getToken()},
       body: JSON.stringify({
         header_image: headerUrl,
+        banner_link: document.getElementById('hBannerLink').value.trim(),
         custom_html: document.getElementById('hCustomHtml').value
       })
     });
@@ -795,6 +971,9 @@ async function loadHeaderSettings(){
       currentHeaderDataUrl = data.header_image;
       document.getElementById('headerPreview').innerHTML = `<img src="${data.header_image}" alt="header">`;
       document.getElementById('hLink').value = data.header_image;
+    }
+    if(data.banner_link){
+      document.getElementById('hBannerLink').value = data.banner_link;
     }
     if(data.custom_html){
       document.getElementById('hCustomHtml').value = data.custom_html;
