@@ -44,7 +44,7 @@
   }
   .header-top{
     display:flex; align-items:center; justify-content:space-between;
-    padding:22px 0 16px; gap:20px; flex-wrap:wrap;
+    padding:22px 0 16px; gap:16px; flex-wrap:wrap;
   }
   .brand{ display:flex; align-items:center; gap:14px; flex-shrink:0; }
   .brand-logo{
@@ -64,20 +64,26 @@
   .brand-tagline{ font-size:10.5px; color:var(--text-faint); letter-spacing:0.6px; margin-top:2px; }
 
   .header-banner{
-    flex:1; max-width:468px; width:100%; height:72px; border-radius:8px;
+    flex:1; max-width:640px; width:100%; height:84px; border-radius:8px;
     background: linear-gradient(120deg, var(--blue-navy), var(--blue-deep) 60%, #0a1f38);
     border:1px solid var(--card-border); position:relative; overflow:hidden;
     display:flex; align-items:center; justify-content:space-between; padding:0 18px;
     font-size:12px; color:var(--text-dim);
   }
-  .header-banner img.banner-img{ position:absolute; inset:0; width:100%; height:100%; object-fit:contain; z-index:1; }
-  .header-banner .banner-fallback-text,
-  .header-banner .cta-btn{ position:relative; z-index:2; }
+  .header-banner img.banner-img{ position:absolute; inset:0; width:100%; height:100%; object-fit:contain; z-index:1; pointer-events:none; }
+  .header-banner .banner-fallback-text{ position:relative; z-index:2; pointer-events:none; }
   .header-banner .cta-btn{
+    position:relative; z-index:3;
     background:var(--blue-accent); color:#fff; padding:8px 16px; border-radius:6px;
     font-size:12px; font-weight:600; letter-spacing:0.3px; flex-shrink:0;
+    cursor:pointer; transition:filter .15s;
   }
-  @media(max-width:640px){ .header-banner{ max-width:100%; height:60px; } }
+  .header-banner .cta-btn:hover{ filter:brightness(1.1); }
+  @media(max-width:640px){
+    .header-banner{ max-width:100%; height:64px; padding:0 14px; }
+    .header-banner .banner-fallback-text{ font-size:11px; }
+    .header-banner .cta-btn{ padding:7px 12px; font-size:11px; }
+  }
 
   nav.categories{ border-top:1px solid rgba(255,255,255,0.05); padding:16px 0; }
   nav.categories ul{ list-style:none; display:flex; gap:10px; flex-wrap:wrap; }
@@ -187,6 +193,34 @@
     max-width:1240px; margin:20px auto 0; padding:12px 20px; font-size:12px;
     color:var(--text-faint); text-align:center; display:none;
   }
+
+  /* ================= MOBILE RESPONSIVE TYPOGRAPHY ================= */
+  @media(max-width:640px){
+    .wrap{ padding:0 14px; }
+    .brand-logo{ width:44px; height:44px; }
+    .brand-name .txt-kajian, .brand-name .txt-news{ font-size:18px; }
+    .brand-name .badge-4d .num4{ font-size:21px; }
+    .brand-name .badge-4d .letd{ font-size:13px; }
+    .brand-tagline{ font-size:9.5px; }
+
+    .section-label h2{ font-size:16px; }
+    .card-title{ font-size:16px; }
+    .hl-main{ min-height:240px; }
+    .hl-small{ min-height:130px; }
+    .hl-small .card-title{ font-size:13px; }
+    .card-overlay{ padding:14px; }
+    .meta-row{ font-size:11px; gap:10px; }
+
+    .dm-featured{ min-height:220px; }
+    .dm-item h4{ font-size:13.5px; }
+    .dm-thumb{ width:64px; height:52px; }
+
+    nav.categories button{ padding:7px 14px; font-size:11.5px; }
+  }
+  @media(max-width:400px){
+    .card-title{ font-size:15px; }
+    .hl-main{ min-height:200px; }
+  }
 </style>
 </head>
 <body>
@@ -206,11 +240,11 @@
         <div class="brand-tagline">Portal Berita Update 2026</div>
       </div>
     </a>
-    <a href="#" class="header-banner" id="headerBanner">
+    <div class="header-banner" id="headerBanner">
       <img class="banner-img" id="headerBannerImg" src="" alt="Banner promosi" style="display:none;">
-      <span class="banner-fallback-text">Update Prediksi &amp; Skor Real-Time</span>
-      <span class="cta-btn">Lihat Jadwal</span>
-    </a>
+      <span class="banner-fallback-text" id="headerBannerFallback">Update Prediksi &amp; Skor Real-Time</span>
+      <a href="#" class="cta-btn" id="bannerCtaBtn" target="_blank" rel="noopener noreferrer">Lihat Jadwal</a>
+    </div>
   </div>
   <nav class="wrap categories">
     <ul id="categoryTabs"></ul>
@@ -384,6 +418,25 @@
     const res = await fetch('/api/articles');
     if(!res.ok) throw new Error('Gagal memuat artikel');
     return res.json();
+  }
+
+  async function loadBannerSettings(){
+    try{
+      const res = await fetch('/api/settings');
+      if(!res.ok) return;
+      const data = await res.json();
+      const img = document.getElementById('headerBannerImg');
+      const fallback = document.getElementById('headerBannerFallback');
+      const cta = document.getElementById('bannerCtaBtn');
+      if(data.header_image){
+        img.src = data.header_image;
+        img.style.display = 'block';
+        if(fallback) fallback.style.display = 'none';
+      }
+      if(data.banner_link){
+        cta.href = data.banner_link;
+      }
+    }catch(e){}
   }
 
   function renderTabs(){
@@ -574,6 +627,7 @@
 
   async function init(){
     renderTabs();
+    loadBannerSettings();
     try{
       const data = await fetchArticles();
       if(Array.isArray(data) && data.length > 0){
