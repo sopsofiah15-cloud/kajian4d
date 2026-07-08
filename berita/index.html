@@ -110,13 +110,34 @@
   }
   .header-banner .cta-btn:hover{ filter:brightness(1.1); }
   @media(max-width:640px){
-  .header-banner{
-    max-width:100%;
-    aspect-ratio: 1280 / 220;  /* sedikit lebih tinggi di mobile agar teks tetap terbaca penuh */
-    padding:0 12px;
+  .header-top{
+    display:flex;
+    flex-wrap:nowrap;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:22px 14px 12px; /* angka pertama dinaikkan supaya tidak mepet atas */
   }
-  .header-banner .banner-fallback-text{ font-size:11px; }
-  .header-banner .cta-btn{ padding:7px 12px; font-size:11px; }
+  .brand{
+    width:auto;
+    flex-shrink:0;
+  }
+  .header-banner{
+    width:auto;
+    flex:1;
+    min-width:0;
+    margin-top:0;
+    aspect-ratio:auto;
+    height:38px;
+    padding:0 10px;
+  }
+  .header-banner .banner-fallback-text{
+    display:none; /* teks banner disembunyikan di layar sempit, sisakan tombol CTA saja */
+  }
+  .header-banner .cta-btn{
+    padding:6px 10px;
+    font-size:10px;
+  }
 }
 
   nav.categories{ padding:12px 0; }
@@ -132,7 +153,6 @@
   nav.categories ul::-webkit-scrollbar{ display:none; } /* Chrome/Safari */
   nav.categories li{ flex-shrink:0; scroll-snap-align:start; }
   nav.categories button{ white-space:nowrap; }
-}
   nav.categories button{
     display:inline-block; font-size:12.5px; font-weight:600; letter-spacing:0.2px;
     color:var(--text-dim); background:var(--card-bg); border:1px solid var(--card-border);
@@ -261,8 +281,26 @@
     .dm-item h4{ font-size:13.5px; }
     .dm-thumb{ width:64px; height:52px; }
 
-    nav.categories button{ padding:7px 14px; font-size:11.5px; }
-  }
+    nav.categories ul{
+      display:flex;
+      flex-wrap:nowrap;
+      gap:6px;
+      width:100%;
+    }
+    nav.categories li{
+      flex:1 1 0;
+      min-width:0;
+    }
+    nav.categories button{
+      width:100%;
+      padding:8px 4px;
+      font-size:10px;
+      text-align:center;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+}
   @media(max-width:400px){
     .card-title{ font-size:15px; }
     .hl-main{ min-height:200px; }
@@ -336,26 +374,19 @@
     <div class="footer-col">
       <h4>≡ Menu</h4>
       <ul>
-        <li><a href="#">Jadwal WC 2026</a></li>
-        <li><a href="#">Top Scorer</a></li>
-        <li><a href="#">Klasemen</a></li>
-        <li><a href="#">Informasi</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>★ Layanan</h4>
-      <ul>
-        <li><a href="#">Prediksi Bola</a></li>
-        <li><a href="#">Handicap Asia</a></li>
-        <li><a href="#">Over/Under</a></li>
-        <li><a href="#">Live Score</a></li>
+        <li><a href="#">SEPAK BOLA</a></li>
+        <li><a href="#">TEKNOLOGI</a></li>
+        <li><a href="#">OLAHRAGA</a></li>
+        <li><a href="#">HIBURAN</a></li>
+        <li><a href="#">BISNIS</a></li>
+        <li><a href="#">GAYA HIDUP</a></li>
       </ul>
     </div>
     <div class="footer-col">
       <h4>✉ Kontak</h4>
       <ul>
-        <li><a href="#">WA Kajian4d</a></li>
-        <li><a href="#">Telegram: @kajian4d_bot</a></li>
+        <li><a href="#">WA Official Kajian 4D News</a></li>
+        <li><a href="#">Telegram:@kajian_4D_NEWS/a></li>
         <li><a href="#">Official KAJIAN4</a></li>
         <li><a href="#">Pusat Pengaduan</a></li>
       </ul>
@@ -363,8 +394,8 @@
   </div>
   <div class="footer-bottom">
     <div class="k4d-big">KAJIAN4D</div>
-    <div class="tagline">Prediksi Bola Paling Akurat &amp; Terpercaya</div>
-    <div class="copy">© 2026 KAJIAN4D. All Rights Reserved. Platform Prediksi Bola Terpercaya Sejak 2020</div>
+    <div class="tagline">Berita Bola Paling Akurat &amp; Terpercaya</div>
+    <div class="copy">© 2026 KAJIAN4D. All Rights Reserved. Portal Berita Bola Terpercaya Sejak 2020</div>
     <div class="trust-badges">
       <span>✔ Lisensi Resmi</span>
       <span>🔒 SSL Secure</span>
