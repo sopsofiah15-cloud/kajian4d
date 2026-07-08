@@ -200,17 +200,37 @@
 
   .highlight-grid{ display:grid; grid-template-columns: 1.4fr 1fr; gap:16px; margin-bottom:44px; }
   @media(max-width:640px){ .highlight-grid{ grid-template-columns:1fr; } }
-  .hl-main{ position:relative; border-radius:10px; overflow:hidden; min-height:360px; border:1px solid var(--card-border); background:var(--card-bg); }
-  .hl-main img{ width:100%; height:100%; object-fit:cover; position:absolute; inset:0; }
+
+  /* ===== Kotak gambar utama (highlight besar, highlight kecil, featured "Jangan Lewatkan") =====
+     Gambar TIDAK dipotong (object-fit:contain). Ruang kosong di sisi gambar diisi versi blur
+     dari gambar yang sama supaya tetap penuh & rapi, bukan kotak kosong polos. */
+  .hl-main, .hl-small, .dm-featured{
+    position:relative; border-radius:10px; overflow:hidden; border:1px solid var(--card-border); background:var(--card-bg);
+  }
+  .hl-main{ min-height:360px; }
+  .hl-small{ min-height:172px; }
+  .dm-featured{ min-height:300px; }
+  .img-blur-bg{
+    position:absolute; inset:0; z-index:0;
+    background-size:cover; background-position:center;
+    filter:blur(22px) brightness(0.5) saturate(1.1);
+    transform:scale(1.25);
+    transition:opacity .5s ease;
+  }
+  .hl-main img, .hl-small img, .dm-featured img{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:contain; object-position:center;
+    z-index:1; transition:opacity .5s ease;
+  }
   .hl-small-stack{ display:flex; flex-direction:column; gap:16px; }
-  .hl-small{ position:relative; border-radius:10px; overflow:hidden; min-height:172px; border:1px solid var(--card-border); background:var(--card-bg); }
-  .hl-small img{ width:100%; height:100%; object-fit:cover; position:absolute; inset:0; transition:opacity .5s ease; }
-  .hl-small .card-overlay{ transition:opacity .5s ease; }
-  .hl-small.fading .carousel-img, .hl-small.fading .card-overlay{ opacity:0; }
+  .fade-slide.fading .img-blur-bg,
+  .fade-slide.fading img,
+  .fade-slide.fading .card-overlay{ opacity:0; }
 
   .card-overlay{
     position:relative; z-index:2; height:100%; display:flex; flex-direction:column; justify-content:flex-end; padding:18px;
     background: linear-gradient(180deg, transparent 30%, rgba(6,10,16,0.55) 65%, rgba(6,10,16,0.92) 100%);
+    transition:opacity .5s ease;
   }
   .badge-row{ display:flex; gap:8px; align-items:center; margin-bottom:10px; flex-wrap:wrap; }
   .badge{
@@ -226,13 +246,12 @@
 
   .dontmiss{ display:grid; grid-template-columns: 1fr 1fr; gap:24px; margin-bottom:20px; }
   @media(max-width:640px){ .dontmiss{ grid-template-columns:1fr; } }
-  .dm-featured{ border-radius:10px; overflow:hidden; position:relative; min-height:300px; border:1px solid var(--card-border); background:var(--card-bg); }
-  .dm-featured img{ width:100%; height:100%; object-fit:cover; position:absolute; inset:0; }
   .dm-list{ display:flex; flex-direction:column; gap:16px; }
-  .dm-item{ display:flex; gap:12px; align-items:flex-start; padding-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.06); }
+  .dm-item{ display:flex; gap:12px; align-items:flex-start; padding-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.06); transition:opacity .5s ease; }
   .dm-thumb{ width:76px; height:60px; border-radius:6px; overflow:hidden; flex-shrink:0; border:1px solid var(--card-border); background:var(--card-bg); }
   .dm-thumb img{ width:100%; height:100%; object-fit:cover; }
   .dm-item h4{ font-size:14px; font-weight:600; line-height:1.35; margin-bottom:6px; color:var(--text-main); }
+  .dm-list.fading .dm-item{ opacity:0; }
 
   aside.sidebar{
     background:var(--card-bg); border:1px solid var(--card-border); border-radius:12px; padding:20px; position:sticky; top:20px;
@@ -291,7 +310,7 @@
   .pg-btn:disabled{ opacity:.4; cursor:not-allowed; }
   .pg-num{ min-width:38px; text-align:center; }
 
-  /* ============ FOOTER 2.0 — desain baru, dipakai di homepage & semua halaman detail ============ */
+  /* ============ FOOTER 2.0 ============ */
   footer.site.ftr2{
     position:relative;
     overflow:hidden;
@@ -397,7 +416,6 @@
   }
 
   /* ================= MOBILE / TABLET RESPONSIVE ================= */
-  /* Logo + brand tetap satu baris dengan banner di semua ukuran layar */
   @media(max-width:700px){
     .header-top{ flex-wrap:nowrap; gap:8px; align-items:center; }
     .brand{ gap:8px; flex:0 1 auto; min-width:0; height:auto; }
@@ -420,7 +438,6 @@
   }
 
   @media(max-width:640px){
-    /* Poin 5: kategori mobile jadi slide (geser), teks & tombol tidak ada yang terpotong */
     nav.categories ul{
       display:flex;
       flex-wrap:nowrap;
@@ -469,7 +486,6 @@
       </div>
     </a>
 
-    <!-- Banner: 1 elemen <a> utuh, klik di mana saja (desktop & mobile) langsung menuju link yang diisi admin -->
     <a class="header-banner" id="headerBanner" href="#" target="_blank" rel="noopener noreferrer">
       <img class="banner-img" id="headerBannerImg" src="" alt="Banner promosi" style="display:none;">
       <span class="banner-fallback-text" id="headerBannerFallback">Cek Berita &amp; Skor Real-Time</span>
@@ -507,7 +523,6 @@
   </aside>
 </div>
 
-<!-- Semua Berita + Pagination (Start / Prev / 1 2 3 4 5 / Next / End) -->
 <div class="wrap allnews-section">
   <div class="section-label">
     <span class="tag">Semua Berita</span>
@@ -573,11 +588,10 @@
   let allArticles = [];
   let currentCategory = 'SEMUA';
   let currentPage = 1;
-  let carouselTimer = null;
+  let highlightTimer = null;
+  let dontMissTimer = null;
   let isDemoMode = false;
 
-  // Data contoh — dipakai HANYA kalau /api/articles belum tersedia atau masih kosong,
-  // supaya preview visual tetap identik dengan referensi desain sebelum database aktif.
   const DEMO_ARTICLES = [
     { slug:'argentina-vs-brazil', judul:'Argentina vs Brazil: Duel Panas Perebutan Puncak Grup',
       kategori:['SEPAK BOLA'], tanggal:'2026-07-07', is_highlight:true, views:'2.481',
@@ -651,6 +665,20 @@
   }
   function articleUrl(a){ return `/berita/${a.slug}`; }
 
+  // Bagi array jadi kelompok berukuran `size`. Kalau kelompok terakhir kurang,
+  // penuhi dengan mengulang dari awal array supaya tampilan tidak pernah bolong.
+  function chunkArray(arr, size){
+    if(!arr.length) return [];
+    const groups = [];
+    for(let i = 0; i < arr.length; i += size){
+      const g = arr.slice(i, i + size);
+      let fillIdx = 0;
+      while(g.length < size){ g.push(arr[fillIdx % arr.length]); fillIdx++; }
+      groups.push(g);
+    }
+    return groups;
+  }
+
   async function fetchArticles(){
     const res = await fetch('/api/articles');
     if(!res.ok) throw new Error('Gagal memuat artikel');
@@ -662,7 +690,7 @@
       const res = await fetch('/api/settings');
       if(!res.ok) return;
       const data = await res.json();
-      const wrapper = document.getElementById('headerBanner'); // <a> pembungkus seluruh banner
+      const wrapper = document.getElementById('headerBanner');
       const img = document.getElementById('headerBannerImg');
       const fallback = document.getElementById('headerBannerFallback');
       if(data.header_image){
@@ -671,7 +699,7 @@
         if(fallback) fallback.style.display = 'none';
       }
       if(data.banner_link){
-        wrapper.href = data.banner_link; // link diisi di sini nantinya oleh admin
+        wrapper.href = data.banner_link;
       }
     }catch(e){}
   }
@@ -698,10 +726,47 @@
     return allArticles.filter(a => katList(a).includes(currentCategory));
   }
 
+  // Isi satu "slot" gambar utama (hl-main / hl-small / dm-featured) dengan artikel tertentu
+  function fillHeroSlot(el, art){
+    el.href = articleUrl(art);
+    const blurBg = el.querySelector('.img-blur-bg');
+    const img = el.querySelector('img');
+    if(blurBg) blurBg.style.backgroundImage = `url('${(art.thumbnail || '').replace(/'/g,"\\'")}')`;
+    if(img) img.src = art.thumbnail || '';
+    const badgeRow = el.querySelector('.badge-row');
+    if(badgeRow){
+      badgeRow.innerHTML = `${art.is_highlight ? '<span class="badge highlight-badge">Manual · Highlight</span>' : ''}<span class="badge">${esc(primaryKat(art))}</span>`;
+    }
+    const titleEl = el.querySelector('.card-title');
+    if(titleEl) titleEl.textContent = art.judul;
+    const dateEl = el.querySelector('.hero-date');
+    if(dateEl) dateEl.textContent = fmtDate(art.tanggal);
+    const viewsWrap = el.querySelector('.hero-views-wrap');
+    const viewsVal = el.querySelector('.hero-views');
+    if(viewsWrap && viewsVal){
+      if(art.views){ viewsVal.textContent = art.views; viewsWrap.style.display = ''; }
+      else { viewsWrap.style.display = 'none'; }
+    }
+  }
+
+  function heroSlotMarkup(id){
+    return `
+      <a href="#" class="fade-slide" id="${id}">
+        <div class="img-blur-bg"></div>
+        <img src="" alt="">
+        <div class="card-overlay">
+          <div class="badge-row"></div>
+          <div class="card-title"></div>
+          <div class="meta-row"><span class="hero-date"></span><span class="views hero-views-wrap">${EYE_SVG} <span class="hero-views"></span></span></div>
+        </div>
+      </a>`;
+  }
+
+  // ============ HIGHLIGHT HARI INI — auto-geser 3 slot sekaligus tiap 20 detik ============
   function renderHighlight(){
     const grid = document.getElementById('highlightGrid');
     const title = document.getElementById('highlightSectionTitle');
-    clearInterval(carouselTimer);
+    clearInterval(highlightTimer);
 
     const pool = filteredByTab();
     title.textContent = currentCategory === 'SEMUA' ? 'Highlight Hari Ini' : `Highlight — ${currentCategory}`;
@@ -715,107 +780,117 @@
     const rest = pool.filter(a => !a.is_highlight);
     const ordered = [...highlighted, ...rest];
 
-    const main = ordered[0];
-    const smallPool = ordered.slice(1);
+    const groups = chunkArray(ordered, 3);
 
     grid.innerHTML = `
-      <a href="${articleUrl(main)}" class="hl-main">
-        <img src="${esc(main.thumbnail || '')}" alt="">
+      <div class="hl-main fade-slide" id="hlMain">
+        <div class="img-blur-bg"></div>
+        <img src="" alt="">
         <div class="card-overlay">
-          <div class="badge-row">
-            ${main.is_highlight ? '<span class="badge highlight-badge">Manual · Highlight</span>' : ''}
-            <span class="badge">${esc(primaryKat(main))}</span>
-          </div>
-          <div class="card-title">${esc(main.judul)}</div>
-          <div class="meta-row"><span>${fmtDate(main.tanggal)}</span>${main.views ? `<span class="views">${EYE_SVG} ${esc(main.views)}</span>` : ''}</div>
+          <div class="badge-row"></div>
+          <div class="card-title"></div>
+          <div class="meta-row"><span class="hero-date"></span><span class="views hero-views-wrap">${EYE_SVG} <span class="hero-views"></span></span></div>
         </div>
-      </a>
+      </div>
       <div class="hl-small-stack">
-        <a href="#" class="hl-small" id="carousel-top"><img class="carousel-img" src="" alt="">
-          <div class="card-overlay"><div class="badge-row"><span class="badge carousel-badge"></span></div>
-          <div class="card-title carousel-title"></div>
-          <div class="meta-row"><span class="carousel-date"></span><span class="views carousel-views-wrap">${EYE_SVG} <span class="carousel-views"></span></span></div></div>
-        </a>
-        <a href="#" class="hl-small" id="carousel-bottom"><img class="carousel-img" src="" alt="">
-          <div class="card-overlay"><div class="badge-row"><span class="badge carousel-badge"></span></div>
-          <div class="card-title carousel-title"></div>
-          <div class="meta-row"><span class="carousel-date"></span><span class="views carousel-views-wrap">${EYE_SVG} <span class="carousel-views"></span></span></div></div>
-        </a>
+        <div class="hl-small">${heroSlotMarkup('hlSmallTop')}</div>
+        <div class="hl-small">${heroSlotMarkup('hlSmallBottom')}</div>
       </div>
     `;
 
-    if(smallPool.length === 0) return;
+    const hlMainWrap = grid.querySelector('#hlMain');
+    const hlMain = hlMainWrap; // hlMain itself is the <a>-like container, but here it's a div; make it a link via click passthrough
+    hlMainWrap.style.cursor = 'pointer';
+    let currentMainArt = null;
+    hlMainWrap.addEventListener('click', () => { if(currentMainArt) window.location.href = articleUrl(currentMainArt); });
 
-    const pairs = [];
-    for(let i = 0; i < smallPool.length; i += 2){
-      pairs.push([smallPool[i], smallPool[i+1] || smallPool[i]]);
-    }
+    const topEl = document.getElementById('hlSmallTop');
+    const bottomEl = document.getElementById('hlSmallBottom');
 
-    const topEl = document.getElementById('carousel-top');
-    const bottomEl = document.getElementById('carousel-bottom');
     let idx = 0;
-
-    function fillSlot(el, art){
-      el.href = articleUrl(art);
-      el.querySelector('.carousel-img').src = art.thumbnail || '';
-      el.querySelector('.carousel-badge').textContent = primaryKat(art);
-      el.querySelector('.carousel-title').textContent = art.judul;
-      el.querySelector('.carousel-date').textContent = fmtDate(art.tanggal);
-      const viewsWrap = el.querySelector('.carousel-views-wrap');
-      const viewsVal = el.querySelector('.carousel-views');
-      if(art.views){ viewsVal.textContent = art.views; viewsWrap.style.display = ''; }
-      else { viewsWrap.style.display = 'none'; }
+    function showGroup(g){
+      currentMainArt = g[0];
+      fillHeroSlot(hlMainWrap, g[0]);
+      fillHeroSlot(topEl, g[1]);
+      fillHeroSlot(bottomEl, g[2]);
     }
+    showGroup(groups[0]);
 
-    fillSlot(topEl, pairs[0][0]);
-    fillSlot(bottomEl, pairs[0][1]);
-
-    if(pairs.length > 1){
-      carouselTimer = setInterval(() => {
-        idx = (idx + 1) % pairs.length;
-        [topEl, bottomEl].forEach(el => el.classList.add('fading'));
+    if(groups.length > 1){
+      highlightTimer = setInterval(() => {
+        idx = (idx + 1) % groups.length;
+        [hlMainWrap, topEl, bottomEl].forEach(el => el.classList.add('fading'));
         setTimeout(() => {
-          fillSlot(topEl, pairs[idx][0]);
-          fillSlot(bottomEl, pairs[idx][1]);
-          [topEl, bottomEl].forEach(el => el.classList.remove('fading'));
+          showGroup(groups[idx]);
+          [hlMainWrap, topEl, bottomEl].forEach(el => el.classList.remove('fading'));
         }, 500);
       }, CAROUSEL_INTERVAL_MS);
     }
   }
 
+  // ============ JANGAN LEWATKAN — auto-geser featured + 3 list tiap 20 detik ============
   function renderDontMiss(){
     const grid = document.getElementById('dontMissGrid');
+    clearInterval(dontMissTimer);
     const pool = filteredByTab();
 
-    if(!pool.length){
-      grid.innerHTML = '';
-      return;
-    }
+    if(!pool.length){ grid.innerHTML = ''; return; }
 
-    const featured = pool[0];
-    const listItems = pool.slice(1, 4);
+    const groups = chunkArray(pool, 4);
 
     grid.innerHTML = `
-      <a href="${articleUrl(featured)}" class="dm-featured">
-        <img src="${esc(featured.thumbnail || '')}" alt="">
+      <div class="dm-featured fade-slide" id="dmFeatured">
+        <div class="img-blur-bg"></div>
+        <img src="" alt="">
         <div class="card-overlay">
-          <div class="badge-row"><span class="badge">${esc(primaryKat(featured))}</span></div>
-          <div class="card-title">${esc(featured.judul)}</div>
-          <div class="meta-row"><span>${fmtDate(featured.tanggal)}</span>${featured.views ? `<span class="views">${EYE_SVG} ${esc(featured.views)}</span>` : ''}</div>
+          <div class="badge-row"></div>
+          <div class="card-title"></div>
+          <div class="meta-row"><span class="hero-date"></span><span class="views hero-views-wrap">${EYE_SVG} <span class="hero-views"></span></span></div>
         </div>
-      </a>
-      <div class="dm-list">
-        ${listItems.map(a => `
-          <a href="${articleUrl(a)}" class="dm-item">
-            <div class="dm-thumb"><img src="${esc(a.thumbnail || '')}" alt=""></div>
-            <div>
-              <h4>${esc(a.judul)}</h4>
-              <div class="meta-row"><span class="badge" style="font-size:9px;padding:2px 7px;">${esc(primaryKat(a))}</span><span>${fmtDate(a.tanggal)}</span>${a.views ? `<span class="views">${EYE_SVG} ${esc(a.views)}</span>` : ''}</div>
-            </div>
-          </a>
-        `).join('')}
+      </div>
+      <div class="dm-list" id="dmList">
+        <a href="#" class="dm-item" data-i="0"><div class="dm-thumb"><img src="" alt=""></div><div><h4></h4><div class="meta-row"><span class="badge dm-item-badge" style="font-size:9px;padding:2px 7px;"></span><span class="dm-item-date"></span><span class="views dm-item-views-wrap">${EYE_SVG} <span class="dm-item-views"></span></span></div></div></a>
+        <a href="#" class="dm-item" data-i="1"><div class="dm-thumb"><img src="" alt=""></div><div><h4></h4><div class="meta-row"><span class="badge dm-item-badge" style="font-size:9px;padding:2px 7px;"></span><span class="dm-item-date"></span><span class="views dm-item-views-wrap">${EYE_SVG} <span class="dm-item-views"></span></span></div></div></a>
+        <a href="#" class="dm-item" data-i="2"><div class="dm-thumb"><img src="" alt=""></div><div><h4></h4><div class="meta-row"><span class="badge dm-item-badge" style="font-size:9px;padding:2px 7px;"></span><span class="dm-item-date"></span><span class="views dm-item-views-wrap">${EYE_SVG} <span class="dm-item-views"></span></span></div></div></a>
       </div>
     `;
+
+    const featuredEl = document.getElementById('dmFeatured');
+    const listEl = document.getElementById('dmList');
+    const itemEls = Array.from(listEl.querySelectorAll('.dm-item'));
+
+    function fillListItem(el, art){
+      el.href = articleUrl(art);
+      el.querySelector('img').src = art.thumbnail || '';
+      el.querySelector('h4').textContent = art.judul;
+      el.querySelector('.dm-item-badge').textContent = primaryKat(art);
+      el.querySelector('.dm-item-date').textContent = fmtDate(art.tanggal);
+      const vw = el.querySelector('.dm-item-views-wrap');
+      const vv = el.querySelector('.dm-item-views');
+      if(art.views){ vv.textContent = art.views; vw.style.display=''; } else { vw.style.display='none'; }
+    }
+
+    let idx = 0;
+    function showGroup(g){
+      fillHeroSlot(featuredEl, g[0]);
+      fillListItem(itemEls[0], g[1]);
+      fillListItem(itemEls[1], g[2]);
+      fillListItem(itemEls[2], g[3]);
+    }
+    showGroup(groups[0]);
+
+    if(groups.length > 1){
+      dontMissTimer = setInterval(() => {
+        idx = (idx + 1) % groups.length;
+        featuredEl.classList.add('fading');
+        listEl.classList.add('fading');
+        setTimeout(() => {
+          showGroup(groups[idx]);
+          featuredEl.classList.remove('fading');
+          listEl.classList.remove('fading');
+        }, 500);
+      }, CAROUSEL_INTERVAL_MS);
+    }
   }
 
   function renderArchive(){
