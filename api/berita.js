@@ -16,8 +16,8 @@ module.exports = async (req, res) => {
 
     if (!a) {
       res.status(404).send(`<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8">
-        <title>Berita tidak ditemukan - KAJIAN4D</title>
-        <link rel="icon" href="https://ik.imagekit.io/ehc8d8fve/icon-kajian4d.png?updatedAt=1781622585259"></head>
+        <title>Berita tidak ditemukan - KAJIAN NEWS</title>
+        <link rel="icon" href="https://ik.imagekit.io/ehc8d8fve/kajian%20icon%20v5?updatedAt=1783465068596"></head>
         <body style="background:#0b0d10;color:#e7ebf0;font-family:sans-serif;text-align:center;padding:100px 20px;">
         <h1 style="color:#5fb3ff;">404</h1><p>Artikel tidak ditemukan.</p>
         <a href="/berita" style="color:#3a8fd9;">&larr; Kembali ke daftar berita</a></body></html>`);
@@ -38,13 +38,13 @@ module.exports = async (req, res) => {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${escapeHtml(a.judul)} - KAJIAN4D</title>
+<title>${escapeHtml(a.judul)} - KAJIAN NEWS</title>
 <meta name="description" content="${escapeHtml(a.excerpt || '')}">
 <meta property="og:title" content="${escapeHtml(a.judul)}">
 <meta property="og:description" content="${escapeHtml(a.excerpt || '')}">
 ${a.thumbnail ? `<meta property="og:image" content="${escapeHtml(a.thumbnail)}">` : ''}
 <link rel="canonical" href="https://${req.headers.host}/berita/${escapeHtml(a.slug)}">
-<link rel="icon" type="image/png" href="https://ik.imagekit.io/ehc8d8fve/icon-kajian4d.png?updatedAt=1781622585259">
+<link rel="icon" type="image/png" href="https://ik.imagekit.io/ehc8d8fve/kajian%20icon%20v5?updatedAt=1783465068596">
 <style>
   :root{
     --bg-carbon:#0b0d10;
@@ -81,7 +81,7 @@ ${a.thumbnail ? `<meta property="og:image" content="${escapeHtml(a.thumbnail)}">
   <h1>${escapeHtml(a.judul)}</h1>
   ${a.thumbnail ? `<img class="thumb" src="${escapeHtml(a.thumbnail)}" alt="${escapeHtml(a.judul)}">` : ''}
   <div class="content">${a.konten || ''}</div>
-  <footer>&copy; KAJIAN4D</footer>
+  <footer>&copy; ${new Date().getFullYear()} KAJIAN NEWS</footer>
 </div>
 </body>
 </html>`;
