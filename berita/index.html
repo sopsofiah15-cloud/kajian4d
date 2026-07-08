@@ -43,9 +43,18 @@
     background: linear-gradient(180deg, rgba(18,58,99,0.15), transparent);
   }
   .header-top{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:22px 0 16px; gap:16px; flex-wrap:wrap;
+    padding:18px 0 14px;
+    gap:14px;
   }
+  .brand{
+    width:100%;
+    justify-content:flex-start;
+  }
+  .header-banner{
+    width:100%;
+    margin-top:2px;
+  }
+
   .brand{ display:flex; align-items:center; gap:14px; flex-shrink:0; }
   .brand-logo{
     width:52px; height:52px; border-radius:10px;
@@ -110,8 +119,20 @@
   .header-banner .cta-btn{ padding:7px 12px; font-size:11px; }
 }
 
-  nav.categories{ border-top:1px solid rgba(255,255,255,0.05); padding:16px 0; }
-  nav.categories ul{ list-style:none; display:flex; gap:10px; flex-wrap:wrap; }
+  nav.categories{ padding:12px 0; }
+  nav.categories ul{
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;         /* Firefox */
+    -ms-overflow-style:none;      /* IE/Edge */
+    padding-bottom:2px;
+    scroll-snap-type:x proximity;
+  }
+  nav.categories ul::-webkit-scrollbar{ display:none; } /* Chrome/Safari */
+  nav.categories li{ flex-shrink:0; scroll-snap-align:start; }
+  nav.categories button{ white-space:nowrap; }
+}
   nav.categories button{
     display:inline-block; font-size:12.5px; font-weight:600; letter-spacing:0.2px;
     color:var(--text-dim); background:var(--card-bg); border:1px solid var(--card-border);
