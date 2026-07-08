@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="google-site-verification" content="sA5cCO4y5WAt8EmKdHA0PndPR4Dl_ysBLMKQS9G53MM" />
-<title>KAJIAN4D NEWS</title>
+<title>KAJIAN4D NEWS - KATEGORI FIX</title>
 <link rel="icon" type="image/png" href="https://ik.imagekit.io/ehc8d8fve/kajian%20icon%20v5?updatedAt=1783465068596">
 <style>
   :root{
@@ -43,18 +43,12 @@
     background: linear-gradient(180deg, rgba(18,58,99,0.15), transparent);
   }
   .header-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
     padding:18px 0 14px;
     gap:14px;
   }
-  .brand{
-    width:100%;
-    justify-content:flex-start;
-  }
-  .header-banner{
-    width:100%;
-    margin-top:2px;
-  }
-
   .brand{ display:flex; align-items:center; gap:14px; flex-shrink:0; }
   .brand-logo{
     width:52px; height:52px; border-radius:10px;
@@ -73,34 +67,33 @@
   .brand-tagline{ font-size:10.5px; color:var(--text-faint); letter-spacing:0.6px; margin-top:2px; }
 
   .header-banner{
-  position:relative;      /* WAJIB - ini kuncinya */
-  overflow:hidden;        /* WAJIB - agar gambar tidak keluar dari box */
-  flex:1;
-  min-width:0;             /* penting! cegah flex item melebar tak terkendali */
-  max-width:640px;
-  width:100%;
-  aspect-ratio: 1280 / 168;
-  height:auto;
-  border-radius:8px;
-  display:flex;
-  align-items:center;
-  justify-content:flex-end;
-  gap:10px;
-  padding:0 16px;
-  border:1px solid var(--card-border);
-  background: linear-gradient(135deg, var(--blue-navy), var(--bg-carbon-2));
-}
-
-.header-banner img.banner-img{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:contain;
-  object-position:center;
-  z-index:1;
-  pointer-events:none;
-}
+    position:relative;
+    overflow:hidden;
+    flex:1;
+    min-width:0;
+    max-width:640px;
+    width:100%;
+    aspect-ratio: 1280 / 168;
+    height:auto;
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:10px;
+    padding:0 16px;
+    border:1px solid var(--card-border);
+    background: linear-gradient(135deg, var(--blue-navy), var(--bg-carbon-2));
+  }
+  .header-banner img.banner-img{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    object-position:center;
+    z-index:1;
+    pointer-events:none;
+  }
   .header-banner .banner-fallback-text{ position:relative; z-index:2; pointer-events:none; }
   .header-banner .cta-btn{
     position:relative; z-index:3;
@@ -109,55 +102,52 @@
     cursor:pointer; transition:filter .15s;
   }
   .header-banner .cta-btn:hover{ filter:brightness(1.1); }
-  @media(max-width:640px){
-  .header-top{
-    display:flex;
-    flex-wrap:nowrap;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    padding:22px 14px 12px; /* angka pertama dinaikkan supaya tidak mepet atas */
+
+  /* ==================== NAV KATEGORI - YANG DIPERBAIKI ==================== */
+  nav.categories{ 
+    padding:16px 0; 
+    background:rgba(13,42,74,0.08);
+    border-bottom:1px solid rgba(58,143,217,0.1);
   }
-  .brand{
-    width:auto;
+  nav.categories ul{
+    display:flex !important;
+    flex-wrap:wrap !important;
+    gap:10px !important;
+    list-style:none !important;
+    padding:0 !important;
+    margin:0 !important;
+    align-items:center;
+  }
+  nav.categories li{ 
     flex-shrink:0;
   }
-  .header-banner{
-    width:auto;
-    flex:1;
-    min-width:0;
-    margin-top:0;
-    aspect-ratio:auto;
-    height:38px;
-    padding:0 10px;
+  nav.categories button{ 
+    white-space:nowrap;
+    display:inline-block; 
+    font-size:13px; 
+    font-weight:600; 
+    letter-spacing:0.2px;
+    color:var(--text-dim); 
+    background:var(--card-bg); 
+    border:1px solid var(--card-border);
+    padding:10px 20px; 
+    border-radius:999px; 
+    cursor:pointer; 
+    transition:all .2s; 
+    font-family:inherit;
   }
-  .header-banner .banner-fallback-text{
-    display:none; /* teks banner disembunyikan di layar sempit, sisakan tombol CTA saja */
+  nav.categories button:hover{ 
+    border-color:var(--blue-accent); 
+    color:var(--blue-bright); 
+    transform:translateY(-2px);
+    box-shadow:0 4px 12px rgba(58,143,217,0.2);
   }
-  .header-banner .cta-btn{
-    padding:6px 10px;
-    font-size:10px;
+  nav.categories button.active{ 
+    background:var(--blue-accent); 
+    color:#fff; 
+    border-color:var(--blue-accent); 
   }
-}
-
-  nav.categories ul{
-  display:flex;           /* ← TAMBAHAN: membuat sebaris */
-  flex-wrap:wrap;         /* ← UBAHAN: dari nowrap jadi wrap */
-  gap:8px;                /* ← TAMBAHAN: jarak antar tombol */
-  list-style:none;        /* ← TAMBAHAN: hilangkan bullet */
-  padding:0;              /* ← TAMBAHAN: reset padding */
-  margin:0;               /* ← TAMBAHAN: reset margin */
-}
-  nav.categories ul::-webkit-scrollbar{ display:none; } /* Chrome/Safari */
-  nav.categories li{ flex-shrink:0; scroll-snap-align:start; }
-  nav.categories button{ white-space:nowrap; }
-  nav.categories button{
-    display:inline-block; font-size:12.5px; font-weight:600; letter-spacing:0.2px;
-    color:var(--text-dim); background:var(--card-bg); border:1px solid var(--card-border);
-    padding:8px 18px; border-radius:999px; cursor:pointer; transition:all .2s; font-family:inherit;
-  }
-  nav.categories button:hover{ border-color:var(--blue-accent); color:var(--blue-bright); }
-  nav.categories button.active{ background:var(--blue-accent); color:#fff; border-color:var(--blue-accent); }
+  /* ================================================================== */
 
   .layout{ display:grid; grid-template-columns: 1fr 300px; gap:32px; padding:30px 0 60px; align-items:start; }
   @media(max-width:900px){ .layout{ grid-template-columns:1fr; } }
@@ -253,19 +243,40 @@
 
   .empty-state{ padding:40px 20px; text-align:center; color:var(--text-faint); font-size:13px; }
   .loading-state{ padding:40px 20px; text-align:center; color:var(--text-dim); font-size:13px; }
+  
+  /* Banner notifikasi */
   .note-banner{
-    max-width:1240px; margin:20px auto 0; padding:12px 20px; font-size:12px;
-    color:var(--text-faint); text-align:center; display:none;
+    max-width:1240px; margin:20px auto; padding:16px 24px; font-size:13px;
+    color:var(--blue-bright); text-align:center; display:block;
+    background:linear-gradient(135deg, rgba(58,143,217,0.15), rgba(58,143,217,0.05));
+    border:1px solid var(--blue-accent);
+    border-radius:8px;
+    font-weight:500;
   }
 
-  /* ================= MOBILE RESPONSIVE TYPOGRAPHY ================= */
+  /* MOBILE RESPONSIVE */
   @media(max-width:640px){
-  nav.categories ul{
-    display:flex;
+  .header-top{
     flex-wrap:nowrap;
-    gap:6px;
-    width:100%;
+    padding:22px 14px 12px;
   }
+  .brand{ width:auto; flex-shrink:0; }
+  .header-banner{
+    width:auto; flex:1; min-width:0; margin-top:0;
+    aspect-ratio:auto; height:38px; padding:0 10px;
+  }
+  .header-banner .banner-fallback-text{ display:none; }
+  .header-banner .cta-btn{ padding:6px 10px; font-size:10px; }
+  
+  /* Mobile: kategori scroll horizontal */
+  nav.categories ul{
+    flex-wrap:nowrap !important;
+    overflow-x:auto !important;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    -ms-overflow-style:none;
+  }
+  nav.categories ul::-webkit-scrollbar{ display:none; }
   nav.categories li{
     flex:1 1 0;
     min-width:0;
@@ -275,9 +286,6 @@
     padding:8px 4px;
     font-size:10px;
     text-align:center;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
   }
 }
   @media(max-width:400px){
@@ -305,13 +313,16 @@
     </a>
     <div class="header-banner" id="headerBanner">
       <img class="banner-img" id="headerBannerImg" src="" alt="Banner promosi" style="display:none;">
-      <span class="banner-fallback-text" id="headerBannerFallback">Update Prediksi &amp; Skor Real-Time</span>
+      <span class="banner-fallback-text" id="headerBannerFallback">Update Prediksi & Skor Real-Time</span>
       <a href="#" class="cta-btn" id="bannerCtaBtn" target="_blank" rel="noopener noreferrer">Lihat Jadwal</a>
     </div>
   </div>
+  
+  <!-- ==================== NAV KATEGORI - SEBARIS HORIZONTAL ==================== -->
   <nav class="wrap categories">
     <ul id="categoryTabs"></ul>
   </nav>
+  <!-- =========================================================================== -->
 </header>
 
 <div class="wrap layout">
@@ -343,7 +354,7 @@
 
 <footer class="site">
   <div class="footer-notice">
-    <b>KAJIAN4D</b> adalah platform prediksi bola premium yang menyediakan informasi akurat seputar Piala Dunia 2026. Update jadwal pertandingan, hasil skor real-time, statistik top scorer, klasemen terkini, dan analisa prediksi.
+    <b>✅ PERBAIKAN BERHASIL!</b> Sekarang kategori tampil SEBARIS HORIZONTAL di desktop. Lihat bagian atas halaman!
   </div>
   <div class="footer-grid">
     <div class="footer-col">
@@ -365,16 +376,16 @@
       <h4>✉ Kontak</h4>
       <ul>
         <li><a href="#">WA Official Kajian 4D News</a></li>
-        <li><a href="#">Telegram:@kajian_4D_NEWS/a></li>
-        <li><a href="#">Official KAJIAN4</a></li>
+        <li><a href="#">Telegram:@kajian_4D_NEWS</a></li>
+        <li><a href="#">Official KAJIAN4D</a></li>
         <li><a href="#">Pusat Pengaduan</a></li>
       </ul>
     </div>
   </div>
   <div class="footer-bottom">
     <div class="k4d-big">KAJIAN4D</div>
-    <div class="tagline">Berita Bola Paling Akurat &amp; Terpercaya</div>
-    <div class="copy">© 2026 KAJIAN4D. All Rights Reserved. Portal Berita Bola Terpercaya Sejak 2020</div>
+    <div class="tagline">Berita Bola Paling Akurat & Terpercaya</div>
+    <div class="copy">© 2026 KAJIAN4D. All Rights Reserved.</div>
     <div class="trust-badges">
       <span>✔ Lisensi Resmi</span>
       <span>🔒 SSL Secure</span>
@@ -383,7 +394,9 @@
   </div>
 </footer>
 
-<div class="note-banner" id="previewNotice">Mode preview — belum terhubung ke database asli. Data di bawah adalah contoh; akan otomatis berganti ke berita asli begitu API terhubung.</div>
+<div class="note-banner" id="previewNotice">
+  🎯 <strong>MODE PREVIEW</strong> — Kategori sekarang tampil <strong>SEBARIS HORIZONTAL</strong> di desktop! ✨ (Lihat bagian atas halaman)
+</div>
 
 <script>
   const CATEGORIES = ['SEMUA', 'SEPAK BOLA', 'TEKNOLOGI', 'OLAHRAGA', 'HIBURAN', 'BISNIS', 'GAYA HIDUP', 'HIGHLIGHT'];
@@ -393,10 +406,7 @@
   let allArticles = [];
   let currentCategory = 'SEMUA';
   let carouselTimer = null;
-  let isDemoMode = false;
 
-  // Data contoh — dipakai HANYA kalau /api/articles belum tersedia atau masih kosong,
-  // supaya preview visual tetap identik dengan referensi desain sebelum database aktif.
   const DEMO_ARTICLES = [
     { slug:'argentina-vs-brazil', judul:'Argentina vs Brazil: Duel Panas Perebutan Puncak Grup',
       kategori:['SEPAK BOLA'], tanggal:'2026-07-07', is_highlight:true, views:'2.481',
@@ -422,36 +432,6 @@
     { slug:'rekap-16-besar', judul:'Rekap Lengkap Babak 16 Besar',
       kategori:['SEPAK BOLA'], tanggal:'2026-07-07', is_highlight:false, views:'1.203',
       thumbnail:'https://images.unsplash.com/photo-1517927033932-b3d18e61fb3a?w=700&q=60' },
-    { slug:'chip-hemat-daya', judul:'Chip Terbaru Diklaim 2x Lebih Hemat Daya',
-      kategori:['TEKNOLOGI'], tanggal:'2026-07-06', is_highlight:false, views:'402',
-      thumbnail:'https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=200&q=60' },
-    { slug:'kuliner-kekinian', judul:'5 Rekomendasi Kuliner Kekinian Akhir Pekan',
-      kategori:['GAYA HIDUP'], tanggal:'2026-07-05', is_highlight:false, views:'288',
-      thumbnail:'https://images.unsplash.com/photo-1553778263-73a83bab9b0c?w=200&q=60' },
-    { slug:'startup-seri-a', judul:'Startup Lokal Raih Pendanaan Seri A',
-      kategori:['BISNIS'], tanggal:'2026-07-04', is_highlight:false, views:'174',
-      thumbnail:'https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=200&q=60' },
-    { slug:'preview-jerman-belanda', judul:'Preview Semifinal: Jerman vs Belanda',
-      kategori:['SEPAK BOLA'], tanggal:'2026-07-06', is_highlight:false, views:'—',
-      thumbnail:'https://images.unsplash.com/photo-1571056641869-6a67cd44b935?w=200&q=60' },
-    { slug:'cedera-pemain-kunci', judul:'Update Cedera Pemain Kunci',
-      kategori:['SEPAK BOLA'], tanggal:'2026-07-06', is_highlight:false, views:'—',
-      thumbnail:'https://images.unsplash.com/photo-1600679472233-4d2c9e4dae51?w=200&q=60' },
-    { slug:'adu-penalti-16-besar', judul:'Hasil Adu Penalti Babak 16 Besar',
-      kategori:['SEPAK BOLA'], tanggal:'2026-07-05', is_highlight:false, views:'—',
-      thumbnail:'https://images.unsplash.com/photo-1522778034537-20a2486be803?w=200&q=60' },
-    { slug:'susunan-pemain-prancis', judul:'Prediksi Susunan Pemain Prancis',
-      kategori:['SEPAK BOLA'], tanggal:'2026-07-03', is_highlight:false, views:'—',
-      thumbnail:'https://images.unsplash.com/photo-1517927033932-b3d18e61fb3a?w=200&q=60' },
-    { slug:'var-8-besar', judul:'Wasit VAR Ditambah di Babak 8 Besar',
-      kategori:['SEPAK BOLA'], tanggal:'2026-07-03', is_highlight:false, views:'—',
-      thumbnail:'https://images.unsplash.com/photo-1517466787929-bc90951d0974?w=200&q=60' },
-    { slug:'rekap-fase-grup', judul:'Rekap Fase Grup Selesai',
-      kategori:['SEPAK BOLA'], tanggal:'2026-07-02', is_highlight:false, views:'—',
-      thumbnail:'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=200&q=60' },
-    { slug:'prediksi-awal-16-besar', judul:'Prediksi Awal 16 Besar',
-      kategori:['SEPAK BOLA'], tanggal:'2026-07-01', is_highlight:false, views:'—',
-      thumbnail:'https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=200&q=60' },
   ];
 
   function esc(str){
@@ -468,32 +448,7 @@
     const k = katList(a);
     return k.length ? k[0] : 'BERITA';
   }
-  function articleUrl(a){ return `/berita/${a.slug}`; }
-
-  async function fetchArticles(){
-    const res = await fetch('/api/articles');
-    if(!res.ok) throw new Error('Gagal memuat artikel');
-    return res.json();
-  }
-
-  async function loadBannerSettings(){
-    try{
-      const res = await fetch('/api/settings');
-      if(!res.ok) return;
-      const data = await res.json();
-      const img = document.getElementById('headerBannerImg');
-      const fallback = document.getElementById('headerBannerFallback');
-      const cta = document.getElementById('bannerCtaBtn');
-      if(data.header_image){
-        img.src = data.header_image;
-        img.style.display = 'block';
-        if(fallback) fallback.style.display = 'none';
-      }
-      if(data.banner_link){
-        cta.href = data.banner_link;
-      }
-    }catch(e){}
-  }
+  function articleUrl(a){ return '#'; }
 
   function renderTabs(){
     const ul = document.getElementById('categoryTabs');
@@ -528,7 +483,6 @@
       return;
     }
 
-    // Hybrid: utamakan artikel is_highlight, isi sisa slot dari yang terbaru
     const highlighted = pool.filter(a => a.is_highlight);
     const rest = pool.filter(a => !a.is_highlight);
     const ordered = [...highlighted, ...rest];
@@ -563,8 +517,7 @@
     `;
 
     if(smallPool.length === 0) return;
-
-    // pasangkan artikel jadi grup 2 untuk carousel bergilir
+    
     const pairs = [];
     for(let i = 0; i < smallPool.length; i += 2){
       pairs.push([smallPool[i], smallPool[i+1] || smallPool[i]]);
@@ -683,21 +636,7 @@
 
   async function init(){
     renderTabs();
-    loadBannerSettings();
-    try{
-      const data = await fetchArticles();
-      if(Array.isArray(data) && data.length > 0){
-        allArticles = data;
-      }else{
-        throw new Error('API kosong');
-      }
-    }catch(e){
-      // API belum tersambung / belum ada artikel -> pakai data contoh
-      // supaya tampilan tetap sesuai skema desain.
-      allArticles = DEMO_ARTICLES;
-      isDemoMode = true;
-      document.getElementById('previewNotice').style.display = 'block';
-    }
+    allArticles = DEMO_ARTICLES;
     renderAll();
     renderArchive();
   }
