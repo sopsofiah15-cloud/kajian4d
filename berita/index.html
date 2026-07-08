@@ -42,10 +42,11 @@
     border-bottom: 1px solid rgba(58,143,217,0.15);
     background: linear-gradient(180deg, rgba(18,58,99,0.15), transparent);
   }
-  
+  .header-top{
     display:flex;
-    align-items:center;              /* ← SEJAJARKAN VERTIKAL (PENTING!) */
+    align-items:center;
     justify-content:space-between;
+    flex-wrap:nowrap;
     padding:20px 0 16px;
     gap:20px;
   }
@@ -151,13 +152,17 @@
   }
   nav.categories ul{
     display:flex !important;
-    flex-wrap:wrap !important;
+    flex-wrap:nowrap !important;
     gap:10px !important;
     list-style:none !important;
     padding:0 !important;
     margin:0 !important;
     align-items:center;
+    overflow-x:auto;
+    scrollbar-width:none;
+    -ms-overflow-style:none;
   }
+  nav.categories ul::-webkit-scrollbar{ display:none; }
   nav.categories li{ 
     flex-shrink:0;
   }
