@@ -140,15 +140,19 @@
   }
 }
 
-  nav.categories{ padding:12px 0; }
+  nav.categories{ 
+    padding:16px 0; 
+    background:rgba(13,42,74,0.08);
+    border-bottom:1px solid rgba(58,143,217,0.1);
+  }
   nav.categories ul{
-    flex-wrap:nowrap;
-    overflow-x:auto;
-    -webkit-overflow-scrolling:touch;
-    scrollbar-width:none;         /* Firefox */
-    -ms-overflow-style:none;      /* IE/Edge */
-    padding-bottom:2px;
-    scroll-snap-type:x proximity;
+    display:flex !important;
+    flex-wrap:wrap !important;
+    gap:10px !important;
+    list-style:none !important;
+    padding:0 !important;
+    margin:0 !important;
+    align-items:center;
   }
   nav.categories ul::-webkit-scrollbar{ display:none; } /* Chrome/Safari */
   nav.categories li{ flex-shrink:0; scroll-snap-align:start; }
