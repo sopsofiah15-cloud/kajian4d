@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="google-site-verification" content="sA5cCO4y5WAt8EmKdHA0PndPR4Dl_ysBLMKQS9G53MM" />
-<title>KAJIAN4D NEWS</title>
+<title>KAJIAN NEWS</title>
 <link rel="icon" type="image/png" href="https://ik.imagekit.io/ehc8d8fve/kajian%20icon%20v5?updatedAt=1783465068596">
 <style>
   :root{
@@ -41,152 +41,66 @@
   img{ max-width:100%; display:block; }
   .wrap{ max-width:1240px; margin:0 auto; padding:0 20px; width:100%; }
 
-  /* ============ HEADER ============ */
   header.site{
     border-bottom: 1px solid rgba(58,143,217,0.15);
     background: linear-gradient(180deg, rgba(18,58,99,0.15), transparent);
   }
   .header-top{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    flex-wrap:wrap;
-    padding:20px 0 16px;
-    gap:16px;
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap;
+    padding:20px 0 16px; gap:16px;
   }
-  .brand{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    flex-shrink:0;
-    height:60px;
-  }
+  .brand{ display:flex; align-items:center; gap:14px; flex-shrink:0; height:60px; }
   .brand-logo{
-    width:54px;
-    height:54px;
-    border-radius:12px;
+    width:54px; height:54px; border-radius:12px;
     background: linear-gradient(135deg, var(--blue-deep), var(--bg-carbon-2));
     border:1px solid var(--card-border);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    overflow:hidden;
-    flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0;
     box-shadow:0 4px 12px rgba(58,143,217,0.15);
   }
   .brand-logo img{ width:100%; height:100%; object-fit:contain; }
   .brand-name{ display:flex; align-items:baseline; gap:6px; font-family: var(--font-display); flex-wrap:wrap; }
   .brand-name .txt-kajian{ font-size:22px; font-weight:700; letter-spacing:0.3px; color:var(--text-main); }
-  .brand-name .badge-4d{ display:inline-flex; align-items:baseline; gap:1px; }
-  .brand-name .badge-4d .num4{ font-size:26px; font-weight:800; color:var(--blue-accent); line-height:1; }
-  .brand-name .badge-4d .letd{ font-size:16px; font-weight:700; color:var(--blue-accent); }
   .brand-name .txt-news{ font-size:22px; font-weight:700; letter-spacing:0.3px; color:var(--blue-accent); }
   .brand-stack{ display:flex; flex-direction:column; justify-content:center; }
   .brand-tagline{ font-size:10.5px; color:var(--text-faint); letter-spacing:0.6px; margin-top:2px; }
 
-  /* Banner: seluruh elemen adalah <a> supaya klik di mana saja mengarah ke link
-     Ukuran gambar banner yang direkomendasikan:
-       Desktop : 640 x 60 px  (rasio ~10.5 : 1)
-       Retina  : 1280 x 120 px
-     object-fit:contain memastikan gambar TIDAK PERNAH terpotong walau di-zoom
-     in/out atau box banner melebar/menyempit mengikuti layar. */
   .header-banner{
-    position:relative;
-    overflow:hidden;
-    flex:1 1 260px;
-    min-width:220px;
-    max-width:700px;
-    width:100%;
-    height:60px;
-    min-height:56px;
-    border-radius:10px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:12px;
-    padding:0 18px;
+    position:relative; overflow:hidden; flex:1 1 260px; min-width:220px; max-width:700px; width:100%;
+    height:60px; min-height:56px; border-radius:10px;
+    display:flex; align-items:center; justify-content:center; gap:12px; padding:0 18px;
     border:1px solid var(--card-border);
     background: linear-gradient(135deg, var(--blue-navy) 0%, #0f2d4d 50%, var(--bg-carbon-2) 100%);
     box-shadow:0 4px 16px rgba(13,42,74,0.3);
     transition:transform 0.2s, box-shadow 0.2s;
-    text-decoration:none;
-    cursor:pointer;
+    text-decoration:none; cursor:pointer;
   }
-  .header-banner:hover{
-    transform:translateY(-1px);
-    box-shadow:0 6px 20px rgba(58,143,217,0.25);
-  }
-  /* object-fit:contain -> gambar TIDAK PERNAH terpotong, walau di-zoom in/out */
+  .header-banner:hover{ transform:translateY(-1px); box-shadow:0 6px 20px rgba(58,143,217,0.25); }
   .header-banner img.banner-img{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    object-fit:contain;
-    object-position:center;
-    z-index:1;
-    pointer-events:none;
+    position:absolute; inset:0; width:100%; height:100%; object-fit:contain; object-position:center;
+    z-index:1; pointer-events:none;
   }
   .header-banner .banner-fallback-text{
-    position:relative;
-    z-index:2;
-    pointer-events:none;
-    font-size:13px;
-    font-weight:500;
-    color:var(--blue-bright);
-    letter-spacing:0.3px;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    text-align:center;
+    position:relative; z-index:2; pointer-events:none; font-size:13px; font-weight:500; color:var(--blue-bright);
+    letter-spacing:0.3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-align:center;
   }
 
-  /* ============ KATEGORI (DESKTOP) — tombol diperkecil ============ */
-  nav.categories{
-    padding:14px 0;
-    background:rgba(13,42,74,0.08);
-    border-bottom:1px solid rgba(58,143,217,0.1);
-  }
+  nav.categories{ padding:14px 0; background:rgba(13,42,74,0.08); border-bottom:1px solid rgba(58,143,217,0.1); }
   nav.categories ul{
-    display:flex;
-    flex-wrap:nowrap;
-    gap:8px;
-    list-style:none;
-    padding:0;
-    margin:0;
-    align-items:center;
-    overflow-x:auto;
-    scrollbar-width:none;
-    -ms-overflow-style:none;
+    display:flex; flex-wrap:nowrap; gap:8px; list-style:none; padding:0; margin:0; align-items:center;
+    overflow-x:auto; scrollbar-width:none; -ms-overflow-style:none;
   }
   nav.categories ul::-webkit-scrollbar{ display:none; }
   nav.categories li{ flex-shrink:0; }
   nav.categories button{
-    white-space:nowrap;
-    display:inline-block;
-    font-size:12px;
-    font-weight:600;
-    letter-spacing:0.2px;
-    color:var(--text-dim);
-    background:var(--card-bg);
-    border:1px solid var(--card-border);
-    padding:7px 14px;
-    border-radius:999px;
-    cursor:pointer;
-    transition:all .2s;
-    font-family:inherit;
+    white-space:nowrap; display:inline-block; font-size:12px; font-weight:600; letter-spacing:0.2px;
+    color:var(--text-dim); background:var(--card-bg); border:1px solid var(--card-border);
+    padding:7px 14px; border-radius:999px; cursor:pointer; transition:all .2s; font-family:inherit;
   }
   nav.categories button:hover{
-    border-color:var(--blue-accent);
-    color:var(--blue-bright);
-    transform:translateY(-2px);
+    border-color:var(--blue-accent); color:var(--blue-bright); transform:translateY(-2px);
     box-shadow:0 4px 12px rgba(58,143,217,0.2);
   }
-  nav.categories button.active{
-    background:var(--blue-accent);
-    color:#fff;
-    border-color:var(--blue-accent);
-  }
+  nav.categories button.active{ background:var(--blue-accent); color:#fff; border-color:var(--blue-accent); }
 
   .layout{ display:grid; grid-template-columns: 1fr 300px; gap:32px; padding:30px 0 60px; align-items:start; }
   @media(max-width:900px){ .layout{ grid-template-columns:1fr; } }
@@ -259,14 +173,8 @@
   .arch-item h5{ font-size:12.5px; font-weight:500; line-height:1.3; color:var(--text-dim); }
   .arch-item:hover h5{ color:var(--blue-bright); }
 
-  /* ============ SEMUA BERITA + PAGINATION (di atas footer) ============ */
   .allnews-section{ padding:6px 0 40px; }
-  .all-news-grid{
-    display:grid;
-    grid-template-columns:repeat(3, 1fr);
-    gap:16px;
-    margin-bottom:22px;
-  }
+  .all-news-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; margin-bottom:22px; }
   @media(max-width:900px){ .all-news-grid{ grid-template-columns:repeat(2,1fr); } }
   @media(max-width:560px){ .all-news-grid{ grid-template-columns:1fr; } }
   .an-item{
@@ -279,9 +187,7 @@
   .an-thumb img{ width:100%; height:100%; object-fit:cover; }
   .an-body h4{ font-size:13.5px; font-weight:600; line-height:1.35; margin:6px 0; color:var(--text-main); }
 
-  .pagination-bar{
-    display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:8px; padding:6px 0 4px;
-  }
+  .pagination-bar{ display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:8px; padding:6px 0 4px; }
   .pg-btn{
     font-family:inherit; font-size:12.5px; font-weight:600; color:var(--text-dim);
     background:var(--card-bg); border:1px solid var(--card-border); padding:8px 14px; border-radius:6px; cursor:pointer; transition:all .2s;
@@ -291,44 +197,79 @@
   .pg-btn:disabled{ opacity:.4; cursor:not-allowed; }
   .pg-num{ min-width:38px; text-align:center; }
 
-  /* ============ FOOTER — dirapikan, di-center, area dipersempit ============ */
-  footer.site{
-    border-top:1px solid rgba(58,143,217,0.18);
-    background: linear-gradient(180deg, rgba(13,42,74,0.25), var(--bg-carbon-2));
-    margin-top:20px;
+  footer.site.ftr2{
+    position:relative; overflow:hidden; margin-top:20px; border-top:1px solid rgba(58,143,217,0.25);
+    background:
+      radial-gradient(circle at 15% 0%, rgba(58,143,217,0.14), transparent 45%),
+      radial-gradient(circle at 85% 30%, rgba(95,179,255,0.10), transparent 50%),
+      linear-gradient(180deg, rgba(13,42,74,0.35), var(--bg-carbon-2) 40%, var(--bg-carbon) 100%);
   }
-  .footer-notice{
-    max-width:820px;
-    margin:0 auto;
-    padding:24px 20px;
-    font-size:13px;
-    color:var(--text-dim);
-    border-bottom:1px solid rgba(255,255,255,0.06);
-    text-align:center;
+  .ftr2-notice{
+    max-width:860px; margin:0 auto; padding:30px 20px 26px; font-size:13px; color:var(--text-dim);
+    text-align:center; line-height:1.7; border-bottom:1px solid rgba(255,255,255,0.06);
   }
-  .footer-notice b{ color:var(--blue-bright); }
-  .footer-grid{
-    max-width:820px;
-    margin:0 auto;
-    padding:36px 20px;
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:center;
-    gap:36px 48px;
-    text-align:center;
+  .ftr2-notice b{ color:var(--blue-bright); }
+  .ftr2-grid{ max-width:1080px; margin:0 auto; padding:40px 20px 30px; display:grid; grid-template-columns:1.2fr 1.4fr 1fr; gap:40px; }
+  @media(max-width:800px){ .ftr2-grid{ grid-template-columns:1fr; gap:32px; text-align:center; } }
+  .ftr2-col h4{
+    display:flex; align-items:center; gap:8px; font-size:12px; letter-spacing:1.5px; text-transform:uppercase;
+    color:var(--blue-bright); margin-bottom:18px; font-weight:700;
   }
-  .footer-col{ flex:1 1 160px; max-width:220px; display:flex; flex-direction:column; align-items:center; }
-  .footer-col h4{ font-size:12px; letter-spacing:1px; text-transform:uppercase; color:var(--blue-bright); margin-bottom:16px; display:flex; align-items:center; justify-content:center; gap:6px; }
-  .footer-col p{ font-size:13px; color:var(--text-dim); line-height:1.6; text-align:center; }
-  .footer-col ul{ list-style:none; display:flex; flex-direction:column; align-items:center; gap:10px; }
-  .footer-col ul a{ font-size:13px; color:var(--text-dim); cursor:pointer; }
-  .footer-col ul a:hover{ color:var(--blue-bright); }
-  .footer-bottom{ text-align:center; padding:22px 20px; border-top:1px solid rgba(255,255,255,0.06); }
-  .footer-bottom .k4d-big{ font-family:var(--font-display); font-size:22px; letter-spacing:2px; color:var(--text-main); }
-  .footer-bottom .tagline{ font-size:11px; color:var(--text-faint); margin:4px 0 12px; letter-spacing:0.5px; }
-  .footer-bottom .copy{ font-size:11px; color:var(--text-faint); margin-bottom:14px; }
-  .trust-badges{ display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
-  .trust-badges span{ font-size:11px; padding:6px 12px; border:1px solid var(--card-border); border-radius:20px; color:var(--text-dim); }
+  @media(max-width:800px){ .ftr2-col h4{ justify-content:center; } }
+  .ftr2-ico{
+    width:22px; height:22px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center;
+    background:rgba(58,143,217,0.15); border:1px solid rgba(58,143,217,0.3); font-size:12px; flex-shrink:0;
+  }
+  .ftr2-brand-row{ display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+  @media(max-width:800px){ .ftr2-brand-row{ justify-content:center; } }
+  .ftr2-brand-logo{
+    width:46px; height:46px; border-radius:11px; overflow:hidden; flex-shrink:0;
+    background:linear-gradient(135deg, var(--blue-deep), var(--bg-carbon-2));
+    border:1px solid var(--card-border); display:flex; align-items:center; justify-content:center;
+  }
+  .ftr2-brand-logo img{ width:100%; height:100%; object-fit:contain; }
+  .ftr2-brand-name{ font-family:var(--font-display); font-size:19px; font-weight:700; color:var(--text-main); }
+  .ftr2-brand-name span{ color:var(--blue-accent); }
+  .ftr2-col p{ font-size:13px; color:var(--text-dim); line-height:1.7; }
+  .ftr2-chips{ display:flex; flex-wrap:wrap; gap:9px; }
+  @media(max-width:800px){ .ftr2-chips{ justify-content:center; } }
+  .ftr2-chip{
+    font-family:inherit; font-size:12px; font-weight:600; color:var(--text-dim); background:var(--card-bg);
+    border:1px solid var(--card-border); padding:8px 14px; border-radius:999px; cursor:pointer; transition:all .2s;
+  }
+  .ftr2-chip:hover{ border-color:var(--blue-accent); color:var(--blue-bright); transform:translateY(-2px); box-shadow:0 4px 12px rgba(58,143,217,0.2); }
+  .ftr2-contact{ list-style:none; display:flex; flex-direction:column; gap:10px; }
+  .ftr2-contact li{
+    display:flex; align-items:center; gap:10px; font-size:13px; color:var(--text-dim);
+    background:var(--card-bg); border:1px solid var(--card-border); border-radius:8px; padding:10px 14px;
+    transition:all .2s; cursor:pointer;
+  }
+  @media(max-width:800px){ .ftr2-contact li{ justify-content:center; } }
+  .ftr2-contact li:hover{ border-color:var(--blue-accent); color:var(--blue-bright); }
+  .ftr2-dot{ width:7px; height:7px; border-radius:50%; background:var(--blue-accent); flex-shrink:0; box-shadow:0 0 8px rgba(58,143,217,0.7); }
+  .ftr2-divider{ max-width:1080px; margin:0 auto; height:1px; background:linear-gradient(90deg, transparent, rgba(58,143,217,0.35), transparent); }
+  .ftr2-bottom{ max-width:1080px; margin:0 auto; padding:28px 20px 34px; display:flex; align-items:center; justify-content:center; gap:20px; position:relative; }
+  .ftr2-bottom-inner{ text-align:center; }
+  .ftr2-brand-big{
+    font-family:var(--font-display); font-size:26px; letter-spacing:2px; font-weight:700;
+    background:linear-gradient(90deg, var(--text-main), var(--blue-bright));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .ftr2-tagline{ font-size:11.5px; color:var(--text-faint); margin:6px 0 14px; letter-spacing:0.5px; }
+  .ftr2-copy{ font-size:11px; color:var(--text-faint); margin-bottom:16px; }
+  .ftr2-badges{ display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
+  .ftr2-badges span{
+    font-size:11px; padding:7px 14px; border:1px solid var(--card-border); border-radius:20px; color:var(--text-dim);
+    background:rgba(255,255,255,0.02);
+  }
+  .ftr2-top-btn{
+    position:absolute; right:20px; top:50%; transform:translateY(-50%);
+    width:40px; height:40px; border-radius:50%; border:1px solid var(--card-border);
+    background:var(--card-bg); color:var(--blue-bright); font-size:16px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; transition:all .2s;
+  }
+  .ftr2-top-btn:hover{ background:var(--blue-accent); color:#fff; border-color:var(--blue-accent); transform:translateY(-50%) translateY(-3px); }
+  @media(max-width:700px){ .ftr2-top-btn{ display:none; } }
 
   .empty-state{ padding:40px 20px; text-align:center; color:var(--text-faint); font-size:13px; }
   .loading-state{ padding:40px 20px; text-align:center; color:var(--text-dim); font-size:13px; }
@@ -337,62 +278,30 @@
     color:var(--text-faint); text-align:center; display:none;
   }
 
-  /* ================= MOBILE / TABLET RESPONSIVE ================= */
-  /* Logo + brand tetap satu baris dengan banner di semua ukuran layar */
   @media(max-width:700px){
     .header-top{ flex-wrap:nowrap; gap:8px; align-items:center; }
     .brand{ gap:8px; flex:0 1 auto; min-width:0; height:auto; }
     .brand-logo{ width:42px; height:42px; border-radius:9px; }
     .brand-name{ gap:4px; }
-    .brand-name .txt-kajian{ font-size:15px; }
-    .brand-name .txt-news{ font-size:15px; }
-    .brand-name .badge-4d .num4{ font-size:17px; }
-    .brand-name .badge-4d .letd{ font-size:11px; }
+    .brand-name .txt-kajian, .brand-name .txt-news{ font-size:15px; }
     .brand-tagline{ display:none; }
-    .header-banner{
-      flex:1 1 auto;
-      min-width:0;
-      max-width:none;
-      height:48px;
-      min-height:44px;
-      padding:0 10px;
-    }
+    .header-banner{ flex:1 1 auto; min-width:0; max-width:none; height:48px; min-height:44px; padding:0 10px; }
     .header-banner .banner-fallback-text{ font-size:11px; }
   }
-
   @media(max-width:640px){
-    /* Poin 5: kategori mobile jadi slide (geser), teks & tombol tidak ada yang terpotong */
     nav.categories ul{
-      display:flex;
-      flex-wrap:nowrap;
-      gap:8px;
-      overflow-x:auto;
-      -webkit-overflow-scrolling:touch;
-      scroll-snap-type:x proximity;
-      padding-bottom:2px;
+      display:flex; flex-wrap:nowrap; gap:8px; overflow-x:auto;
+      -webkit-overflow-scrolling:touch; scroll-snap-type:x proximity; padding-bottom:2px;
     }
     nav.categories li{ flex:0 0 auto; scroll-snap-align:start; }
-    nav.categories button{
-      width:auto;
-      padding:8px 16px;
-      font-size:12px;
-      white-space:nowrap;
-      overflow:visible;
-      text-overflow:unset;
-    }
-
-    .footer-grid{ gap:28px; }
-    .footer-col{ flex:1 1 45%; }
+    nav.categories button{ width:auto; padding:8px 16px; font-size:12px; white-space:nowrap; overflow:visible; text-overflow:unset; }
   }
-
   @media(max-width:400px){
     .brand-logo{ width:34px; height:34px; }
     .brand-name .txt-kajian, .brand-name .txt-news{ font-size:13px; }
-    .brand-name .badge-4d .num4{ font-size:15px; }
     .header-banner{ height:42px; min-height:40px; padding:0 8px; }
     .card-title{ font-size:15px; }
     .hl-main{ min-height:200px; }
-    .footer-col{ flex:1 1 100%; }
   }
 </style>
 </head>
@@ -407,17 +316,15 @@
       <div class="brand-stack">
         <div class="brand-name">
           <span class="txt-kajian">KAJIAN</span>
-          <span class="badge-4d"><span class="num4">4</span><span class="letd">D</span></span>
           <span class="txt-news">NEWS</span>
         </div>
-        <div class="brand-tagline">Portal Berita Update 2026</div>
+        <div class="brand-tagline">Portal Berita Bola 2026</div>
       </div>
     </a>
 
-    <!-- Banner: 1 elemen <a> utuh, klik di mana saja (desktop & mobile) langsung menuju link yang diisi admin -->
     <a class="header-banner" id="headerBanner" href="#" target="_blank" rel="noopener noreferrer">
       <img class="banner-img" id="headerBannerImg" src="" alt="Banner promosi" style="display:none;">
-      <span class="banner-fallback-text" id="headerBannerFallback">Update Prediksi &amp; Skor Real-Time</span>
+      <span class="banner-fallback-text" id="headerBannerFallback">Cek Berita &amp; Skor Real-Time</span>
     </a>
   </div>
   <nav class="wrap categories">
@@ -427,7 +334,6 @@
 
 <div class="wrap layout">
   <main>
-
     <div class="section-label">
       <span class="tag">Sorotan</span>
       <h2 id="highlightSectionTitle">Highlight Hari Ini</h2>
@@ -443,7 +349,6 @@
     <div class="dontmiss" id="dontMissGrid">
       <div class="loading-state">Memuat berita...</div>
     </div>
-
   </main>
 
   <aside class="sidebar">
@@ -452,7 +357,6 @@
   </aside>
 </div>
 
-<!-- Semua Berita + Pagination (Start / Prev / 1 2 3 4 5 / Next / End) -->
 <div class="wrap allnews-section">
   <div class="section-label">
     <span class="tag">Semua Berita</span>
@@ -462,45 +366,55 @@
   <div class="pagination-bar" id="paginationBar"></div>
 </div>
 
-<footer class="site">
-  <div class="footer-notice">
-    <b>KAJIAN4D</b> adalah platform prediksi bola premium yang menyediakan informasi akurat seputar Piala Dunia 2026. Update jadwal pertandingan, hasil skor real-time, statistik top scorer, klasemen terkini, dan analisa prediksi.
+<footer class="site ftr2">
+  <div class="ftr2-notice">
+    <b>KAJIAN NEWS</b> adalah portal berita bola yang menyajikan informasi seputar Piala Dunia 2026 — jadwal pertandingan, hasil skor, statistik pemain, klasemen, dan ulasan pertandingan.
   </div>
-  <div class="footer-grid">
-    <div class="footer-col">
-      <h4>◆ Kajian4d</h4>
-      <p>Platform prediksi bola #1 Indonesia dengan data real-time Piala Dunia 2026.</p>
+
+  <div class="ftr2-grid">
+    <div class="ftr2-col">
+      <div class="ftr2-brand-row">
+        <div class="ftr2-brand-logo"><img src="https://ik.imagekit.io/ehc8d8fve/kajian%20icon%20v5?updatedAt=1783465068596" alt="Logo"></div>
+        <div class="ftr2-brand-name">KAJIAN NEWS</div>
+      </div>
+      <p>Portal berita bola Indonesia dengan liputan Piala Dunia 2026.</p>
     </div>
-    <div class="footer-col">
-      <h4>≡ Menu</h4>
-      <ul id="footerCategoryList"></ul>
+    <div class="ftr2-col">
+      <h4><span class="ftr2-ico">≡</span> Kategori</h4>
+      <div class="ftr2-chips" id="footerCategoryList"></div>
     </div>
-    <div class="footer-col">
-      <h4>✉ Kontak</h4>
-      <ul>
-        <li><a href="#">WA Official Kajian 4D News</a></li>
-        <li><a href="#">Telegram: @kajian_4D_NEWS</a></li>
-        <li><a href="#">Official KAJIAN4</a></li>
-        <li><a href="#">Pusat Pengaduan</a></li>
+    <div class="ftr2-col">
+      <h4><span class="ftr2-ico">✉</span> Kontak &amp; Sosial Media</h4>
+      <ul class="ftr2-contact">
+        <li><span class="ftr2-dot"></span> Facebook: Kajian News</li>
+        <li><span class="ftr2-dot"></span> Instagram: @kajian.news</li>
+        <li><span class="ftr2-dot"></span> Email Redaksi: redaksi@kajiannews.co.id</li>
+        <li><span class="ftr2-dot"></span> Hubungi Kami</li>
       </ul>
     </div>
   </div>
-  <div class="footer-bottom">
-    <div class="k4d-big">KAJIAN4D</div>
-    <div class="tagline">Berita Bola Paling Akurat &amp; Terpercaya</div>
-    <div class="copy">© 2026 KAJIAN4D. All Rights Reserved. Hak Cipta Dilindungi Undang-Undang. Portal Berita Bola Terpercaya Sejak 2020</div>
-    <div class="trust-badges">
-      <span>✔ Lisensi Resmi</span>
-      <span>🔒 SSL Secure</span>
-      <span>🕐 24/7 Online</span>
+
+  <div class="ftr2-divider"></div>
+
+  <div class="ftr2-bottom">
+    <div class="ftr2-bottom-inner">
+      <div class="ftr2-brand-big">KAJIAN NEWS</div>
+      <div class="ftr2-tagline">Berita Bola Terkini &amp; Terpercaya</div>
+      <div class="ftr2-copy">© 2026 KAJIAN NEWS. Seluruh Hak Cipta Dilindungi. Portal Berita Bola Sejak 2020</div>
+      <div class="ftr2-badges">
+        <span>✔ Media Siber Terverifikasi</span>
+        <span>📰 Sesuai Kode Etik Jurnalistik</span>
+        <span>🕐 Update Setiap Hari</span>
+      </div>
     </div>
+    <button class="ftr2-top-btn" id="backToTop" title="Kembali ke atas">↑</button>
   </div>
 </footer>
 
 <div class="note-banner" id="previewNotice">Mode preview — belum terhubung ke database asli. Data di bawah adalah contoh; akan otomatis berganti ke berita asli begitu API terhubung.</div>
 
 <script>
-  const CATEGORIES = ['SEMUA', 'SEPAK BOLA', 'TEKNOLOGI', 'OLAHRAGA', 'HIBURAN', 'BISNIS', 'DUNIA', 'HIGHLIGHT'];
+  const CATEGORIES = ['SEMUA', 'SEPAK BOLA', 'TEKNOLOGI', 'OLAHRAGA', 'HIBURAN', 'BISNIS', 'GAYA HIDUP', 'HIGHLIGHT'];
   const CAROUSEL_INTERVAL_MS = 20000;
   const ITEMS_PER_PAGE = 6;
   const EYE_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>';
@@ -511,8 +425,6 @@
   let carouselTimer = null;
   let isDemoMode = false;
 
-  // Data contoh — dipakai HANYA kalau /api/articles belum tersedia atau masih kosong,
-  // supaya preview visual tetap identik dengan referensi desain sebelum database aktif.
   const DEMO_ARTICLES = [
     { slug:'argentina-vs-brazil', judul:'Argentina vs Brazil: Duel Panas Perebutan Puncak Grup',
       kategori:['SEPAK BOLA'], tanggal:'2026-07-07', is_highlight:true, views:'2.481',
@@ -533,7 +445,7 @@
       kategori:['BISNIS'], tanggal:'2026-07-05', is_highlight:false, views:'388',
       thumbnail:'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=500&q=60' },
     { slug:'merchandise-suporter', judul:'Tren Merchandise Suporter Paling Dicari',
-      kategori:['DUNIA'], tanggal:'2026-07-04', is_highlight:false, views:'301',
+      kategori:['GAYA HIDUP'], tanggal:'2026-07-04', is_highlight:false, views:'301',
       thumbnail:'https://images.unsplash.com/photo-1483721310020-03333e577078?w=500&q=60' },
     { slug:'rekap-16-besar', judul:'Rekap Lengkap Babak 16 Besar',
       kategori:['SEPAK BOLA'], tanggal:'2026-07-07', is_highlight:false, views:'1.203',
@@ -542,7 +454,7 @@
       kategori:['TEKNOLOGI'], tanggal:'2026-07-06', is_highlight:false, views:'402',
       thumbnail:'https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=200&q=60' },
     { slug:'kuliner-kekinian', judul:'5 Rekomendasi Kuliner Kekinian Akhir Pekan',
-      kategori:['DUNIA'], tanggal:'2026-07-05', is_highlight:false, views:'288',
+      kategori:['GAYA HIDUP'], tanggal:'2026-07-05', is_highlight:false, views:'288',
       thumbnail:'https://images.unsplash.com/photo-1553778263-73a83bab9b0c?w=200&q=60' },
     { slug:'startup-seri-a', judul:'Startup Lokal Raih Pendanaan Seri A',
       kategori:['BISNIS'], tanggal:'2026-07-04', is_highlight:false, views:'174',
@@ -577,13 +489,8 @@
     if(!d) return '';
     return new Date(d).toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
   }
-  function katList(a){
-    return Array.isArray(a.kategori) ? a.kategori : (a.kategori ? [a.kategori] : []);
-  }
-  function primaryKat(a){
-    const k = katList(a);
-    return k.length ? k[0] : 'BERITA';
-  }
+  function katList(a){ return Array.isArray(a.kategori) ? a.kategori : (a.kategori ? [a.kategori] : []); }
+  function primaryKat(a){ const k = katList(a); return k.length ? k[0] : 'BERITA'; }
   function articleUrl(a){ return `/berita/${a.slug}`; }
 
   async function fetchArticles(){
@@ -597,17 +504,14 @@
       const res = await fetch('/api/settings');
       if(!res.ok) return;
       const data = await res.json();
-      const wrapper = document.getElementById('headerBanner'); // <a> pembungkus seluruh banner
+      const wrapper = document.getElementById('headerBanner');
       const img = document.getElementById('headerBannerImg');
       const fallback = document.getElementById('headerBannerFallback');
       if(data.header_image){
-        img.src = data.header_image;
-        img.style.display = 'block';
+        img.src = data.header_image; img.style.display = 'block';
         if(fallback) fallback.style.display = 'none';
       }
-      if(data.banner_link){
-        wrapper.href = data.banner_link; // link diisi di sini nantinya oleh admin
-      }
+      if(data.banner_link) wrapper.href = data.banner_link;
     }catch(e){}
   }
 
@@ -722,10 +626,7 @@
     const grid = document.getElementById('dontMissGrid');
     const pool = filteredByTab();
 
-    if(!pool.length){
-      grid.innerHTML = '';
-      return;
-    }
+    if(!pool.length){ grid.innerHTML = ''; return; }
 
     const featured = pool[0];
     const listItems = pool.slice(1, 4);
@@ -869,20 +770,24 @@
   }
 
   function renderFooterCategories(){
-    const ul = document.getElementById('footerCategoryList');
-    if(!ul) return;
+    const wrap = document.getElementById('footerCategoryList');
+    if(!wrap) return;
     const cats = CATEGORIES.filter(c => c !== 'SEMUA' && c !== 'HIGHLIGHT');
-    ul.innerHTML = cats.map(c => `<li><a href="#" data-cat="${esc(c)}">${esc(c)}</a></li>`).join('');
-    ul.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', (e) => {
-        e.preventDefault();
-        currentCategory = a.dataset.cat;
+    wrap.innerHTML = cats.map(c => `<button type="button" class="ftr2-chip" data-cat="${esc(c)}">${esc(c)}</button>`).join('');
+    wrap.querySelectorAll('.ftr2-chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentCategory = btn.dataset.cat;
         currentPage = 1;
         renderTabs();
         renderAll();
         window.scrollTo({ top:0, behavior:'smooth' });
       });
     });
+  }
+
+  function initBackToTop(){
+    const btn = document.getElementById('backToTop');
+    if(btn) btn.addEventListener('click', () => window.scrollTo({ top:0, behavior:'smooth' }));
   }
 
   function renderAll(){
@@ -894,6 +799,7 @@
   async function init(){
     renderTabs();
     renderFooterCategories();
+    initBackToTop();
     loadBannerSettings();
     try{
       const data = await fetchArticles();
