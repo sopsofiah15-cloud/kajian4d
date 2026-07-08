@@ -84,7 +84,12 @@
   .brand-stack{ display:flex; flex-direction:column; justify-content:center; }
   .brand-tagline{ font-size:10.5px; color:var(--text-faint); letter-spacing:0.6px; margin-top:2px; }
 
-  /* Banner: seluruh elemen adalah <a> supaya klik di mana saja mengarah ke link */
+  /* Banner: seluruh elemen adalah <a> supaya klik di mana saja mengarah ke link
+     Ukuran gambar banner yang direkomendasikan:
+       Desktop : 640 x 60 px  (rasio ~10.5 : 1)
+       Retina  : 1280 x 120 px
+     object-fit:contain memastikan gambar TIDAK PERNAH terpotong walau di-zoom
+     in/out atau box banner melebar/menyempit mengikuti layar. */
   .header-banner{
     position:relative;
     overflow:hidden;
@@ -97,7 +102,7 @@
     border-radius:10px;
     display:flex;
     align-items:center;
-    justify-content:space-between;
+    justify-content:center;
     gap:12px;
     padding:0 18px;
     border:1px solid var(--card-border);
@@ -133,21 +138,7 @@
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
-  }
-  .header-banner .cta-btn{
-    position:relative;
-    z-index:3;
-    background:linear-gradient(135deg, var(--blue-accent), var(--blue-bright));
-    color:#fff;
-    padding:9px 18px;
-    border-radius:8px;
-    font-size:12px;
-    font-weight:700;
-    letter-spacing:0.5px;
-    flex-shrink:0;
-    pointer-events:none; /* dekorasi saja, klik ditangani oleh <a> pembungkus */
-    box-shadow:0 3px 10px rgba(58,143,217,0.3);
-    text-transform:uppercase;
+    text-align:center;
   }
 
   /* ============ KATEGORI (DESKTOP) — tombol diperkecil ============ */
@@ -268,6 +259,38 @@
   .arch-item h5{ font-size:12.5px; font-weight:500; line-height:1.3; color:var(--text-dim); }
   .arch-item:hover h5{ color:var(--blue-bright); }
 
+  /* ============ SEMUA BERITA + PAGINATION (di atas footer) ============ */
+  .allnews-section{ padding:6px 0 40px; }
+  .all-news-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:16px;
+    margin-bottom:22px;
+  }
+  @media(max-width:900px){ .all-news-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media(max-width:560px){ .all-news-grid{ grid-template-columns:1fr; } }
+  .an-item{
+    display:flex; gap:12px; align-items:flex-start;
+    background:var(--card-bg); border:1px solid var(--card-border); border-radius:8px; padding:10px;
+    transition:border-color .2s;
+  }
+  .an-item:hover{ border-color:var(--blue-accent); }
+  .an-thumb{ width:88px; height:66px; border-radius:6px; overflow:hidden; flex-shrink:0; border:1px solid var(--card-border); background:var(--bg-carbon-2); }
+  .an-thumb img{ width:100%; height:100%; object-fit:cover; }
+  .an-body h4{ font-size:13.5px; font-weight:600; line-height:1.35; margin:6px 0; color:var(--text-main); }
+
+  .pagination-bar{
+    display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:8px; padding:6px 0 4px;
+  }
+  .pg-btn{
+    font-family:inherit; font-size:12.5px; font-weight:600; color:var(--text-dim);
+    background:var(--card-bg); border:1px solid var(--card-border); padding:8px 14px; border-radius:6px; cursor:pointer; transition:all .2s;
+  }
+  .pg-btn:hover:not(:disabled){ border-color:var(--blue-accent); color:var(--blue-bright); }
+  .pg-btn.active{ background:var(--blue-accent); color:#fff; border-color:var(--blue-accent); }
+  .pg-btn:disabled{ opacity:.4; cursor:not-allowed; }
+  .pg-num{ min-width:38px; text-align:center; }
+
   /* ============ FOOTER — dirapikan, di-center, area dipersempit ============ */
   footer.site{
     border-top:1px solid rgba(58,143,217,0.18);
@@ -298,7 +321,7 @@
   .footer-col h4{ font-size:12px; letter-spacing:1px; text-transform:uppercase; color:var(--blue-bright); margin-bottom:16px; display:flex; align-items:center; justify-content:center; gap:6px; }
   .footer-col p{ font-size:13px; color:var(--text-dim); line-height:1.6; text-align:center; }
   .footer-col ul{ list-style:none; display:flex; flex-direction:column; align-items:center; gap:10px; }
-  .footer-col ul a{ font-size:13px; color:var(--text-dim); }
+  .footer-col ul a{ font-size:13px; color:var(--text-dim); cursor:pointer; }
   .footer-col ul a:hover{ color:var(--blue-bright); }
   .footer-bottom{ text-align:center; padding:22px 20px; border-top:1px solid rgba(255,255,255,0.06); }
   .footer-bottom .k4d-big{ font-family:var(--font-display); font-size:22px; letter-spacing:2px; color:var(--text-main); }
@@ -315,18 +338,29 @@
   }
 
   /* ================= MOBILE / TABLET RESPONSIVE ================= */
+  /* Logo + brand tetap satu baris dengan banner di semua ukuran layar */
   @media(max-width:700px){
-    .header-top{ gap:12px; }
-    .header-banner{ order:3; flex:1 1 100%; max-width:100%; }
-    .brand{ flex:1 1 auto; }
+    .header-top{ flex-wrap:nowrap; gap:8px; align-items:center; }
+    .brand{ gap:8px; flex:0 1 auto; min-width:0; height:auto; }
+    .brand-logo{ width:42px; height:42px; border-radius:9px; }
+    .brand-name{ gap:4px; }
+    .brand-name .txt-kajian{ font-size:15px; }
+    .brand-name .txt-news{ font-size:15px; }
+    .brand-name .badge-4d .num4{ font-size:17px; }
+    .brand-name .badge-4d .letd{ font-size:11px; }
+    .brand-tagline{ display:none; }
+    .header-banner{
+      flex:1 1 auto;
+      min-width:0;
+      max-width:none;
+      height:48px;
+      min-height:44px;
+      padding:0 10px;
+    }
+    .header-banner .banner-fallback-text{ font-size:11px; }
   }
 
   @media(max-width:640px){
-    /* Poin 2: tombol CTA banner dihilangkan di mobile — seluruh banner sudah jadi link */
-    .header-banner .cta-btn{ display:none; }
-    .header-banner{ justify-content:center; padding:0 14px; }
-    .header-banner .banner-fallback-text{ text-align:center; }
-
     /* Poin 5: kategori mobile jadi slide (geser), teks & tombol tidak ada yang terpotong */
     nav.categories ul{
       display:flex;
@@ -352,6 +386,10 @@
   }
 
   @media(max-width:400px){
+    .brand-logo{ width:34px; height:34px; }
+    .brand-name .txt-kajian, .brand-name .txt-news{ font-size:13px; }
+    .brand-name .badge-4d .num4{ font-size:15px; }
+    .header-banner{ height:42px; min-height:40px; padding:0 8px; }
     .card-title{ font-size:15px; }
     .hl-main{ min-height:200px; }
     .footer-col{ flex:1 1 100%; }
@@ -376,11 +414,10 @@
       </div>
     </a>
 
-    <!-- Banner sekarang adalah 1 elemen <a> utuh: klik di mana saja langsung ke link -->
+    <!-- Banner: 1 elemen <a> utuh, klik di mana saja (desktop & mobile) langsung menuju link yang diisi admin -->
     <a class="header-banner" id="headerBanner" href="#" target="_blank" rel="noopener noreferrer">
       <img class="banner-img" id="headerBannerImg" src="" alt="Banner promosi" style="display:none;">
       <span class="banner-fallback-text" id="headerBannerFallback">Update Prediksi &amp; Skor Real-Time</span>
-      <span class="cta-btn" id="bannerCtaBtn">Lihat Jadwal</span>
     </a>
   </div>
   <nav class="wrap categories">
@@ -415,6 +452,16 @@
   </aside>
 </div>
 
+<!-- Semua Berita + Pagination (Start / Prev / 1 2 3 4 5 / Next / End) -->
+<div class="wrap allnews-section">
+  <div class="section-label">
+    <span class="tag">Semua Berita</span>
+    <h2>Daftar Berita</h2>
+  </div>
+  <div class="all-news-grid" id="allNewsGrid"></div>
+  <div class="pagination-bar" id="paginationBar"></div>
+</div>
+
 <footer class="site">
   <div class="footer-notice">
     <b>KAJIAN4D</b> adalah platform prediksi bola premium yang menyediakan informasi akurat seputar Piala Dunia 2026. Update jadwal pertandingan, hasil skor real-time, statistik top scorer, klasemen terkini, dan analisa prediksi.
@@ -426,14 +473,7 @@
     </div>
     <div class="footer-col">
       <h4>≡ Menu</h4>
-      <ul>
-        <li><a href="#">SEPAK BOLA</a></li>
-        <li><a href="#">TEKNOLOGI</a></li>
-        <li><a href="#">OLAHRAGA</a></li>
-        <li><a href="#">HIBURAN</a></li>
-        <li><a href="#">BISNIS</a></li>
-        <li><a href="#">GAYA HIDUP</a></li>
-      </ul>
+      <ul id="footerCategoryList"></ul>
     </div>
     <div class="footer-col">
       <h4>✉ Kontak</h4>
@@ -448,7 +488,7 @@
   <div class="footer-bottom">
     <div class="k4d-big">KAJIAN4D</div>
     <div class="tagline">Berita Bola Paling Akurat &amp; Terpercaya</div>
-    <div class="copy">© 2026 KAJIAN4D. All Rights Reserved. Portal Berita Bola Terpercaya Sejak 2020</div>
+    <div class="copy">© 2026 KAJIAN4D. All Rights Reserved. Hak Cipta Dilindungi Undang-Undang. Portal Berita Bola Terpercaya Sejak 2020</div>
     <div class="trust-badges">
       <span>✔ Lisensi Resmi</span>
       <span>🔒 SSL Secure</span>
@@ -462,10 +502,12 @@
 <script>
   const CATEGORIES = ['SEMUA', 'SEPAK BOLA', 'TEKNOLOGI', 'OLAHRAGA', 'HIBURAN', 'BISNIS', 'GAYA HIDUP', 'HIGHLIGHT'];
   const CAROUSEL_INTERVAL_MS = 20000;
+  const ITEMS_PER_PAGE = 6;
   const EYE_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>';
 
   let allArticles = [];
   let currentCategory = 'SEMUA';
+  let currentPage = 1;
   let carouselTimer = null;
   let isDemoMode = false;
 
@@ -577,6 +619,7 @@
     ul.querySelectorAll('button').forEach(btn => {
       btn.addEventListener('click', () => {
         currentCategory = btn.dataset.cat;
+        currentPage = 1;
         renderTabs();
         renderAll();
         btn.scrollIntoView({ behavior:'smooth', inline:'center', block:'nearest' });
@@ -749,13 +792,108 @@
     });
   }
 
+  function renderAllNews(){
+    const grid = document.getElementById('allNewsGrid');
+    const pool = filteredByTab();
+    const totalPages = Math.max(1, Math.ceil(pool.length / ITEMS_PER_PAGE));
+    if(currentPage > totalPages) currentPage = totalPages;
+    if(currentPage < 1) currentPage = 1;
+
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    const pageItems = pool.slice(start, start + ITEMS_PER_PAGE);
+
+    if(!pool.length){
+      grid.innerHTML = '<div class="empty-state">Belum ada berita di kategori ini.</div>';
+    }else{
+      grid.innerHTML = pageItems.map(a => `
+        <a href="${articleUrl(a)}" class="an-item">
+          <div class="an-thumb"><img src="${esc(a.thumbnail || '')}" alt=""></div>
+          <div class="an-body">
+            <span class="badge" style="font-size:9px;padding:2px 7px;">${esc(primaryKat(a))}</span>
+            <h4>${esc(a.judul)}</h4>
+            <div class="meta-row"><span>${fmtDate(a.tanggal)}</span>${a.views ? `<span class="views">${EYE_SVG} ${esc(a.views)}</span>` : ''}</div>
+          </div>
+        </a>
+      `).join('');
+    }
+
+    renderPagination(totalPages);
+  }
+
+  function renderPagination(totalPages){
+    const bar = document.getElementById('paginationBar');
+    if(totalPages <= 1){ bar.innerHTML = ''; return; }
+
+    let pageNums = [];
+    for(let i = 1; i <= totalPages; i++) pageNums.push(i);
+
+    let visible = pageNums;
+    if(totalPages > 5){
+      let startP = Math.max(1, currentPage - 2);
+      let endP = Math.min(totalPages, startP + 4);
+      startP = Math.max(1, endP - 4);
+      visible = pageNums.slice(startP - 1, endP);
+    }
+
+    bar.innerHTML = `
+      <button class="pg-btn pg-nav" data-act="start" ${currentPage === 1 ? 'disabled' : ''}>&laquo; Start</button>
+      <button class="pg-btn pg-nav" data-act="prev" ${currentPage === 1 ? 'disabled' : ''}>Prev</button>
+      ${visible.map(p => `<button class="pg-btn pg-num ${p === currentPage ? 'active' : ''}" data-page="${p}">${p}</button>`).join('')}
+      <button class="pg-btn pg-nav" data-act="next" ${currentPage === totalPages ? 'disabled' : ''}>Next</button>
+      <button class="pg-btn pg-nav" data-act="end" ${currentPage === totalPages ? 'disabled' : ''}>End &raquo;</button>
+    `;
+
+    bar.querySelectorAll('.pg-num').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentPage = parseInt(btn.dataset.page, 10);
+        renderAllNews();
+        scrollToAllNews();
+      });
+    });
+    bar.querySelectorAll('.pg-nav').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const act = btn.dataset.act;
+        if(act === 'start') currentPage = 1;
+        if(act === 'end') currentPage = totalPages;
+        if(act === 'prev') currentPage = Math.max(1, currentPage - 1);
+        if(act === 'next') currentPage = Math.min(totalPages, currentPage + 1);
+        renderAllNews();
+        scrollToAllNews();
+      });
+    });
+  }
+
+  function scrollToAllNews(){
+    const el = document.querySelector('.allnews-section');
+    if(el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+
+  function renderFooterCategories(){
+    const ul = document.getElementById('footerCategoryList');
+    if(!ul) return;
+    const cats = CATEGORIES.filter(c => c !== 'SEMUA' && c !== 'HIGHLIGHT');
+    ul.innerHTML = cats.map(c => `<li><a href="#" data-cat="${esc(c)}">${esc(c)}</a></li>`).join('');
+    ul.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        currentCategory = a.dataset.cat;
+        currentPage = 1;
+        renderTabs();
+        renderAll();
+        window.scrollTo({ top:0, behavior:'smooth' });
+      });
+    });
+  }
+
   function renderAll(){
     renderHighlight();
     renderDontMiss();
+    renderAllNews();
   }
 
   async function init(){
     renderTabs();
+    renderFooterCategories();
     loadBannerSettings();
     try{
       const data = await fetchArticles();
