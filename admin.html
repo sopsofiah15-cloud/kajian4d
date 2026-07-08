@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KAJIAN4D — Admin Panel Berita</title>
-<link rel="icon" type="image/png" href="https://ik.imagekit.io/ehc8d8fve/icon-kajian4d.png?updatedAt=1781622585259">
+<link rel="icon" type="image/png" href="https://ik.imagekit.io/ehc8d8fve/85b2dee3-176c-4c06-84cf-03d2c9b74ef0.png">
 <style>
   :root{
     --gold:#c9a53d;
@@ -188,6 +188,7 @@
     outline:none; overflow-wrap:anywhere;
   }
   #editor img{max-width:100%;height:auto;display:block;border-radius:8px;margin:10px 0;}
+  #editor video{max-width:100%;height:auto;display:block;border-radius:8px;margin:10px 0;background:#000;}
   #editor a{color:var(--gold-bright);text-decoration:underline;}
   #editor a img{border-radius:8px;}
   #editor:empty:before{content:attr(data-placeholder);color:var(--muted);}
@@ -205,7 +206,7 @@
     min-height:120px; max-height:340px; display:flex; align-items:center; justify-content:center;
     overflow:hidden; background:#0a0a0b; padding:6px;
   }
-  .thumb-preview img{max-width:100%; max-height:330px; width:auto; height:auto; object-fit:contain; border-radius:6px;}
+  .thumb-preview img, .thumb-preview video{max-width:100%; max-height:330px; width:auto; height:auto; object-fit:contain; border-radius:6px;}
   .thumb-preview span{color:var(--muted);font-size:12px;}
 
   .row-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;}
@@ -215,7 +216,7 @@
     text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);
   }
   table.article-list th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.5px;}
-  table.article-list img.mini{width:56px;height:38px;object-fit:cover;border-radius:6px;background:#0a0a0b;}
+  table.article-list img.mini, table.article-list video.mini{width:56px;height:38px;object-fit:cover;border-radius:6px;background:#0a0a0b;}
   .pill{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;background:#1c1d20;color:var(--gold-bright);border:1px solid var(--line);margin:2px 3px 2px 0;}
   .pill.pill-highlight{color:var(--ok);border-color:var(--ok);}
   .tbl-actions button{
@@ -230,7 +231,7 @@
     border:1px solid var(--line);border-radius:10px;padding:0;overflow:hidden;
     min-height:160px; background:#0a0a0b; margin-top:12px;
   }
-  .header-preview img{width:100%;max-height:280px;object-fit:cover;display:block;}
+  .header-preview img, .header-preview video{width:100%;max-height:280px;object-fit:cover;display:block;}
 
   .toast{
     position:fixed; bottom:24px; right:24px; z-index:300;
@@ -256,7 +257,7 @@
     min-height:90px; max-height:220px; display:flex; align-items:center; justify-content:center;
     overflow:hidden; background:#0a0a0b; padding:6px;
   }
-  #imgInsertPreview img{max-width:100%; max-height:210px; width:auto; height:auto; object-fit:contain; border-radius:6px;}
+  #imgInsertPreview img, #imgInsertPreview video{max-width:100%; max-height:210px; width:auto; height:auto; object-fit:contain; border-radius:6px;}
   #imgInsertPreview span{color:var(--muted);font-size:12px;}
 </style>
 </head>
@@ -337,26 +338,26 @@
 <!-- ============== INSERT IMAGE MODAL ============== -->
 <div class="modal-overlay" id="imageModal">
   <div class="modal-box">
-    <h3>Sisipkan Gambar <span class="modal-close" onclick="closeImageModal()">✕</span></h3>
+    <h3>Sisipkan Gambar/GIF/Video <span class="modal-close" onclick="closeImageModal()">✕</span></h3>
 
     <div class="thumb-tabs">
-      <button type="button" class="active" id="imgTabLinkBtn" onclick="switchImageMode('link')">Link Gambar</button>
+      <button type="button" class="active" id="imgTabLinkBtn" onclick="switchImageMode('link')">Link Gambar/Video</button>
       <button type="button" id="imgTabUploadBtn" onclick="switchImageMode('upload')">Upload dari Storage</button>
     </div>
     <div class="thumb-pane active" id="imgPaneLink">
       <div class="field" style="margin-bottom:0;">
-        <input type="text" id="imgUrlInput" placeholder="https://contoh.com/gambar.jpg" oninput="previewInsertImage('link')">
+        <input type="text" id="imgUrlInput" placeholder="https://contoh.com/gambar.jpg atau .gif / .mp4" oninput="previewInsertImage('link')">
       </div>
     </div>
     <div class="thumb-pane" id="imgPaneUpload">
       <div class="field" style="margin-bottom:0;">
-        <input type="file" id="imgFileInput" accept="image/*" onchange="previewInsertImage('upload')">
+        <input type="file" id="imgFileInput" accept="image/*,video/*" onchange="previewInsertImage('upload')">
       </div>
     </div>
-    <div id="imgInsertPreview"><span>Belum ada gambar dipilih</span></div>
+    <div id="imgInsertPreview"><span>Belum ada gambar/video dipilih</span></div>
 
     <div class="field" style="margin-top:14px;">
-      <label>Teks Alt (opsional)</label>
+      <label>Teks Alt (opsional, hanya berlaku untuk gambar)</label>
       <input type="text" id="imgAltInput" placeholder="Deskripsi singkat gambar">
     </div>
     <div class="field">
@@ -442,18 +443,18 @@
         </div>
 
         <div class="field">
-          <label>Thumbnail Artikel</label>
+          <label>Thumbnail Artikel (Gambar / GIF / Video)</label>
           <div class="thumb-tabs">
-            <button type="button" class="active" id="tabLinkBtn" onclick="switchThumbMode('link')">Link Gambar (Media)</button>
+            <button type="button" class="active" id="tabLinkBtn" onclick="switchThumbMode('link')">Link Gambar/Video (Media)</button>
             <button type="button" id="tabUploadBtn" onclick="switchThumbMode('upload')">Upload dari Storage</button>
           </div>
           <div class="thumb-pane active" id="thumbPaneLink">
-            <input type="text" id="fThumbLink" placeholder="https://contoh.com/gambar-thumbnail.jpg" oninput="previewThumb('link')">
+            <input type="text" id="fThumbLink" placeholder="https://contoh.com/gambar-thumbnail.jpg / .gif / .mp4" oninput="previewThumb('link')">
           </div>
           <div class="thumb-pane" id="thumbPaneUpload">
-            <input type="file" id="fThumbFile" accept="image/*" onchange="previewThumb('upload')">
+            <input type="file" id="fThumbFile" accept="image/*,video/*" onchange="previewThumb('upload')">
           </div>
-          <div class="thumb-preview" id="thumbPreview"><span>Belum ada gambar dipilih</span></div>
+          <div class="thumb-preview" id="thumbPreview"><span>Belum ada gambar/video dipilih</span></div>
         </div>
 
         <div class="field">
@@ -470,7 +471,7 @@
             <button type="button" title="Numbered List" onclick="exec('insertOrderedList')">1≡</button>
             <div class="divider"></div>
             <button type="button" title="Insert/Edit Link" onclick="openLinkModal()">🔗</button>
-            <button type="button" title="Sisipkan Gambar" onclick="openImageModal()">🖼️</button>
+            <button type="button" title="Sisipkan Gambar/GIF/Video" onclick="openImageModal()">🖼️</button>
           </div>
           <div id="editor" contenteditable="true" data-placeholder="Mulai tulis isi berita di sini..."></div>
         </div>
@@ -486,19 +487,19 @@
     <section id="tab-header" style="display:none;">
       <div class="panel">
         <h2>Pengaturan Header Berita</h2>
-        <p class="hint">Atur gambar header dan latar belakang khusus (custom HTML/CSS) untuk halaman berita.</p>
+        <p class="hint">Atur gambar/GIF/video header dan latar belakang khusus (custom HTML/CSS) untuk halaman berita.</p>
 
         <div class="thumb-tabs">
-          <button type="button" class="active" id="hTabLinkBtn" onclick="switchHeaderMode('link')">Link Gambar</button>
+          <button type="button" class="active" id="hTabLinkBtn" onclick="switchHeaderMode('link')">Link Gambar/Video</button>
           <button type="button" id="hTabUploadBtn" onclick="switchHeaderMode('upload')">Upload dari Storage</button>
         </div>
         <div class="thumb-pane active" id="headerPaneLink">
-          <input type="text" id="hLink" placeholder="https://contoh.com/header-berita.jpg" oninput="previewHeader('link')">
+          <input type="text" id="hLink" placeholder="https://contoh.com/header-berita.jpg / .gif / .mp4" oninput="previewHeader('link')">
         </div>
         <div class="thumb-pane" id="headerPaneUpload">
-          <input type="file" id="hFile" accept="image/*" onchange="previewHeader('upload')">
+          <input type="file" id="hFile" accept="image/*,video/*" onchange="previewHeader('upload')">
         </div>
-        <div class="header-preview" id="headerPreview"><span style="display:block;text-align:center;padding:60px 0;color:var(--muted);">Belum ada gambar header</span></div>
+        <div class="header-preview" id="headerPreview"><span style="display:block;text-align:center;padding:60px 0;color:var(--muted);">Belum ada gambar/video header</span></div>
 
         <div class="field" style="margin-top:18px;">
           <label>Link Tombol "Lihat Jadwal" (banner beranda)</label>
@@ -539,6 +540,24 @@
 <div class="toast" id="toast"></div>
 
 <script>
+/* =====================================================
+   MEDIA HELPERS (gambar / gif / video)
+===================================================== */
+function isVideoSrc(src, mimeType){
+  if(mimeType && mimeType.startsWith('video/')) return true;
+  if(!src) return false;
+  if(src.startsWith('data:video/')) return true;
+  return /\.(mp4|webm|ogg|ogv|mov|m4v)(\?.*)?$/i.test(src);
+}
+function renderMediaTag(src, mimeType, extraAttrs, extraStyle){
+  if(!src) return '';
+  const style = extraStyle || '';
+  if(isVideoSrc(src, mimeType)){
+    return `<video src="${src}" ${extraAttrs||'controls muted loop playsinline'} style="${style}"></video>`;
+  }
+  return `<img src="${src}" ${extraAttrs||''} style="${style}">`;
+}
+
 /* =====================================================
    AUTH / LOGIN  (backend asli via /api/login & /api/reset-password)
 ===================================================== */
@@ -769,9 +788,10 @@ function insertLink(){
 }
 
 /* =====================================================
-   INSERT IMAGE (di dalam isi artikel)
+   INSERT IMAGE / GIF / VIDEO (di dalam isi artikel)
 ===================================================== */
 let currentInsertImageUrl = '';
+let currentInsertImageMime = '';
 
 function openImageModal(){
   saveCurrentSelection();
@@ -779,8 +799,9 @@ function openImageModal(){
   document.getElementById('imgFileInput').value = '';
   document.getElementById('imgAltInput').value = '';
   document.getElementById('imgLinkInput').value = '';
-  document.getElementById('imgInsertPreview').innerHTML = '<span>Belum ada gambar dipilih</span>';
+  document.getElementById('imgInsertPreview').innerHTML = '<span>Belum ada gambar/video dipilih</span>';
   currentInsertImageUrl = '';
+  currentInsertImageMime = '';
   switchImageMode('link');
   document.getElementById('imageModal').classList.add('show');
 }
@@ -800,16 +821,18 @@ function previewInsertImage(mode){
   const box = document.getElementById('imgInsertPreview');
   if(mode === 'link'){
     const url = document.getElementById('imgUrlInput').value.trim();
-    if(!url){ box.innerHTML = '<span>Belum ada gambar dipilih</span>'; currentInsertImageUrl=''; return; }
+    if(!url){ box.innerHTML = '<span>Belum ada gambar/video dipilih</span>'; currentInsertImageUrl=''; currentInsertImageMime=''; return; }
     currentInsertImageUrl = url;
-    box.innerHTML = `<img src="${url}" alt="preview">`;
+    currentInsertImageMime = '';
+    box.innerHTML = isVideoSrc(url) ? `<video src="${url}" controls muted loop playsinline></video>` : `<img src="${url}" alt="preview">`;
   } else {
     const file = document.getElementById('imgFileInput').files[0];
     if(!file) return;
+    currentInsertImageMime = file.type || '';
     const reader = new FileReader();
     reader.onload = e => {
       currentInsertImageUrl = e.target.result;
-      box.innerHTML = `<img src="${e.target.result}" alt="preview">`;
+      box.innerHTML = isVideoSrc(currentInsertImageUrl, currentInsertImageMime) ? `<video src="${e.target.result}" controls muted loop playsinline></video>` : `<img src="${e.target.result}" alt="preview">`;
     };
     reader.readAsDataURL(file);
   }
@@ -817,26 +840,35 @@ function previewInsertImage(mode){
 
 async function insertImageIntoEditor(){
   if(!currentInsertImageUrl){
-    showToast('Pilih gambar terlebih dahulu.');
+    showToast('Pilih gambar/video terlebih dahulu.');
     return;
   }
   const alt = document.getElementById('imgAltInput').value.trim();
   const linkUrl = document.getElementById('imgLinkInput').value.trim();
+  const isVideo = isVideoSrc(currentInsertImageUrl, currentInsertImageMime);
 
   try{
-    const finalUrl = await uploadIfNeeded(currentInsertImageUrl, 'artikel-img-' + Date.now() + '.jpg');
+    const finalUrl = await uploadIfNeeded(currentInsertImageUrl, 'artikel-media-' + Date.now() + (isVideo ? '.mp4' : '.jpg'));
 
-    const img = document.createElement('img');
-    img.setAttribute('src', finalUrl);
-    if(alt) img.setAttribute('alt', alt);
+    let mediaEl;
+    if(isVideo){
+      mediaEl = document.createElement('video');
+      mediaEl.setAttribute('src', finalUrl);
+      mediaEl.setAttribute('controls', '');
+      mediaEl.setAttribute('playsinline', '');
+    } else {
+      mediaEl = document.createElement('img');
+      mediaEl.setAttribute('src', finalUrl);
+      if(alt) mediaEl.setAttribute('alt', alt);
+    }
 
-    let nodeToInsert = img;
-    if(linkUrl){
+    let nodeToInsert = mediaEl;
+    if(linkUrl && !isVideo){
       const a = document.createElement('a');
       a.setAttribute('href', linkUrl);
       a.setAttribute('target', '_blank');
       a.setAttribute('rel', 'noopener noreferrer');
-      a.appendChild(img);
+      a.appendChild(mediaEl);
       nodeToInsert = a;
     }
 
@@ -846,7 +878,7 @@ async function insertImageIntoEditor(){
     range.deleteContents();
     range.insertNode(nodeToInsert);
 
-    // move caret after inserted node + add a line break so typing continues below the image
+    // move caret after inserted node + add a line break so typing continues below the media
     const br = document.createElement('br');
     nodeToInsert.after(br);
     const r2 = document.createRange();
@@ -856,14 +888,14 @@ async function insertImageIntoEditor(){
     sel.addRange(r2);
 
     closeImageModal();
-    showToast('Gambar berhasil disisipkan.');
+    showToast(isVideo ? 'Video berhasil disisipkan.' : 'Gambar berhasil disisipkan.');
   }catch(e){
-    showToast('Gagal menyisipkan gambar: ' + e.message);
+    showToast('Gagal menyisipkan media: ' + e.message);
   }
 }
 
 /* =====================================================
-   THUMBNAIL (artikel)
+   THUMBNAIL (artikel) - gambar / gif / video
 ===================================================== */
 function switchThumbMode(mode){
   document.getElementById('tabLinkBtn').classList.toggle('active', mode==='link');
@@ -873,27 +905,30 @@ function switchThumbMode(mode){
 }
 
 let currentThumbDataUrl = '';
+let currentThumbMime = '';
 function previewThumb(mode){
   const box = document.getElementById('thumbPreview');
   if(mode === 'link'){
     const url = document.getElementById('fThumbLink').value.trim();
-    if(!url){ box.innerHTML = '<span>Belum ada gambar dipilih</span>'; currentThumbDataUrl=''; return; }
+    if(!url){ box.innerHTML = '<span>Belum ada gambar/video dipilih</span>'; currentThumbDataUrl=''; currentThumbMime=''; return; }
     currentThumbDataUrl = url;
-    box.innerHTML = `<img src="${url}" alt="thumbnail">`;
+    currentThumbMime = '';
+    box.innerHTML = isVideoSrc(url) ? `<video src="${url}" controls muted loop playsinline></video>` : `<img src="${url}" alt="thumbnail">`;
   } else {
     const file = document.getElementById('fThumbFile').files[0];
     if(!file){ return; }
+    currentThumbMime = file.type || '';
     const reader = new FileReader();
     reader.onload = e => {
       currentThumbDataUrl = e.target.result;
-      box.innerHTML = `<img src="${e.target.result}" alt="thumbnail">`;
+      box.innerHTML = isVideoSrc(currentThumbDataUrl, currentThumbMime) ? `<video src="${e.target.result}" controls muted loop playsinline></video>` : `<img src="${e.target.result}" alt="thumbnail">`;
     };
     reader.readAsDataURL(file);
   }
 }
 
 /* =====================================================
-   HEADER SETTINGS
+   HEADER SETTINGS - gambar / gif / video
 ===================================================== */
 function switchHeaderMode(mode){
   document.getElementById('hTabLinkBtn').classList.toggle('active', mode==='link');
@@ -903,20 +938,23 @@ function switchHeaderMode(mode){
 }
 
 let currentHeaderDataUrl = '';
+let currentHeaderMime = '';
 function previewHeader(mode){
   const box = document.getElementById('headerPreview');
   if(mode === 'link'){
     const url = document.getElementById('hLink').value.trim();
     if(!url) return;
     currentHeaderDataUrl = url;
-    box.innerHTML = `<img src="${url}" alt="header">`;
+    currentHeaderMime = '';
+    box.innerHTML = isVideoSrc(url) ? `<video src="${url}" controls muted loop playsinline></video>` : `<img src="${url}" alt="header">`;
   } else {
     const file = document.getElementById('hFile').files[0];
     if(!file) return;
+    currentHeaderMime = file.type || '';
     const reader = new FileReader();
     reader.onload = e => {
       currentHeaderDataUrl = e.target.result;
-      box.innerHTML = `<img src="${e.target.result}" alt="header">`;
+      box.innerHTML = isVideoSrc(currentHeaderDataUrl, currentHeaderMime) ? `<video src="${e.target.result}" controls muted loop playsinline></video>` : `<img src="${e.target.result}" alt="header">`;
     };
     reader.readAsDataURL(file);
   }
@@ -932,10 +970,10 @@ async function uploadIfNeeded(value, filenameHint){
     const resp = await fetch('/api/upload', {
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+getToken()},
-      body: JSON.stringify({ filename: filenameHint || ('image-'+Date.now()+'.jpg'), dataBase64: base64, contentType })
+      body: JSON.stringify({ filename: filenameHint || ('media-'+Date.now()), dataBase64: base64, contentType })
     });
     const json = await resp.json();
-    if(!resp.ok) throw new Error(json.error || 'Upload gambar gagal');
+    if(!resp.ok) throw new Error(json.error || 'Upload media gagal');
     return json.url;
   }
   return value; // sudah berupa URL biasa
@@ -943,7 +981,7 @@ async function uploadIfNeeded(value, filenameHint){
 
 async function saveHeaderSettings(){
   try{
-    const headerUrl = await uploadIfNeeded(currentHeaderDataUrl, 'header-berita.jpg');
+    const headerUrl = await uploadIfNeeded(currentHeaderDataUrl, isVideoSrc(currentHeaderDataUrl, currentHeaderMime) ? 'header-berita.mp4' : 'header-berita.jpg');
     const resp = await fetch('/api/settings', {
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+getToken()},
@@ -969,7 +1007,7 @@ async function loadHeaderSettings(){
     if(!resp.ok) return;
     if(data.header_image){
       currentHeaderDataUrl = data.header_image;
-      document.getElementById('headerPreview').innerHTML = `<img src="${data.header_image}" alt="header">`;
+      document.getElementById('headerPreview').innerHTML = isVideoSrc(data.header_image) ? `<video src="${data.header_image}" controls muted loop playsinline></video>` : `<img src="${data.header_image}" alt="header">`;
       document.getElementById('hLink').value = data.header_image;
     }
     if(data.banner_link){
@@ -1014,7 +1052,7 @@ async function saveArticle(){
   if(!slug) slug = slugify(judul);
 
   try{
-    const thumbUrl = await uploadIfNeeded(currentThumbDataUrl, slug + '-thumb.jpg');
+    const thumbUrl = await uploadIfNeeded(currentThumbDataUrl, isVideoSrc(currentThumbDataUrl, currentThumbMime) ? (slug + '-thumb.mp4') : (slug + '-thumb.jpg'));
     const resp = await fetch('/api/articles', {
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+getToken()},
@@ -1043,8 +1081,9 @@ function clearForm(){
   document.getElementById('fTanggal').value = '2026-07-06';
   document.getElementById('fThumbLink').value = '';
   document.getElementById('fThumbFile').value = '';
-  document.getElementById('thumbPreview').innerHTML = '<span>Belum ada gambar dipilih</span>';
+  document.getElementById('thumbPreview').innerHTML = '<span>Belum ada gambar/video dipilih</span>';
   currentThumbDataUrl = '';
+  currentThumbMime = '';
   editor.innerHTML = '';
   slugAuto = true;
   editingSlug = null;
@@ -1067,9 +1106,12 @@ async function renderArticleList(){
         : (a.kategori ? String(a.kategori).split(',').map(s => s.trim()).filter(Boolean) : []);
       const kategoriPills = kategoriArr.map(k => `<span class="pill">${escapeHtml(k)}</span>`).join('') || '—';
       const highlightBadge = a.is_highlight ? '<span class="pill pill-highlight">HIGHLIGHT</span>' : '';
+      const thumbCell = a.thumbnail
+        ? (isVideoSrc(a.thumbnail) ? `<video class="mini" src="${a.thumbnail}" muted></video>` : `<img class="mini" src="${a.thumbnail}">`)
+        : '—';
       return `
       <tr>
-        <td>${a.thumbnail ? `<img class="mini" src="${a.thumbnail}">` : '—'}</td>
+        <td>${thumbCell}</td>
         <td>${escapeHtml(a.judul)}</td>
         <td>${kategoriPills}${highlightBadge}</td>
         <td>${a.tanggal ? String(a.tanggal).slice(0,10) : '-'}</td>
@@ -1097,7 +1139,10 @@ function editArticle(slug){
   document.getElementById('fHighlight').checked = !!a.is_highlight;
   document.getElementById('fTanggal').value = a.tanggal ? String(a.tanggal).slice(0,10) : '';
   currentThumbDataUrl = a.thumbnail || '';
-  document.getElementById('thumbPreview').innerHTML = a.thumbnail ? `<img src="${a.thumbnail}">` : '<span>Belum ada gambar dipilih</span>';
+  currentThumbMime = '';
+  document.getElementById('thumbPreview').innerHTML = a.thumbnail
+    ? (isVideoSrc(a.thumbnail) ? `<video src="${a.thumbnail}" controls muted loop playsinline></video>` : `<img src="${a.thumbnail}">`)
+    : '<span>Belum ada gambar/video dipilih</span>';
   editor.innerHTML = a.konten || '';
   slugAuto = false;
   switchTab('write');
