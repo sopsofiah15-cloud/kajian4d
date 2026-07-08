@@ -63,13 +63,16 @@
   .brand-stack{ display:flex; flex-direction:column; }
   .brand-tagline{ font-size:10.5px; color:var(--text-faint); letter-spacing:0.6px; margin-top:2px; }
 
- .header-banner{
-  position:relative;
-  flex:1; max-width:640px; width:100%;
-  aspect-ratio: 1280 / 168;   /* rasio asli file bannermu */
+  .header-banner{
+  position:relative;      /* WAJIB - ini kuncinya */
+  overflow:hidden;        /* WAJIB - agar gambar tidak keluar dari box */
+  flex:1;
+  min-width:0;             /* penting! cegah flex item melebar tak terkendali */
+  max-width:640px;
+  width:100%;
+  aspect-ratio: 1280 / 168;
   height:auto;
   border-radius:8px;
-  overflow:hidden;
   display:flex;
   align-items:center;
   justify-content:flex-end;
@@ -78,11 +81,16 @@
   border:1px solid var(--card-border);
   background: linear-gradient(135deg, var(--blue-navy), var(--bg-carbon-2));
 }
+
 .header-banner img.banner-img{
-  position:absolute; inset:0; width:100%; height:100%;
-  object-fit:contain;   /* diganti dari cover -> contain agar teks tidak terpotong */
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
   object-position:center;
-  z-index:1; pointer-events:none;
+  z-index:1;
+  pointer-events:none;
 }
   .header-banner .banner-fallback-text{ position:relative; z-index:2; pointer-events:none; }
   .header-banner .cta-btn{
