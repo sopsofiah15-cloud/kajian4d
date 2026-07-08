@@ -42,25 +42,32 @@
     border-bottom: 1px solid rgba(58,143,217,0.15);
     background: linear-gradient(180deg, rgba(18,58,99,0.15), transparent);
   }
-  .header-top{
-    padding:18px 0 14px;
-    gap:14px;
+  
+    display:flex;
+    align-items:center;              /* ← SEJAJARKAN VERTIKAL (PENTING!) */
+    justify-content:space-between;
+    padding:20px 0 16px;
+    gap:20px;
   }
-  .brand{
-    width:100%;
-    justify-content:flex-start;
+  .brand{ 
+    display:flex; 
+    align-items:center; 
+    gap:14px; 
+    flex-shrink:0;
+    height:60px;                     /* ← TINGGI FIX: 60px */
   }
-  .header-banner{
-    width:100%;
-    margin-top:2px;
-  }
-
-  .brand{ display:flex; align-items:center; gap:14px; flex-shrink:0; }
   .brand-logo{
-    width:52px; height:52px; border-radius:10px;
+    width:54px; 
+    height:54px; 
+    border-radius:12px;
     background: linear-gradient(135deg, var(--blue-deep), var(--bg-carbon-2));
     border:1px solid var(--card-border);
-    display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0;
+    display:flex; 
+    align-items:center; 
+    justify-content:center; 
+    overflow:hidden; 
+    flex-shrink:0;
+    box-shadow:0 4px 12px rgba(58,143,217,0.15);  /* ← Efek bayangan */
   }
   .brand-logo img{ width:100%; height:100%; object-fit:contain; }
   .brand-name{ display:flex; align-items:baseline; gap:6px; font-family: var(--font-display); }
@@ -69,76 +76,73 @@
   .brand-name .badge-4d .num4{ font-size:26px; font-weight:800; color:var(--blue-accent); line-height:1; }
   .brand-name .badge-4d .letd{ font-size:16px; font-weight:700; color:var(--blue-accent); }
   .brand-name .txt-news{ font-size:22px; font-weight:700; letter-spacing:0.3px; color:var(--blue-accent); }
-  .brand-stack{ display:flex; flex-direction:column; }
+  .brand-stack{ display:flex; flex-direction:column; justify-content:center; }  /* ← Center vertikal */
   .brand-tagline{ font-size:10.5px; color:var(--text-faint); letter-spacing:0.6px; margin-top:2px; }
 
   .header-banner{
-  position:relative;      /* WAJIB - ini kuncinya */
-  overflow:hidden;        /* WAJIB - agar gambar tidak keluar dari box */
-  flex:1;
-  min-width:0;             /* penting! cegah flex item melebar tak terkendali */
-  max-width:640px;
-  width:100%;
-  aspect-ratio: 1280 / 168;
-  height:auto;
-  border-radius:8px;
-  display:flex;
-  align-items:center;
-  justify-content:flex-end;
-  gap:10px;
-  padding:0 16px;
-  border:1px solid var(--card-border);
-  background: linear-gradient(135deg, var(--blue-navy), var(--bg-carbon-2));
-}
-
-.header-banner img.banner-img{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:contain;
-  object-position:center;
-  z-index:1;
-  pointer-events:none;
-}
-  .header-banner .banner-fallback-text{ position:relative; z-index:2; pointer-events:none; }
-  .header-banner .cta-btn{
-    position:relative; z-index:3;
-    background:var(--blue-accent); color:#fff; padding:8px 16px; border-radius:6px;
-    font-size:12px; font-weight:600; letter-spacing:0.3px; flex-shrink:0;
-    cursor:pointer; transition:filter .15s;
-  }
-  .header-banner .cta-btn:hover{ filter:brightness(1.1); }
-  @media(max-width:640px){
-  .header-top{
-    display:flex;
-    flex-wrap:nowrap;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    padding:22px 14px 12px; /* angka pertama dinaikkan supaya tidak mepet atas */
-  }
-  .brand{
-    width:auto;
-    flex-shrink:0;
-  }
-  .header-banner{
-    width:auto;
+    position:relative;
+    overflow:hidden;
     flex:1;
-    min-width:0;
-    margin-top:0;
-    aspect-ratio:auto;
-    height:38px;
-    padding:0 10px;
+    min-width:200px;
+    max-width:700px;
+    width:100%;
+    height:60px !important;           /* ← TINGGI SAMA DENGAN LOGO: 60px */
+    aspect-ratio:auto !important;     /* ← MATIIN ASPECT RATIO BIAR FIX */
+    border-radius:10px;
+    display:flex;
+    align-items:center;               /* ← CENTER VERTIKAL (SEJAJAR DENGAN LOGO) */
+    justify-content:space-between;
+    gap:12px;
+    padding:0 20px;
+    border:1px solid var(--card-border);
+    background: linear-gradient(135deg, var(--blue-navy) 0%, #0f2d4d 50%, var(--bg-carbon-2) 100%);
+    box-shadow:0 4px 16px rgba(13,42,74,0.3);
+    transition:transform 0.2s, box-shadow 0.2s;
   }
-  .header-banner .banner-fallback-text{
-    display:none; /* teks banner disembunyikan di layar sempit, sisakan tombol CTA saja */
+  .header-banner:hover{
+    transform:translateY(-1px);
+    box-shadow:0 6px 20px rgba(58,143,217,0.25);
+  }
+  .header-banner img.banner-img{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center;
+    z-index:1;
+    pointer-events:none;
+  }
+  .header-banner .banner-fallback-text{ 
+    position:relative; 
+    z-index:2; 
+    pointer-events:none;
+    font-size:13px;
+    font-weight:500;
+    color:var(--blue-bright);
+    letter-spacing:0.3px;
   }
   .header-banner .cta-btn{
-    padding:6px 10px;
-    font-size:10px;
+    position:relative; 
+    z-index:3;
+    background:linear-gradient(135deg, var(--blue-accent), var(--blue-bright)); 
+    color:#fff; 
+    padding:10px 22px; 
+    border-radius:8px;
+    font-size:13px; 
+    font-weight:700; 
+    letter-spacing:0.5px; 
+    flex-shrink:0;
+    cursor:pointer; 
+    transition:all .2s;
+    box-shadow:0 3px 10px rgba(58,143,217,0.3);
+    text-transform:uppercase;
   }
-}
+  .header-banner .cta-btn:hover{ 
+    transform:translateY(-1px);
+    box-shadow:0 5px 15px rgba(58,143,217,0.45);
+    filter:brightness(1.1); 
+  }
 
   nav.categories{ 
     padding:16px 0; 
