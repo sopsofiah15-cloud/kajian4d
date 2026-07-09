@@ -133,7 +133,7 @@
     text-align:center;
   }
 
-  /* ============ KATEGORI (DESKTOP) ============ */
+  /* ============ KATEGORI + RUNNING TEXT ============ */
   nav.categories{
     padding:14px 0;
     background:rgba(13,42,74,0.08);
@@ -153,59 +153,6 @@
   }
   nav.categories ul::-webkit-scrollbar{ display:none; }
   nav.categories li{ flex-shrink:0; }
-    nav.categories ul::-webkit-scrollbar{ display:none; }
-  nav.categories li{ flex-shrink:0; }
-
-    /* ============ RUNNING TEXT ============ */
-  .categories-row{
-    display:flex;
-    align-items:center;
-    gap:16px;
-    width:100%;
-  }
-  .categories-row ul{ flex:0 0 auto; }
-
-  .running-text-box{
-    flex:1 1 260px;
-    min-width:180px;
-    height:34px;
-    border-radius:8px;
-    overflow:hidden;
-    position:relative;
-    background: rgba(13,42,74,0.25);
-    border:1px solid rgba(95,179,255,0.5);
-    box-shadow: 0 0 8px rgba(95,179,255,0.25);
-    display:flex;
-    align-items:center;
-  }
-  .running-text-track{
-    display:flex;
-    flex-shrink:0;
-    white-space:nowrap;
-    font-size:12.5px;
-    font-weight:600;
-    color: var(--blue-bright);
-    letter-spacing:0.3px;
-    animation: runningTextMove 30s linear infinite; /* 30s agar tidak terlalu cepat karena teksnya panjang */
-  }
-
-  /* Memberi jarak antara teks pertama dan teks kedua saat berulang */
-  .running-text-track span{
-    padding-right: 50px; 
-  }
-
-  /* Animasi bergeser tepar sejauh -50% (separuh dari total lebar 2 teks) */
-  @keyframes runningTextMove{
-    0%   { transform: translateX(0%); }
-    100% { transform: translateX(-50%); }
-  }
-
-  /* biar di layar sempit tetap muncul, tidak hilang */
-  @media(max-width:640px){
-    .categories-row{ flex-wrap:wrap; }
-    .running-text-box{ flex:1 1 100%; order:2; }
-    .categories-row ul{ order:1; }
-  }
   nav.categories button{
     white-space:nowrap;
     display:inline-block;
@@ -233,6 +180,45 @@
     border-color:var(--blue-accent);
   }
 
+  .categories-row{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    width:100%;
+  }
+  .categories-row ul{ flex:0 1 auto; min-width:0; } /* min-width:0 agar scroll mobile tidak pecah */
+
+  .running-text-box{
+    flex:1 1 260px;
+    min-width:0; /* min-width:0 agar tidak mendorong layout mobile */
+    height:34px;
+    border-radius:8px;
+    overflow:hidden;
+    position:relative;
+    background: rgba(13,42,74,0.25);
+    border:1px solid rgba(95,179,255,0.5);
+    box-shadow: 0 0 8px rgba(95,179,255,0.25);
+    display:flex;
+    align-items:center;
+  }
+  .running-text-track{
+    display:flex;
+    flex-shrink:0;
+    white-space:nowrap;
+    font-size:12.5px;
+    font-weight:600;
+    color: var(--blue-bright);
+    letter-spacing:0.3px;
+    animation: runningTextMove 30s linear infinite;
+  }
+  .running-text-track span{
+    padding-right: 50px;
+  }
+  @keyframes runningTextMove{
+    0%   { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+  }
+
   .layout{ display:grid; grid-template-columns: 1fr 300px; gap:32px; padding:30px 0 60px; align-items:start; }
   @media(max-width:900px){ .layout{ grid-template-columns:1fr; } }
 
@@ -243,20 +229,6 @@
   }
   .section-label h2{ font-family:var(--font-display); font-size:18px; color:var(--text-main); font-weight:400; }
 
-  /* ================================================================
-     LOGIC UKURAN GAMBAR — SEMUA SLOT SOROTAN & JANGAN LEWATKAN
-     Supaya gambar SELALU pas mengisi kolom (tanpa area kosong / blur
-     filler) dipakai aspect-ratio tetap + object-fit:cover.
-     Rekomendasikan ukuran source gambar (agar tajam di retina & tidak
-     upscale pecah):
-       - hl-main (gambar besar kiri)   -> rasio 16:9  | upload 1200x675px (atau kelipatannya)
-       - hl-small (2 kolom kanan atas) -> rasio 16:9  | upload 700x394px
-       - dm-featured (Jangan Lewatkan) -> rasio 16:9  | upload 900x506px
-       - dm-thumb / an-thumb / arch-thumb -> rasio 4:3 | upload 400x300px
-     Kenapa 16:9 untuk hero slot: proporsi ini paling stabil dipakai
-     berita/olahraga dan tetap enak dilihat di mobile (tidak terlalu
-     tinggi) maupun desktop.
-  ================================================================ */
   .highlight-grid{ display:grid; grid-template-columns: 1.4fr 1fr; gap:16px; margin-bottom:44px; }
   @media(max-width:640px){ .highlight-grid{ grid-template-columns:1fr; } }
 
@@ -275,7 +247,6 @@
   .hl-small-stack{ display:flex; flex-direction:column; gap:16px; flex:1 1 auto; }
   .hl-small-stack .hl-small{ aspect-ratio:16/9; flex:1 1 0; }
 
-  /* track = lapisan yang benar-benar digeser (translateX) berisi N slide berjejer */
   .slide-viewport{ position:absolute; inset:0; overflow:hidden; border-radius:10px; }
   .slide-track{ display:flex; height:100%; width:100%; will-change:transform; }
   .slide-track.animate{ transition:transform .6s cubic-bezier(.4,0,.2,1); }
@@ -306,7 +277,6 @@
   .views{ display:flex; align-items:center; gap:4px; color:var(--blue-bright); }
   .views svg{ width:11px; height:11px; }
 
-  /* ---- panah navigasi manual ---- */
   .slide-arrow{
     position:absolute; top:50%; transform:translateY(-50%); z-index:4;
     width:30px; height:30px; border-radius:50%;
@@ -321,7 +291,6 @@
   .hl-small .slide-arrow.prev{ left:6px; }
   .hl-small .slide-arrow.next{ right:6px; }
 
-  /* ---- dots indikator ---- */
   .slide-dots{
     position:absolute; bottom:8px; left:50%; transform:translateX(-50%); z-index:4;
     display:flex; gap:5px;
@@ -335,7 +304,6 @@
   @media(max-width:640px){ .dontmiss{ grid-template-columns:1fr; } }
   .dm-list{ display:flex; flex-direction:column; gap:16px; }
   .dm-item{ display:flex; gap:12px; align-items:flex-start; padding-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.06); transition:opacity .4s ease; }
-  /* disamakan ke 16:9 supaya satu sistem ukuran dengan hl-main / hl-small / dm-featured */
   .dm-thumb{ width:104px; aspect-ratio:16/9; height:auto; border-radius:6px; overflow:hidden; flex-shrink:0; border:1px solid var(--card-border); background:var(--card-bg); }
   .dm-thumb img{ width:100%; height:100%; object-fit:cover; }
   .dm-item h4{ font-size:12.5px; font-weight:600; line-height:1.35; margin-bottom:5px; color:var(--text-main); }
@@ -366,7 +334,6 @@
   .arch-item h5{ font-size:12.5px; font-weight:500; line-height:1.3; color:var(--text-dim); }
   .arch-item:hover h5{ color:var(--blue-bright); }
 
-  /* ============ SEMUA BERITA + PAGINATION ============ */
   .allnews-section{ padding:6px 0 40px; }
   .all-news-grid{
     display:grid;
@@ -398,17 +365,11 @@
   .pg-btn:disabled{ opacity:.4; cursor:not-allowed; }
   .pg-num{ min-width:38px; text-align:center; }
 
-  /* ================================================================
-     TEKSTUR SERAT CARBON + KILAT — dipakai bersama oleh header,
-     sidebar (Arsip Berita), dan footer supaya latar belakangnya
-     seragam di seluruh halaman.
-  ================================================================ */
   .carbon-texture{
     position:relative;
     overflow:hidden;
     background-color: var(--bg-carbon);
     background-image:
-      /* kilat / shine bergerak */
       linear-gradient(115deg,
         transparent 0%,
         transparent 38%,
@@ -417,7 +378,6 @@
         rgba(95,179,255,0.10) 54%,
         transparent 62%,
         transparent 100%),
-      /* anyaman serat carbon - arah 1 */
       repeating-linear-gradient(45deg,
         rgba(255,255,255,0.045) 0px,
         rgba(255,255,255,0.045) 2px,
@@ -427,7 +387,6 @@
         rgba(255,255,255,0.02) 6px,
         rgba(0,0,0,0.3) 6px,
         rgba(0,0,0,0.3) 8px),
-      /* anyaman serat carbon - arah 2 (silang) */
       repeating-linear-gradient(-45deg,
         rgba(255,255,255,0.035) 0px,
         rgba(255,255,255,0.035) 2px,
@@ -437,7 +396,6 @@
         rgba(255,255,255,0.015) 6px,
         rgba(0,0,0,0.28) 6px,
         rgba(0,0,0,0.28) 8px),
-      /* warna brand menyatu di atas anyaman */
       radial-gradient(circle at 15% 0%, rgba(58,143,217,0.18), transparent 45%),
       radial-gradient(circle at 85% 30%, rgba(95,179,255,0.13), transparent 50%),
       linear-gradient(180deg, rgba(13,42,74,0.45), var(--bg-carbon-2) 40%, var(--bg-carbon) 100%);
@@ -458,7 +416,6 @@
     50%  { background-position: 140% 60%, 0 0, 0 0, center, center, center; }
     100% { background-position: -40% -20%, 0 0, 0 0, center, center, center; }
   }
-  /* vignette halus supaya anyaman tidak terlalu ramai & konten tetap fokus */
   .carbon-texture::before{
     content:'';
     position:absolute; inset:0; pointer-events:none; z-index:0;
@@ -587,23 +544,32 @@
   }
 
   @media(max-width:640px){
-    nav.categories ul{
+    .categories-row{
+      flex-direction:column; /* Ubah jadi atas-bawah di mobile agar leluasa */
+      align-items:stretch;
+      gap:12px;
+    }
+    .categories-row ul{
+      width:100%;
+      flex:1 1 auto;
       display:flex;
       flex-wrap:nowrap;
       gap:8px;
       overflow-x:auto;
       -webkit-overflow-scrolling:touch;
       scroll-snap-type:x proximity;
-      padding-bottom:2px;
+      padding-bottom:4px;
     }
-    nav.categories li{ flex:0 0 auto; scroll-snap-align:start; }
-    nav.categories button{
+    .categories-row li{ flex:0 0 auto; scroll-snap-align:start; }
+    .categories-row button{
       width:auto;
       padding:8px 16px;
       font-size:12px;
       white-space:nowrap;
-      overflow:visible;
-      text-overflow:unset;
+    }
+    .running-text-box{
+      width:100%;
+      flex:1 1 auto;
     }
   }
 
@@ -617,7 +583,6 @@
 </style>
 </head>
 <body>
-
 <header class="site carbon-texture">
   <div class="wrap header-top">
     <a class="brand" href="/">
@@ -639,18 +604,17 @@
       <span class="banner-fallback-text" id="headerBannerFallback">Cek Berita &amp; Skor Real-Time</span>
     </a>
   </div>
- <nav class="wrap categories">
-  <div class="categories-row">
-    <ul id="categoryTabs"></ul>
-    <div class="running-text-box">
-      <div class="running-text-track" id="runningTextTrack">
-        <!-- Kita gandakan teksnya di dalam 2 span yang sama persak -->
-        <span>🔴 LIVE UPDATE - KAJIAN 4D NEWS &nbsp;|&nbsp; Portal Berita Update 2026 &nbsp;|&nbsp; Menyajikan Informasi Terkini Seputar Piala Dunia 2026, Sepak Bola Internasional, Teknologi, Bisnis, Hiburan, dan Berita Dunia. &nbsp;|&nbsp; Cepat • Akurat • Terpercaya • Update Setiap Hari &nbsp;&nbsp;&nbsp;</span>
-        <span>🔴 LIVE UPDATE - KAJIAN 4D NEWS &nbsp;|&nbsp; Portal Berita Update 2026 &nbsp;|&nbsp; Menyajikan Informasi Terkini Seputar Piala Dunia 2026, Sepak Bola Internasional, Teknologi, Bisnis, Hiburan, dan Berita Dunia. &nbsp;|&nbsp; Cepat • Akurat • Terpercaya • Update Setiap Hari &nbsp;&nbsp;&nbsp;</span>
+  <nav class="wrap categories">
+    <div class="categories-row">
+      <ul id="categoryTabs"></ul>
+      <div class="running-text-box">
+        <div class="running-text-track" id="runningTextTrack">
+          <span>🔴 LIVE UPDATE - KAJIAN 4D NEWS &nbsp;|&nbsp; Portal Berita Update 2026 &nbsp;|&nbsp; Menyajikan Informasi Terkini Seputar Piala Dunia 2026, Sepak Bola Internasional, Teknologi, Bisnis, Hiburan, dan Berita Dunia. &nbsp;|&nbsp; Cepat • Akurat • Terpercaya • Update Setiap Hari &nbsp;&nbsp;&nbsp;</span>
+          <span>🔴 LIVE UPDATE - KAJIAN 4D NEWS &nbsp;|&nbsp; Portal Berita Update 2026 &nbsp;|&nbsp; Menyajikan Informasi Terkini Seputar Piala Dunia 2026, Sepak Bola Internasional, Teknologi, Bisnis, Hiburan, dan Berita Dunia. &nbsp;|&nbsp; Cepat • Akurat • Terpercaya • Update Setiap Hari &nbsp;&nbsp;&nbsp;</span>
+        </div>
       </div>
     </div>
-  </div>
-</nav>
+  </nav>
 </header>
 
 <div class="wrap layout">
@@ -740,14 +704,10 @@
   const CATEGORIES = ['SEMUA', 'SEPAK BOLA', 'TEKNOLOGI', 'OLAHRAGA', 'HIBURAN', 'BISNIS', 'DUNIA', 'HIGHLIGHT'];
   const ITEMS_PER_PAGE = 6;
 
-  // ---- Kecepatan slide sesuai permintaan ----
-  const HL_MAIN_INTERVAL_MS   = 7000;   // gambar besar kiri (Sorotan) - ada panah manual
-  const HL_SMALL_INTERVAL_MS  = 7000;   // 2 kolom kecil kiri-bawah dari hl-main - ada panah manual
-  const DM_FEATURED_INTERVAL_MS = 7000; // Jangan Lewatkan - featured besar - ada panah manual
-  const DM_LIST_INTERVAL_MS   = 7000;   // Jangan Lewatkan - list kanan
-
-  // Kolom yang DIKOTAK BIRU pada referensi (hl-small-stack / 2 slot kanan atas
-  // gambar sorotan) -> TANPA panah, interval 10 detik
+  const HL_MAIN_INTERVAL_MS   = 7000;
+  const HL_SMALL_INTERVAL_MS  = 7000;
+  const DM_FEATURED_INTERVAL_MS = 7000;
+  const DM_LIST_INTERVAL_MS   = 7000;
   const HL_BOXED_INTERVAL_MS  = 10000;
 
   const EYE_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>';
@@ -757,7 +717,6 @@
   let currentPage = 1;
   let isDemoMode = false;
 
-  // simpan semua slider aktif supaya bisa di-destroy saat re-render (ganti kategori)
   let activeSliders = [];
 
   const DEMO_ARTICLES = [
@@ -880,13 +839,6 @@
     return allArticles.filter(a => katList(a).includes(currentCategory));
   }
 
-  /* ============================================================
-     GENERIC HERO SLIDER
-     Membuat satu slot (hl-main / hl-small / dm-featured) menjadi
-     slider horizontal berisi N artikel, dengan track yang benar-
-     benar digeser translateX (bukan fade/kedip).
-     opts: { withArrows: bool, intervalMs: number }
-  ============================================================ */
   function createHeroSlider(container, articles, opts){
     const { withArrows = true, intervalMs = 7000 } = opts || {};
     if(!articles.length) return null;
@@ -945,11 +897,9 @@
       if(nextBtn) nextBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); goTo(idx + 1); startAuto(); });
     }
 
-    // jeda auto-slide saat hover, lanjut lagi saat mouse keluar
     container.addEventListener('mouseenter', stopAuto);
     container.addEventListener('mouseleave', startAuto);
 
-    // dukungan swipe/drag manual di layar sentuh
     let touchStartX = null;
     container.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; stopAuto(); }, { passive:true });
     container.addEventListener('touchend', (e) => {
@@ -971,7 +921,6 @@
     activeSliders = [];
   }
 
-  // ============ SOROTAN — hl-main (panah, 7d) + hl-small-stack dikotak biru (tanpa panah, 10d) ============
   function renderHighlight(){
     const grid = document.getElementById('highlightGrid');
     const title = document.getElementById('highlightSectionTitle');
@@ -988,9 +937,6 @@
     const rest = pool.filter(a => !a.is_highlight);
     const ordered = [...highlighted, ...rest];
 
-    // hl-main pakai semua artikel (slider penuh, dengan panah)
-    // hl-small-stack (kotak biru di referensi) pakai artikel ke-2 & ke-3 dst,
-    // masing-masing slot juga slider mandiri berisi sisa artikel, tanpa panah
     const mainArticles = ordered;
     const smallTopArticles = ordered.length > 1 ? ordered.slice(1) : ordered;
     const smallBottomArticles = ordered.length > 2 ? [...ordered.slice(2), ordered[1]] : ordered;
@@ -1019,7 +965,6 @@
     activeSliders.push(mainSlider, topSlider, bottomSlider);
   }
 
-  // ============ JANGAN LEWATKAN — featured (panah, 7d) + list kanan (7d) ============
   function renderDontMiss(){
     const grid = document.getElementById('dontMissGrid');
     const pool = filteredByTab();
@@ -1036,8 +981,6 @@
     });
     activeSliders.push(featuredSlider);
 
-    // list kanan: tampilkan 3 kelompok berganti otomatis tiap DM_LIST_INTERVAL_MS,
-    // digeser (bukan fade) dengan translateY sederhana
     const listEl = document.getElementById('dmList');
     const groupSize = 3;
     const groups = [];
