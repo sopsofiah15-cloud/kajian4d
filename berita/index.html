@@ -84,12 +84,6 @@
   .brand-stack{ display:flex; flex-direction:column; justify-content:center; }
   .brand-tagline{ font-size:10.5px; color:var(--text-faint); letter-spacing:0.6px; margin-top:2px; }
 
-  /* Banner: seluruh elemen adalah <a> supaya klik di mana saja mengarah ke link
-     Ukuran gambar banner yang direkomendasikan:
-       Desktop : 640 x 60 px  (rasio ~10.5 : 1)
-       Retina  : 1280 x 120 px
-     object-fit:contain memastikan gambar TIDAK PERNAH terpotong walau di-zoom
-     in/out atau box banner melebar/menyempit mengikuti layar. */
   .header-banner{
     position:relative;
     overflow:hidden;
@@ -116,7 +110,6 @@
     transform:translateY(-1px);
     box-shadow:0 6px 20px rgba(58,143,217,0.25);
   }
-  /* object-fit:contain -> gambar TIDAK PERNAH terpotong, walau di-zoom in/out */
   .header-banner img.banner-img{
     position:absolute;
     inset:0;
@@ -141,7 +134,7 @@
     text-align:center;
   }
 
-  /* ============ KATEGORI (DESKTOP) — tombol diperkecil ============ */
+  /* ============ KATEGORI (DESKTOP) ============ */
   nav.categories{
     padding:14px 0;
     background:rgba(13,42,74,0.08);
@@ -198,59 +191,94 @@
   }
   .section-label h2{ font-family:var(--font-display); font-size:18px; color:var(--text-main); font-weight:400; }
 
+  /* ================================================================
+     LOGIC UKURAN GAMBAR — SEMUA SLOT SOROTAN & JANGAN LEWATKAN
+     Supaya gambar SELALU pas mengisi kolom (tanpa area kosong / blur
+     filler) dipakai aspect-ratio tetap + object-fit:cover.
+     Rekomendasikan ukuran source gambar (agar tajam di retina & tidak
+     upscale pecah):
+       - hl-main (gambar besar kiri)   -> rasio 16:9  | upload 1200x675px (atau kelipatannya)
+       - hl-small (2 kolom kanan atas) -> rasio 16:9  | upload 700x394px
+       - dm-featured (Jangan Lewatkan) -> rasio 16:9  | upload 900x506px
+       - dm-thumb / an-thumb / arch-thumb -> rasio 4:3 | upload 400x300px
+     Kenapa 16:9 untuk hero slot: proporsi ini paling stabil dipakai
+     berita/olahraga dan tetap enak dilihat di mobile (tidak terlalu
+     tinggi) maupun desktop.
+  ================================================================ */
   .highlight-grid{ display:grid; grid-template-columns: 1.4fr 1fr; gap:16px; margin-bottom:44px; }
   @media(max-width:640px){ .highlight-grid{ grid-template-columns:1fr; } }
 
-  /* ===== Kotak gambar utama (highlight besar, highlight kecil, featured "Jangan Lewatkan") =====
-     Gambar TIDAK dipotong (object-fit:contain). Ruang kosong di sisi gambar diisi versi blur
-     dari gambar yang sama supaya tetap penuh & rapi, bukan kotak kosong polos. */
   .hl-main, .hl-small, .dm-featured{
     position:relative; border-radius:10px; overflow:hidden; border:1px solid var(--card-border); background:var(--card-bg);
+    aspect-ratio:16/9;
+    height:auto;
   }
-  .hl-main{ min-height:360px; }
-  .hl-small{ min-height:172px; }
-  .dm-featured{ min-height:300px; }
-  .img-blur-bg{
-    position:absolute; inset:0; z-index:0;
-    background-size:cover; background-position:center;
-    filter:blur(22px) brightness(0.5) saturate(1.1);
-    transform:scale(1.25);
-    transition:opacity .5s ease;
-  }
-  .hl-main img, .hl-small img, .dm-featured img{
-    position:absolute; inset:0; width:100%; height:100%;
-    object-fit:contain; object-position:center;
-    z-index:1; transition:opacity .5s ease;
-  }
-  .hl-small-stack{ display:flex; flex-direction:column; gap:16px; }
-  .fade-slide.fading .img-blur-bg,
-  .fade-slide.fading img,
-  .fade-slide.fading .card-overlay{ opacity:0; }
+  .hl-small-stack{ display:flex; flex-direction:column; gap:16px; height:100%; }
+  .hl-small-stack .hl-small{ aspect-ratio:16/9; flex:1 1 0; }
 
-  .card-overlay{
-    position:relative; z-index:2; height:100%; display:flex; flex-direction:column; justify-content:flex-end; padding:18px;
-    background: linear-gradient(180deg, transparent 30%, rgba(6,10,16,0.55) 65%, rgba(6,10,16,0.92) 100%);
-    transition:opacity .5s ease;
+  /* track = lapisan yang benar-benar digeser (translateX) berisi N slide berjejer */
+  .slide-viewport{ position:absolute; inset:0; overflow:hidden; border-radius:10px; }
+  .slide-track{ display:flex; height:100%; width:100%; will-change:transform; }
+  .slide-track.animate{ transition:transform .6s cubic-bezier(.4,0,.2,1); }
+  .slide-pane{ position:relative; flex:0 0 100%; height:100%; overflow:hidden; }
+  .slide-pane img{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover; object-position:center;
   }
-  .badge-row{ display:flex; gap:8px; align-items:center; margin-bottom:10px; flex-wrap:wrap; }
+  .card-overlay{
+    position:absolute; inset:0; z-index:2; display:flex; flex-direction:column; justify-content:flex-end; padding:14px 16px;
+    background: linear-gradient(180deg, transparent 35%, rgba(6,10,16,0.55) 68%, rgba(6,10,16,0.92) 100%);
+    pointer-events:none;
+  }
+  .badge-row{ display:flex; gap:6px; align-items:center; margin-bottom:6px; flex-wrap:wrap; }
   .badge{
-    background:var(--blue-accent); color:#fff; font-size:10px; font-weight:700;
-    letter-spacing:0.8px; text-transform:uppercase; padding:4px 9px; border-radius:4px;
+    background:var(--blue-accent); color:#fff; font-size:9px; font-weight:700;
+    letter-spacing:0.5px; text-transform:uppercase; padding:3px 8px; border-radius:4px;
+    line-height:1.4;
   }
   .badge.highlight-badge{ background:var(--blue-bright); color:#08131f; }
-  .card-title{ font-family:var(--font-display); font-size:20px; line-height:1.25; margin-bottom:8px; }
-  .hl-small .card-title{ font-size:14px; }
-  .meta-row{ display:flex; align-items:center; gap:14px; font-size:12px; color:var(--text-dim); flex-wrap:wrap; }
-  .views{ display:flex; align-items:center; gap:5px; color:var(--blue-bright); }
-  .views svg{ width:13px; height:13px; }
+  .card-title{
+    font-family:var(--font-display); font-size:17px; line-height:1.28; margin-bottom:6px;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+  }
+  .hl-small .card-title{ font-size:12.5px; -webkit-line-clamp:2; }
+  .meta-row{ display:flex; align-items:center; gap:10px; font-size:10.5px; color:var(--text-dim); flex-wrap:wrap; }
+  .hl-small .meta-row{ font-size:9.5px; gap:8px; }
+  .views{ display:flex; align-items:center; gap:4px; color:var(--blue-bright); }
+  .views svg{ width:11px; height:11px; }
+
+  /* ---- panah navigasi manual ---- */
+  .slide-arrow{
+    position:absolute; top:50%; transform:translateY(-50%); z-index:4;
+    width:30px; height:30px; border-radius:50%;
+    background:rgba(8,12,18,0.55); border:1px solid rgba(255,255,255,0.18);
+    color:#fff; display:flex; align-items:center; justify-content:center;
+    cursor:pointer; font-size:14px; transition:all .2s; backdrop-filter:blur(2px);
+  }
+  .slide-arrow:hover{ background:var(--blue-accent); border-color:var(--blue-accent); }
+  .slide-arrow.prev{ left:8px; }
+  .slide-arrow.next{ right:8px; }
+  .hl-small .slide-arrow{ width:24px; height:24px; font-size:11px; }
+  .hl-small .slide-arrow.prev{ left:6px; }
+  .hl-small .slide-arrow.next{ right:6px; }
+
+  /* ---- dots indikator ---- */
+  .slide-dots{
+    position:absolute; bottom:8px; left:50%; transform:translateX(-50%); z-index:4;
+    display:flex; gap:5px;
+  }
+  .slide-dots span{
+    width:5px; height:5px; border-radius:50%; background:rgba(255,255,255,0.35); transition:all .2s;
+  }
+  .slide-dots span.active{ background:var(--blue-bright); width:14px; border-radius:3px; }
 
   .dontmiss{ display:grid; grid-template-columns: 1fr 1fr; gap:24px; margin-bottom:20px; }
   @media(max-width:640px){ .dontmiss{ grid-template-columns:1fr; } }
   .dm-list{ display:flex; flex-direction:column; gap:16px; }
-  .dm-item{ display:flex; gap:12px; align-items:flex-start; padding-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.06); transition:opacity .5s ease; }
-  .dm-thumb{ width:76px; height:60px; border-radius:6px; overflow:hidden; flex-shrink:0; border:1px solid var(--card-border); background:var(--card-bg); }
+  .dm-item{ display:flex; gap:12px; align-items:flex-start; padding-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.06); transition:opacity .4s ease; }
+  .dm-thumb{ width:76px; aspect-ratio:4/3; height:auto; border-radius:6px; overflow:hidden; flex-shrink:0; border:1px solid var(--card-border); background:var(--card-bg); }
   .dm-thumb img{ width:100%; height:100%; object-fit:cover; }
-  .dm-item h4{ font-size:14px; font-weight:600; line-height:1.35; margin-bottom:6px; color:var(--text-main); }
+  .dm-item h4{ font-size:12.5px; font-weight:600; line-height:1.35; margin-bottom:5px; color:var(--text-main); }
   .dm-list.fading .dm-item{ opacity:0; }
 
   aside.sidebar{
@@ -273,12 +301,12 @@
   .accordion-body{ max-height:0; overflow:hidden; transition:max-height .25s ease; }
   .accordion-item.open .accordion-body{ max-height:600px; }
   .arch-item{ display:flex; gap:10px; padding:10px 2px 10px 4px; align-items:center; }
-  .arch-thumb{ width:52px; height:42px; border-radius:5px; overflow:hidden; flex-shrink:0; border:1px solid var(--card-border); background:var(--bg-carbon-2); }
+  .arch-thumb{ width:52px; aspect-ratio:4/3; height:auto; border-radius:5px; overflow:hidden; flex-shrink:0; border:1px solid var(--card-border); background:var(--bg-carbon-2); }
   .arch-thumb img{ width:100%; height:100%; object-fit:cover; }
   .arch-item h5{ font-size:12.5px; font-weight:500; line-height:1.3; color:var(--text-dim); }
   .arch-item:hover h5{ color:var(--blue-bright); }
 
-  /* ============ SEMUA BERITA + PAGINATION (di atas footer) ============ */
+  /* ============ SEMUA BERITA + PAGINATION ============ */
   .allnews-section{ padding:6px 0 40px; }
   .all-news-grid{
     display:grid;
@@ -294,7 +322,7 @@
     transition:border-color .2s;
   }
   .an-item:hover{ border-color:var(--blue-accent); }
-  .an-thumb{ width:88px; height:66px; border-radius:6px; overflow:hidden; flex-shrink:0; border:1px solid var(--card-border); background:var(--bg-carbon-2); }
+  .an-thumb{ width:88px; aspect-ratio:4/3; height:auto; border-radius:6px; overflow:hidden; flex-shrink:0; border:1px solid var(--card-border); background:var(--bg-carbon-2); }
   .an-thumb img{ width:100%; height:100%; object-fit:cover; }
   .an-body h4{ font-size:13.5px; font-weight:600; line-height:1.35; margin:6px 0; color:var(--text-main); }
 
@@ -310,17 +338,77 @@
   .pg-btn:disabled{ opacity:.4; cursor:not-allowed; }
   .pg-num{ min-width:38px; text-align:center; }
 
-  /* ============ FOOTER 2.0 ============ */
+  /* ============ FOOTER 2.0 — TEKSTUR SERAT CARBON + KILAT ============
+     Anyaman carbon-fiber dibentuk dari 2 layer repeating-linear-gradient
+     45°/-45° (efek "woven twill") ditumpuk dengan radial-gradient warna
+     brand, lalu di atasnya ada 1 layer "kilat" (diagonal shine) yang
+     bergerak pelan lewat animasi background-position supaya terasa premium
+     & tidak flat. Warna tetap dari palet carbon + biru yang sama.
+  ==================================================================== */
   footer.site.ftr2{
     position:relative;
     overflow:hidden;
     margin-top:20px;
     border-top:1px solid rgba(58,143,217,0.25);
-    background:
-      radial-gradient(circle at 15% 0%, rgba(58,143,217,0.14), transparent 45%),
-      radial-gradient(circle at 85% 30%, rgba(95,179,255,0.10), transparent 50%),
-      linear-gradient(180deg, rgba(13,42,74,0.35), var(--bg-carbon-2) 40%, var(--bg-carbon) 100%);
+    background-color: var(--bg-carbon);
+    background-image:
+      /* kilat / shine bergerak */
+      linear-gradient(115deg,
+        transparent 0%,
+        transparent 38%,
+        rgba(95,179,255,0.10) 46%,
+        rgba(180,220,255,0.16) 50%,
+        rgba(95,179,255,0.10) 54%,
+        transparent 62%,
+        transparent 100%),
+      /* anyaman serat carbon - arah 1 */
+      repeating-linear-gradient(45deg,
+        rgba(255,255,255,0.045) 0px,
+        rgba(255,255,255,0.045) 2px,
+        rgba(0,0,0,0.35) 2px,
+        rgba(0,0,0,0.35) 4px,
+        rgba(255,255,255,0.02) 4px,
+        rgba(255,255,255,0.02) 6px,
+        rgba(0,0,0,0.3) 6px,
+        rgba(0,0,0,0.3) 8px),
+      /* anyaman serat carbon - arah 2 (silang) */
+      repeating-linear-gradient(-45deg,
+        rgba(255,255,255,0.035) 0px,
+        rgba(255,255,255,0.035) 2px,
+        rgba(0,0,0,0.3) 2px,
+        rgba(0,0,0,0.3) 4px,
+        rgba(255,255,255,0.015) 4px,
+        rgba(255,255,255,0.015) 6px,
+        rgba(0,0,0,0.28) 6px,
+        rgba(0,0,0,0.28) 8px),
+      /* warna brand menyatu di atas anyaman */
+      radial-gradient(circle at 15% 0%, rgba(58,143,217,0.18), transparent 45%),
+      radial-gradient(circle at 85% 30%, rgba(95,179,255,0.13), transparent 50%),
+      linear-gradient(180deg, rgba(13,42,74,0.45), var(--bg-carbon-2) 40%, var(--bg-carbon) 100%);
+    background-size:
+      220% 220%,
+      8px 8px,
+      8px 8px,
+      auto, auto, auto;
+    background-position:
+      0% 0%,
+      0 0,
+      0 0,
+      center, center, center;
+    animation: ftrCarbonShine 9s ease-in-out infinite;
   }
+  @keyframes ftrCarbonShine{
+    0%   { background-position: -40% -20%, 0 0, 0 0, center, center, center; }
+    50%  { background-position: 140% 60%, 0 0, 0 0, center, center, center; }
+    100% { background-position: -40% -20%, 0 0, 0 0, center, center, center; }
+  }
+  /* vignette halus di tepi supaya anyaman tidak terlalu ramai & tetap fokus ke konten */
+  footer.site.ftr2::before{
+    content:'';
+    position:absolute; inset:0; pointer-events:none; z-index:0;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(11,13,16,0.55) 100%);
+  }
+  footer.site.ftr2 > *{ position:relative; z-index:1; }
   .ftr2-notice{
     max-width:860px; margin:0 auto; padding:30px 20px 26px;
     font-size:13px; color:var(--text-dim); text-align:center; line-height:1.7;
@@ -463,8 +551,7 @@
     .brand-name .txt-kajian, .brand-name .txt-news{ font-size:13px; }
     .brand-name .badge-4d .num4{ font-size:15px; }
     .header-banner{ height:42px; min-height:40px; padding:0 8px; }
-    .card-title{ font-size:15px; }
-    .hl-main{ min-height:200px; }
+    .card-title{ font-size:14px; }
   }
 </style>
 </head>
@@ -581,16 +668,27 @@
 
 <script>
   const CATEGORIES = ['SEMUA', 'SEPAK BOLA', 'TEKNOLOGI', 'OLAHRAGA', 'HIBURAN', 'BISNIS', 'DUNIA', 'HIGHLIGHT'];
-  const CAROUSEL_INTERVAL_MS = 20000;
   const ITEMS_PER_PAGE = 6;
+
+  // ---- Kecepatan slide sesuai permintaan ----
+  const HL_MAIN_INTERVAL_MS   = 7000;   // gambar besar kiri (Sorotan) - ada panah manual
+  const HL_SMALL_INTERVAL_MS  = 7000;   // 2 kolom kecil kiri-bawah dari hl-main - ada panah manual
+  const DM_FEATURED_INTERVAL_MS = 7000; // Jangan Lewatkan - featured besar - ada panah manual
+  const DM_LIST_INTERVAL_MS   = 7000;   // Jangan Lewatkan - list kanan
+
+  // Kolom yang DIKOTAK BIRU pada referensi (hl-small-stack / 2 slot kanan atas
+  // gambar sorotan) -> TANPA panah, interval 10 detik
+  const HL_BOXED_INTERVAL_MS  = 10000;
+
   const EYE_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>';
 
   let allArticles = [];
   let currentCategory = 'SEMUA';
   let currentPage = 1;
-  let highlightTimer = null;
-  let dontMissTimer = null;
   let isDemoMode = false;
+
+  // simpan semua slider aktif supaya bisa di-destroy saat re-render (ganti kategori)
+  let activeSliders = [];
 
   const DEMO_ARTICLES = [
     { slug:'argentina-vs-brazil', judul:'Argentina vs Brazil: Duel Panas Perebutan Puncak Grup',
@@ -665,20 +763,6 @@
   }
   function articleUrl(a){ return `/berita/${a.slug}`; }
 
-  // Bagi array jadi kelompok berukuran `size`. Kalau kelompok terakhir kurang,
-  // penuhi dengan mengulang dari awal array supaya tampilan tidak pernah bolong.
-  function chunkArray(arr, size){
-    if(!arr.length) return [];
-    const groups = [];
-    for(let i = 0; i < arr.length; i += size){
-      const g = arr.slice(i, i + size);
-      let fillIdx = 0;
-      while(g.length < size){ g.push(arr[fillIdx % arr.length]); fillIdx++; }
-      groups.push(g);
-    }
-    return groups;
-  }
-
   async function fetchArticles(){
     const res = await fetch('/api/articles');
     if(!res.ok) throw new Error('Gagal memuat artikel');
@@ -726,47 +810,101 @@
     return allArticles.filter(a => katList(a).includes(currentCategory));
   }
 
-  // Isi satu "slot" gambar utama (hl-main / hl-small / dm-featured) dengan artikel tertentu
-  function fillHeroSlot(el, art){
-    el.href = articleUrl(art);
-    const blurBg = el.querySelector('.img-blur-bg');
-    const img = el.querySelector('img');
-    if(blurBg) blurBg.style.backgroundImage = `url('${(art.thumbnail || '').replace(/'/g,"\\'")}')`;
-    if(img) img.src = art.thumbnail || '';
-    const badgeRow = el.querySelector('.badge-row');
-    if(badgeRow){
-      badgeRow.innerHTML = `${art.is_highlight ? '<span class="badge highlight-badge">Manual · Highlight</span>' : ''}<span class="badge">${esc(primaryKat(art))}</span>`;
-    }
-    const titleEl = el.querySelector('.card-title');
-    if(titleEl) titleEl.textContent = art.judul;
-    const dateEl = el.querySelector('.hero-date');
-    if(dateEl) dateEl.textContent = fmtDate(art.tanggal);
-    const viewsWrap = el.querySelector('.hero-views-wrap');
-    const viewsVal = el.querySelector('.hero-views');
-    if(viewsWrap && viewsVal){
-      if(art.views){ viewsVal.textContent = art.views; viewsWrap.style.display = ''; }
-      else { viewsWrap.style.display = 'none'; }
-    }
-  }
+  /* ============================================================
+     GENERIC HERO SLIDER
+     Membuat satu slot (hl-main / hl-small / dm-featured) menjadi
+     slider horizontal berisi N artikel, dengan track yang benar-
+     benar digeser translateX (bukan fade/kedip).
+     opts: { withArrows: bool, intervalMs: number }
+  ============================================================ */
+  function createHeroSlider(container, articles, opts){
+    const { withArrows = true, intervalMs = 7000 } = opts || {};
+    if(!articles.length) return null;
 
-  function heroSlotMarkup(id){
-    return `
-      <a href="#" class="fade-slide" id="${id}">
-        <div class="img-blur-bg"></div>
-        <img src="" alt="">
-        <div class="card-overlay">
-          <div class="badge-row"></div>
-          <div class="card-title"></div>
-          <div class="meta-row"><span class="hero-date"></span><span class="views hero-views-wrap">${EYE_SVG} <span class="hero-views"></span></span></div>
+    container.innerHTML = `
+      <div class="slide-viewport">
+        <div class="slide-track">
+          ${articles.map(a => `
+            <a class="slide-pane" href="${articleUrl(a)}">
+              <img src="${esc(a.thumbnail || '')}" alt="">
+              <div class="card-overlay">
+                <div class="badge-row">
+                  ${a.is_highlight ? '<span class="badge highlight-badge">Highlight</span>' : ''}
+                  <span class="badge">${esc(primaryKat(a))}</span>
+                </div>
+                <div class="card-title">${esc(a.judul)}</div>
+                <div class="meta-row">
+                  <span>${fmtDate(a.tanggal)}</span>
+                  ${a.views ? `<span class="views">${EYE_SVG}<span>${esc(a.views)}</span></span>` : ''}
+                </div>
+              </div>
+            </a>
+          `).join('')}
         </div>
-      </a>`;
+      </div>
+      ${withArrows && articles.length > 1 ? `
+        <button type="button" class="slide-arrow prev" aria-label="Sebelumnya">&#10094;</button>
+        <button type="button" class="slide-arrow next" aria-label="Berikutnya">&#10095;</button>
+      ` : ''}
+      ${articles.length > 1 ? `<div class="slide-dots">${articles.map((_,i)=>`<span class="${i===0?'active':''}"></span>`).join('')}</div>` : ''}
+    `;
+
+    const track = container.querySelector('.slide-track');
+    const dots = container.querySelectorAll('.slide-dots span');
+    let idx = 0;
+    let timer = null;
+
+    function goTo(i, animate = true){
+      idx = (i + articles.length) % articles.length;
+      track.classList.toggle('animate', animate);
+      track.style.transform = `translateX(-${idx * 100}%)`;
+      dots.forEach((d,di) => d.classList.toggle('active', di === idx));
+    }
+
+    function startAuto(){
+      if(articles.length <= 1) return;
+      clearInterval(timer);
+      timer = setInterval(() => goTo(idx + 1), intervalMs);
+    }
+    function stopAuto(){ clearInterval(timer); }
+
+    if(withArrows){
+      const prevBtn = container.querySelector('.slide-arrow.prev');
+      const nextBtn = container.querySelector('.slide-arrow.next');
+      if(prevBtn) prevBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); goTo(idx - 1); startAuto(); });
+      if(nextBtn) nextBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); goTo(idx + 1); startAuto(); });
+    }
+
+    // jeda auto-slide saat hover, lanjut lagi saat mouse keluar
+    container.addEventListener('mouseenter', stopAuto);
+    container.addEventListener('mouseleave', startAuto);
+
+    // dukungan swipe/drag manual di layar sentuh
+    let touchStartX = null;
+    container.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; stopAuto(); }, { passive:true });
+    container.addEventListener('touchend', (e) => {
+      if(touchStartX === null) return;
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      if(Math.abs(dx) > 40){ goTo(idx + (dx < 0 ? 1 : -1)); }
+      touchStartX = null;
+      startAuto();
+    }, { passive:true });
+
+    goTo(0, false);
+    startAuto();
+
+    return { destroy(){ stopAuto(); } };
   }
 
-  // ============ HIGHLIGHT HARI INI — auto-geser 3 slot sekaligus tiap 20 detik ============
+  function destroyActiveSliders(){
+    activeSliders.forEach(s => s && s.destroy && s.destroy());
+    activeSliders = [];
+  }
+
+  // ============ SOROTAN — hl-main (panah, 7d) + hl-small-stack dikotak biru (tanpa panah, 10d) ============
   function renderHighlight(){
     const grid = document.getElementById('highlightGrid');
     const title = document.getElementById('highlightSectionTitle');
-    clearInterval(highlightTimer);
 
     const pool = filteredByTab();
     title.textContent = currentCategory === 'SEMUA' ? 'Highlight Hari Ini' : `Highlight — ${currentCategory}`;
@@ -780,116 +918,96 @@
     const rest = pool.filter(a => !a.is_highlight);
     const ordered = [...highlighted, ...rest];
 
-    const groups = chunkArray(ordered, 3);
+    // hl-main pakai semua artikel (slider penuh, dengan panah)
+    // hl-small-stack (kotak biru di referensi) pakai artikel ke-2 & ke-3 dst,
+    // masing-masing slot juga slider mandiri berisi sisa artikel, tanpa panah
+    const mainArticles = ordered;
+    const smallTopArticles = ordered.length > 1 ? ordered.slice(1) : ordered;
+    const smallBottomArticles = ordered.length > 2 ? [...ordered.slice(2), ordered[1]] : ordered;
 
     grid.innerHTML = `
-      <div class="hl-main fade-slide" id="hlMain">
-        <div class="img-blur-bg"></div>
-        <img src="" alt="">
-        <div class="card-overlay">
-          <div class="badge-row"></div>
-          <div class="card-title"></div>
-          <div class="meta-row"><span class="hero-date"></span><span class="views hero-views-wrap">${EYE_SVG} <span class="hero-views"></span></span></div>
-        </div>
-      </div>
+      <div class="hl-main" id="hlMain"></div>
       <div class="hl-small-stack">
-        <div class="hl-small">${heroSlotMarkup('hlSmallTop')}</div>
-        <div class="hl-small">${heroSlotMarkup('hlSmallBottom')}</div>
+        <div class="hl-small" id="hlSmallTop"></div>
+        <div class="hl-small" id="hlSmallBottom"></div>
       </div>
     `;
 
-    const hlMainWrap = grid.querySelector('#hlMain');
-    const hlMain = hlMainWrap; // hlMain itself is the <a>-like container, but here it's a div; make it a link via click passthrough
-    hlMainWrap.style.cursor = 'pointer';
-    let currentMainArt = null;
-    hlMainWrap.addEventListener('click', () => { if(currentMainArt) window.location.href = articleUrl(currentMainArt); });
+    const mainSlider = createHeroSlider(document.getElementById('hlMain'), mainArticles, {
+      withArrows: true, intervalMs: HL_MAIN_INTERVAL_MS
+    });
+    const topSlider = createHeroSlider(document.getElementById('hlSmallTop'), smallTopArticles, {
+      withArrows: false, intervalMs: HL_BOXED_INTERVAL_MS
+    });
+    const bottomSlider = createHeroSlider(document.getElementById('hlSmallBottom'), smallBottomArticles, {
+      withArrows: false, intervalMs: HL_BOXED_INTERVAL_MS
+    });
 
-    const topEl = document.getElementById('hlSmallTop');
-    const bottomEl = document.getElementById('hlSmallBottom');
-
-    let idx = 0;
-    function showGroup(g){
-      currentMainArt = g[0];
-      fillHeroSlot(hlMainWrap, g[0]);
-      fillHeroSlot(topEl, g[1]);
-      fillHeroSlot(bottomEl, g[2]);
-    }
-    showGroup(groups[0]);
-
-    if(groups.length > 1){
-      highlightTimer = setInterval(() => {
-        idx = (idx + 1) % groups.length;
-        [hlMainWrap, topEl, bottomEl].forEach(el => el.classList.add('fading'));
-        setTimeout(() => {
-          showGroup(groups[idx]);
-          [hlMainWrap, topEl, bottomEl].forEach(el => el.classList.remove('fading'));
-        }, 500);
-      }, CAROUSEL_INTERVAL_MS);
-    }
+    activeSliders.push(mainSlider, topSlider, bottomSlider);
   }
 
-  // ============ JANGAN LEWATKAN — auto-geser featured + 3 list tiap 20 detik ============
+  // ============ JANGAN LEWATKAN — featured (panah, 7d) + list kanan (7d) ============
   function renderDontMiss(){
     const grid = document.getElementById('dontMissGrid');
-    clearInterval(dontMissTimer);
     const pool = filteredByTab();
 
     if(!pool.length){ grid.innerHTML = ''; return; }
 
-    const groups = chunkArray(pool, 4);
-
     grid.innerHTML = `
-      <div class="dm-featured fade-slide" id="dmFeatured">
-        <div class="img-blur-bg"></div>
-        <img src="" alt="">
-        <div class="card-overlay">
-          <div class="badge-row"></div>
-          <div class="card-title"></div>
-          <div class="meta-row"><span class="hero-date"></span><span class="views hero-views-wrap">${EYE_SVG} <span class="hero-views"></span></span></div>
-        </div>
-      </div>
-      <div class="dm-list" id="dmList">
-        <a href="#" class="dm-item" data-i="0"><div class="dm-thumb"><img src="" alt=""></div><div><h4></h4><div class="meta-row"><span class="badge dm-item-badge" style="font-size:9px;padding:2px 7px;"></span><span class="dm-item-date"></span><span class="views dm-item-views-wrap">${EYE_SVG} <span class="dm-item-views"></span></span></div></div></a>
-        <a href="#" class="dm-item" data-i="1"><div class="dm-thumb"><img src="" alt=""></div><div><h4></h4><div class="meta-row"><span class="badge dm-item-badge" style="font-size:9px;padding:2px 7px;"></span><span class="dm-item-date"></span><span class="views dm-item-views-wrap">${EYE_SVG} <span class="dm-item-views"></span></span></div></div></a>
-        <a href="#" class="dm-item" data-i="2"><div class="dm-thumb"><img src="" alt=""></div><div><h4></h4><div class="meta-row"><span class="badge dm-item-badge" style="font-size:9px;padding:2px 7px;"></span><span class="dm-item-date"></span><span class="views dm-item-views-wrap">${EYE_SVG} <span class="dm-item-views"></span></span></div></div></a>
-      </div>
+      <div class="dm-featured" id="dmFeatured"></div>
+      <div class="dm-list" id="dmList"></div>
     `;
 
-    const featuredEl = document.getElementById('dmFeatured');
+    const featuredSlider = createHeroSlider(document.getElementById('dmFeatured'), pool, {
+      withArrows: true, intervalMs: DM_FEATURED_INTERVAL_MS
+    });
+    activeSliders.push(featuredSlider);
+
+    // list kanan: tampilkan 3 kelompok berganti otomatis tiap DM_LIST_INTERVAL_MS,
+    // digeser (bukan fade) dengan translateY sederhana
     const listEl = document.getElementById('dmList');
-    const itemEls = Array.from(listEl.querySelectorAll('.dm-item'));
+    const groupSize = 3;
+    const groups = [];
+    for(let i = 0; i < pool.length; i += groupSize){
+      let g = pool.slice(i, i + groupSize);
+      let fillIdx = 0;
+      while(g.length < groupSize && pool.length){ g.push(pool[fillIdx % pool.length]); fillIdx++; }
+      groups.push(g);
+    }
+    if(!groups.length) groups.push(pool.slice(0, groupSize));
 
-    function fillListItem(el, art){
-      el.href = articleUrl(art);
-      el.querySelector('img').src = art.thumbnail || '';
-      el.querySelector('h4').textContent = art.judul;
-      el.querySelector('.dm-item-badge').textContent = primaryKat(art);
-      el.querySelector('.dm-item-date').textContent = fmtDate(art.tanggal);
-      const vw = el.querySelector('.dm-item-views-wrap');
-      const vv = el.querySelector('.dm-item-views');
-      if(art.views){ vv.textContent = art.views; vw.style.display=''; } else { vw.style.display='none'; }
+    function renderGroup(g){
+      listEl.innerHTML = g.map(a => `
+        <a href="${articleUrl(a)}" class="dm-item">
+          <div class="dm-thumb"><img src="${esc(a.thumbnail || '')}" alt=""></div>
+          <div>
+            <h4>${esc(a.judul)}</h4>
+            <div class="meta-row">
+              <span class="badge" style="font-size:9px;padding:2px 7px;">${esc(primaryKat(a))}</span>
+              <span>${fmtDate(a.tanggal)}</span>
+              ${a.views ? `<span class="views">${EYE_SVG}<span>${esc(a.views)}</span></span>` : ''}
+            </div>
+          </div>
+        </a>
+      `).join('');
     }
 
-    let idx = 0;
-    function showGroup(g){
-      fillHeroSlot(featuredEl, g[0]);
-      fillListItem(itemEls[0], g[1]);
-      fillListItem(itemEls[1], g[2]);
-      fillListItem(itemEls[2], g[3]);
-    }
-    showGroup(groups[0]);
+    let gIdx = 0;
+    renderGroup(groups[0]);
 
     if(groups.length > 1){
-      dontMissTimer = setInterval(() => {
-        idx = (idx + 1) % groups.length;
-        featuredEl.classList.add('fading');
-        listEl.classList.add('fading');
+      let timer = setInterval(() => {
+        gIdx = (gIdx + 1) % groups.length;
+        listEl.style.transition = 'opacity .35s ease, transform .35s ease';
+        listEl.style.opacity = '0';
+        listEl.style.transform = 'translateX(12px)';
         setTimeout(() => {
-          showGroup(groups[idx]);
-          featuredEl.classList.remove('fading');
-          listEl.classList.remove('fading');
-        }, 500);
-      }, CAROUSEL_INTERVAL_MS);
+          renderGroup(groups[gIdx]);
+          listEl.style.opacity = '1';
+          listEl.style.transform = 'translateX(0)';
+        }, 350);
+      }, DM_LIST_INTERVAL_MS);
+      activeSliders.push({ destroy(){ clearInterval(timer); } });
     }
   }
 
@@ -1030,6 +1148,7 @@
   }
 
   function renderAll(){
+    destroyActiveSliders();
     renderHighlight();
     renderDontMiss();
     renderAllNews();
