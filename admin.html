@@ -233,6 +233,41 @@
   }
   .header-preview img, .header-preview video{width:100%;max-height:280px;object-fit:cover;display:block;}
 
+  /* kategori filter bar (daftar berita) */
+  .kategori-filter-bar{
+    display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px;
+    padding-bottom:18px; border-bottom:1px solid var(--line);
+  }
+  .kategori-filter-btn{
+    background:#0e0f10; border:1px solid var(--line); color:var(--muted);
+    padding:8px 14px; border-radius:20px; cursor:pointer; font-size:12px; font-weight:600;
+    display:flex; align-items:center; gap:7px; letter-spacing:.2px;
+  }
+  .kategori-filter-btn:hover{border-color:var(--gold); color:var(--text);}
+  .kategori-filter-btn .count{
+    background:#1c1d20; color:var(--gold-bright); padding:1px 8px; border-radius:10px; font-size:11px;
+  }
+  .kategori-filter-btn.active{
+    color:#191203; background:linear-gradient(180deg,var(--gold-bright),var(--gold)); border-color:transparent;
+  }
+  .kategori-filter-btn.active .count{background:rgba(25,18,3,0.18); color:#191203;}
+
+  /* pagination */
+  .pagination-bar{
+    display:flex; justify-content:center; align-items:center; gap:6px;
+    margin-top:22px; flex-wrap:wrap;
+  }
+  .pagination-bar button{
+    background:#0e0f10; border:1px solid var(--line); color:var(--text);
+    min-width:34px; height:34px; padding:0 10px; border-radius:7px; cursor:pointer; font-size:13px;
+  }
+  .pagination-bar button.active{
+    color:#191203; background:linear-gradient(180deg,var(--gold-bright),var(--gold)); border-color:transparent; font-weight:700;
+  }
+  .pagination-bar button:hover:not(.active):not(:disabled){border-color:var(--gold); color:var(--gold-bright);}
+  .pagination-bar button:disabled{opacity:.35; cursor:not-allowed;}
+  .pagination-bar .pg-info{color:var(--muted); font-size:12px; margin:0 8px;}
+
   .toast{
     position:fixed; bottom:24px; right:24px; z-index:300;
     background:linear-gradient(180deg,var(--gold-bright),var(--gold));
@@ -522,7 +557,10 @@
     <section id="tab-list" style="display:none;">
       <div class="panel">
         <h2>Daftar Berita Tersimpan</h2>
-        <p class="hint">Semua artikel yang sudah disimpan pada perangkat ini.</p>
+        <p class="hint">Semua artikel yang sudah disimpan pada perangkat ini. Klik kategori untuk memfilter, gunakan navigasi halaman di bawah tabel untuk melihat berita lainnya.</p>
+
+        <div class="kategori-filter-bar" id="kategoriFilterBar"></div>
+
         <table class="article-list">
           <thead>
             <tr><th>Thumb</th><th>Judul</th><th>Kategori</th><th>Tanggal</th><th>Slug</th><th>Aksi</th></tr>
@@ -531,6 +569,8 @@
             <tr class="empty-row"><td colspan="6">Belum ada artikel tersimpan.</td></tr>
           </tbody>
         </table>
+
+        <div class="pagination-bar" id="paginationBar"></div>
       </div>
     </section>
 
@@ -1024,6 +1064,13 @@ async function loadHeaderSettings(){
 ===================================================== */
 let editingSlug = null;
 let cachedArticles = [];
+let currentKategoriFilter = 'ALL';
+let currentPage = 1;
+const ARTICLES_PER_PAGE = 10;
+
+// Kategori dasar (sama seperti checkbox form). Kategori baru yang muncul dari
+// data lama (misal ditulis manual) akan otomatis ditambahkan ke bar filter juga.
+const KATEGORI_LIST = ["SEPAK BOLA","TEKNOLOGI","OLAHRAGA","HIBURAN","BISNIS","DUNIA"];
 
 function getKategoriChecked(){
   return Array.from(document.querySelectorAll('.fKategoriChk:checked')).map(c => c.value);
@@ -1096,20 +1143,83 @@ async function renderArticleList(){
     const articles = await resp.json();
     if(!resp.ok) throw new Error(articles.error || 'Gagal memuat daftar berita');
     cachedArticles = Array.isArray(articles) ? articles : [];
-    if(cachedArticles.length === 0){
-      tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Belum ada artikel tersimpan.</td></tr>';
-      return;
-    }
-    tbody.innerHTML = cachedArticles.map((a) => {
-      const kategoriArr = Array.isArray(a.kategori)
-        ? a.kategori
-        : (a.kategori ? String(a.kategori).split(',').map(s => s.trim()).filter(Boolean) : []);
-      const kategoriPills = kategoriArr.map(k => `<span class="pill">${escapeHtml(k)}</span>`).join('') || '—';
-      const highlightBadge = a.is_highlight ? '<span class="pill pill-highlight">HIGHLIGHT</span>' : '';
-      const thumbCell = a.thumbnail
-        ? (isVideoSrc(a.thumbnail) ? `<video class="mini" src="${a.thumbnail}" muted></video>` : `<img class="mini" src="${a.thumbnail}">`)
-        : '—';
-      return `
+    currentPage = 1;
+    renderKategoriFilterBar();
+    renderFilteredTable();
+  }catch(e){
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="6">Gagal memuat: ${escapeHtml(e.message)}</td></tr>`;
+    document.getElementById('kategoriFilterBar').innerHTML = '';
+    document.getElementById('paginationBar').innerHTML = '';
+  }
+}
+
+function getKategoriArr(a){
+  return Array.isArray(a.kategori)
+    ? a.kategori
+    : (a.kategori ? String(a.kategori).split(',').map(s => s.trim()).filter(Boolean) : []);
+}
+
+function titleCaseKategori(k){
+  return k.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+}
+
+/* Bangun bar filter kategori secara otomatis: "Semua" + tiap kategori,
+   masing-masing dengan jumlah berita yang tersimpan di kategori itu. */
+function renderKategoriFilterBar(){
+  const bar = document.getElementById('kategoriFilterBar');
+  const counts = {};
+  KATEGORI_LIST.forEach(k => counts[k] = 0);
+  cachedArticles.forEach(a => {
+    getKategoriArr(a).forEach(k => {
+      const key = k.toUpperCase();
+      counts[key] = (counts[key] || 0) + 1;
+    });
+  });
+
+  let html = `<button type="button" class="kategori-filter-btn ${currentKategoriFilter==='ALL'?'active':''}" onclick="setKategoriFilter('ALL')">Semua <span class="count">${cachedArticles.length}</span></button>`;
+  html += Object.keys(counts).map(k => {
+    const activeCls = currentKategoriFilter === k ? 'active' : '';
+    return `<button type="button" class="kategori-filter-btn ${activeCls}" onclick="setKategoriFilter('${k.replace(/'/g,"\\'")}')">${escapeHtml(titleCaseKategori(k))} <span class="count">${counts[k]}</span></button>`;
+  }).join('');
+  bar.innerHTML = html;
+}
+
+function setKategoriFilter(k){
+  currentKategoriFilter = k;
+  currentPage = 1;
+  renderKategoriFilterBar();
+  renderFilteredTable();
+}
+
+function getFilteredArticles(){
+  if(currentKategoriFilter === 'ALL') return cachedArticles;
+  return cachedArticles.filter(a => getKategoriArr(a).map(x => x.toUpperCase()).includes(currentKategoriFilter));
+}
+
+/* Render tabel untuk halaman aktif (10 berita per halaman) dari hasil filter kategori. */
+function renderFilteredTable(){
+  const tbody = document.getElementById('articleTableBody');
+  const filtered = getFilteredArticles();
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ARTICLES_PER_PAGE));
+  if(currentPage > totalPages) currentPage = totalPages;
+
+  if(filtered.length === 0){
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Tidak ada artikel pada kategori ini.</td></tr>';
+    renderPaginationBar(0, 1);
+    return;
+  }
+
+  const start = (currentPage - 1) * ARTICLES_PER_PAGE;
+  const pageItems = filtered.slice(start, start + ARTICLES_PER_PAGE);
+
+  tbody.innerHTML = pageItems.map((a) => {
+    const kategoriArr = getKategoriArr(a);
+    const kategoriPills = kategoriArr.map(k => `<span class="pill">${escapeHtml(k)}</span>`).join('') || '—';
+    const highlightBadge = a.is_highlight ? '<span class="pill pill-highlight">HIGHLIGHT</span>' : '';
+    const thumbCell = a.thumbnail
+      ? (isVideoSrc(a.thumbnail) ? `<video class="mini" src="${a.thumbnail}" muted></video>` : `<img class="mini" src="${a.thumbnail}">`)
+      : '—';
+    return `
       <tr>
         <td>${thumbCell}</td>
         <td>${escapeHtml(a.judul)}</td>
@@ -1122,10 +1232,43 @@ async function renderArticleList(){
         </td>
       </tr>
     `;
-    }).join('');
-  }catch(e){
-    tbody.innerHTML = `<tr class="empty-row"><td colspan="6">Gagal memuat: ${escapeHtml(e.message)}</td></tr>`;
+  }).join('');
+
+  renderPaginationBar(filtered.length, totalPages);
+}
+
+function renderPaginationBar(totalItems, totalPages){
+  const bar = document.getElementById('paginationBar');
+  if(totalItems === 0){ bar.innerHTML = ''; return; }
+
+  let html = `<button ${currentPage===1?'disabled':''} onclick="goToPage(${currentPage-1})">‹ Prev</button>`;
+
+  const maxVisible = 7;
+  let startPage = Math.max(1, currentPage - Math.floor(maxVisible/2));
+  let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+  startPage = Math.max(1, endPage - maxVisible + 1);
+
+  if(startPage > 1){
+    html += `<button onclick="goToPage(1)">1</button>`;
+    if(startPage > 2) html += `<span class="pg-info">…</span>`;
   }
+  for(let p = startPage; p <= endPage; p++){
+    html += `<button class="${p===currentPage?'active':''}" onclick="goToPage(${p})">${p}</button>`;
+  }
+  if(endPage < totalPages){
+    if(endPage < totalPages - 1) html += `<span class="pg-info">…</span>`;
+    html += `<button onclick="goToPage(${totalPages})">${totalPages}</button>`;
+  }
+
+  html += `<button ${currentPage===totalPages?'disabled':''} onclick="goToPage(${currentPage+1})">Next ›</button>`;
+  html += `<span class="pg-info">Halaman ${currentPage} dari ${totalPages} &middot; ${totalItems} berita</span>`;
+
+  bar.innerHTML = html;
+}
+
+function goToPage(p){
+  currentPage = p;
+  renderFilteredTable();
 }
 
 function editArticle(slug){
