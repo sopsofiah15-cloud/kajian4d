@@ -156,8 +156,7 @@
     nav.categories ul::-webkit-scrollbar{ display:none; }
   nav.categories li{ flex-shrink:0; }
 
-  /* ============ RUNNING TEXT ============ */
-  .categories-row{
+  /* ============ .categories-row{
     display:flex;
     align-items:center;
     gap:16px;
@@ -175,24 +174,29 @@
     background: rgba(13,42,74,0.25);
     border:1px solid rgba(95,179,255,0.5);
     box-shadow: 0 0 8px rgba(95,179,255,0.25);
+    display:flex;
+    align-items:center;
   }
   .running-text-track{
-    position:absolute;
-    top:50%;
-    left:0;
-    transform: translateY(-50%) translateX(100%);
+    display:flex;
+    flex-shrink:0;
     white-space:nowrap;
     font-size:12.5px;
     font-weight:600;
     color: var(--blue-bright);
     letter-spacing:0.3px;
-    animation: runningTextMove 22s linear infinite;
-    padding-left:0;
+    animation: runningTextMove 30s linear infinite; /* 30s agar tidak terlalu cepat karena teksnya panjang */
   }
 
+  /* Memberi jarak antara teks pertama dan teks kedua saat berulang */
+  .running-text-track span{
+    padding-right: 50px; 
+  }
+
+  /* Animasi bergeser tepar sejauh -50% (separuh dari total lebar 2 teks) */
   @keyframes runningTextMove{
-    0%   { transform: translateY(-50%) translateX(100%); }
-    100% { transform: translateY(-50%) translateX(-100%); }
+    0%   { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
   }
 
   /* biar di layar sempit tetap muncul, tidak hilang */
@@ -634,12 +638,14 @@
       <span class="banner-fallback-text" id="headerBannerFallback">Cek Berita &amp; Skor Real-Time</span>
     </a>
   </div>
-  <nav class="wrap categories">
+ <nav class="wrap categories">
   <div class="categories-row">
     <ul id="categoryTabs"></ul>
     <div class="running-text-box">
       <div class="running-text-track" id="runningTextTrack">
-        🔴 LIVE UPDATE - KAJIAN 4D NEWS &nbsp;|&nbsp; Portal Berita Update 2026 &nbsp;|&nbsp; Menyajikan Informasi Terkini Seputar Piala Dunia 2026, Sepak Bola Internasional, Teknologi, Bisnis, Hiburan, dan Berita Dunia. &nbsp;|&nbsp; Cepat • Akurat • Terpercaya • Update Setiap Hari
+        <!-- Kita gandakan teksnya di dalam 2 span yang sama persak -->
+        <span>🔴 LIVE UPDATE - KAJIAN 4D NEWS &nbsp;|&nbsp; Portal Berita Update 2026 &nbsp;|&nbsp; Menyajikan Informasi Terkini Seputar Piala Dunia 2026, Sepak Bola Internasional, Teknologi, Bisnis, Hiburan, dan Berita Dunia. &nbsp;|&nbsp; Cepat • Akurat • Terpercaya • Update Setiap Hari &nbsp;&nbsp;&nbsp;</span>
+        <span>🔴 LIVE UPDATE - KAJIAN 4D NEWS &nbsp;|&nbsp; Portal Berita Update 2026 &nbsp;|&nbsp; Menyajikan Informasi Terkini Seputar Piala Dunia 2026, Sepak Bola Internasional, Teknologi, Bisnis, Hiburan, dan Berita Dunia. &nbsp;|&nbsp; Cepat • Akurat • Terpercaya • Update Setiap Hari &nbsp;&nbsp;&nbsp;</span>
       </div>
     </div>
   </div>
