@@ -153,6 +153,54 @@
   }
   nav.categories ul::-webkit-scrollbar{ display:none; }
   nav.categories li{ flex-shrink:0; }
+    nav.categories ul::-webkit-scrollbar{ display:none; }
+  nav.categories li{ flex-shrink:0; }
+
+  /* ============ RUNNING TEXT ============ */
+  .categories-row{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    width:100%;
+  }
+  .categories-row ul{ flex:0 0 auto; }
+
+  .running-text-box{
+    flex:1 1 260px;
+    min-width:180px;
+    height:34px;
+    border-radius:8px;
+    overflow:hidden;
+    position:relative;
+    background: rgba(13,42,74,0.25);
+    border:1px solid rgba(95,179,255,0.5);
+    box-shadow: 0 0 8px rgba(95,179,255,0.25);
+  }
+  .running-text-track{
+    position:absolute;
+    top:50%;
+    left:0;
+    transform: translateY(-50%) translateX(100%);
+    white-space:nowrap;
+    font-size:12.5px;
+    font-weight:600;
+    color: var(--blue-bright);
+    letter-spacing:0.3px;
+    animation: runningTextMove 22s linear infinite;
+    padding-left:0;
+  }
+
+  @keyframes runningTextMove{
+    0%   { transform: translateY(-50%) translateX(100%); }
+    100% { transform: translateY(-50%) translateX(-100%); }
+  }
+
+  /* biar di layar sempit tetap muncul, tidak hilang */
+  @media(max-width:640px){
+    .categories-row{ flex-wrap:wrap; }
+    .running-text-box{ flex:1 1 100%; order:2; }
+    .categories-row ul{ order:1; }
+  }
   nav.categories button{
     white-space:nowrap;
     display:inline-block;
@@ -587,8 +635,15 @@
     </a>
   </div>
   <nav class="wrap categories">
+  <div class="categories-row">
     <ul id="categoryTabs"></ul>
-  </nav>
+    <div class="running-text-box">
+      <div class="running-text-track" id="runningTextTrack">
+        🔴 LIVE UPDATE - KAJIAN 4D NEWS &nbsp;|&nbsp; Portal Berita Update 2026 &nbsp;|&nbsp; Menyajikan Informasi Terkini Seputar Piala Dunia 2026, Sepak Bola Internasional, Teknologi, Bisnis, Hiburan, dan Berita Dunia. &nbsp;|&nbsp; Cepat • Akurat • Terpercaya • Update Setiap Hari
+      </div>
+    </div>
+  </div>
+</nav>
 </header>
 
 <div class="wrap layout">
