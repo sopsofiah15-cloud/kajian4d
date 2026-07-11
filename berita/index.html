@@ -27,13 +27,10 @@
   html{ -webkit-text-size-adjust:100%; overflow-x:clip; }
 body{
   background-color: var(--bg-carbon);
-  background-image: ...
+  background-image:
+    repeating-linear-gradient(135deg, var(--line-diag) 0px, var(--line-diag) 1px, transparent 1px, transparent 26px),
+    radial-gradient(ellipse at top, #171b20 0%, #0b0d10 60%);
   color: var(--text-main);
-  font-family: var(--font-body);
-  line-height: 1.5;
-  min-height:100vh;
-  overflow-x:clip;
-  width:100%;
 }
   a{ color:inherit; text-decoration:none; }
   img{ max-width:100%; display:block; }
@@ -303,7 +300,6 @@ body{
   object-fit:contain; margin-left:auto; flex-shrink:0;
   background:#fff; border-radius:5px; padding:3px 8px;
 }
-.hl-small-label .section-logo{ max-width:64px; max-height:18px; padding:2px 5px; }
 @media(max-width:480px){ .section-logo{ max-width:70px; max-height:22px; } }
 
 .cat-logo-badge{
@@ -815,9 +811,7 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
     <h2>Daftar Berita</h2>
     <img class="section-logo" src="https://ik.imagekit.io/ehc8d8fve/kajian%204d%20news.png" alt="KAJIAN4D">
   </div>
-    <span class="tag">Semua Berita</span>
-    <h2>Daftar Berita</h2>
-  </div>
+  <div class="all-news-grid" id="allNewsGrid"></div>
   <div class="all-news-grid" id="allNewsGrid"></div>
   <div class="pagination-bar" id="paginationBar"></div>
 </div>
@@ -827,13 +821,12 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
     <b>KAJIAN4D</b> adalah platform berita bola premium yang menyediakan informasi akurat seputar Piala Dunia 2026. PORTAL BERITA TER-UPDATE DAN TERPERCAYA.
   </div>
 
-  <div class="ftr2-logo-banner">
+    <div class="ftr2-logo-banner">
     <img src="https://ik.imagekit.io/ehc8d8fve/kajian%204d%20news.png" alt="KAJIAN4D">
   </div>
 
   <div class="ftr2-grid">
-
-  <div class="ftr2-grid">
+    <div class="ftr2-col">
     <div class="ftr2-col">
       <div class="ftr2-brand-row">
         <div class="ftr2-brand-logo"><img src="https://ik.imagekit.io/ehc8d8fve/kajian%20icon%20v5?updatedAt=1783465068596" alt="Logo"></div>
