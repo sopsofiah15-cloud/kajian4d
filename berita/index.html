@@ -293,31 +293,6 @@ body{
     letter-spacing:1px; text-transform:uppercase; padding:5px 10px; border-radius:4px;
   }
   .section-label h2{ font-family:var(--font-display); font-size:18px; color:var(--text-main); font-weight:400; }
-
-/* === LOGO BRAND DI SETIAP SECTION === */
-.section-logo{
-  height:1.7em; max-height:30px; width:auto; max-width:110px;
-  object-fit:contain; margin-left:auto; flex-shrink:0;
-  background:#fff; border-radius:5px; padding:3px 8px;
-}
-@media(max-width:480px){ .section-logo{ max-width:70px; max-height:22px; } }
-
-.cat-logo-badge{
-  flex-shrink:0; height:34px; display:flex; align-items:center;
-  background:#fff; border-radius:6px; padding:3px 10px; margin-left:8px;
-}
-.cat-logo-badge img{ height:100%; width:auto; max-width:140px; object-fit:contain; }
-@media(max-width:640px){
-  .cat-logo-badge{ height:26px; margin-left:0; margin-top:6px; }
-  .cat-logo-badge img{ max-width:100px; }
-}
-
-.ftr2-logo-banner{ max-width:1080px; margin:0 auto; padding:22px 20px 0; display:flex; justify-content:center; }
-.ftr2-logo-banner img{
-  width:100%; max-width:260px; height:auto; object-fit:contain;
-  background:#fff; border-radius:8px; padding:8px 14px;
-}
-
   .highlight-section-card{
   border:1px solid var(--card-border);
   background:var(--card-bg);
@@ -755,7 +730,6 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
   <nav class="wrap categories">
     <div class="categories-row">
       <ul id="categoryTabs"></ul>
-      <div class="cat-logo-badge"><img src="https://ik.imagekit.io/ehc8d8fve/kajian%204d%20news.png" alt="KAJIAN4D"></div>
     </div>
   </nav>
 </header>
@@ -776,7 +750,6 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
   <div class="section-label" style="margin-bottom:16px;">
     <span class="tag">Sorotan</span>
     <h2 id="highlightSectionTitle">Highlight Hari Ini</h2>
-    <img class="section-logo" src="https://ik.imagekit.io/ehc8d8fve/kajian%204d%20news.png" alt="KAJIAN4D">
   </div>
   <div class="highlight-grid" id="highlightGrid">
     <div class="loading-state">Memuat highlight...</div>
@@ -787,7 +760,6 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
   <div class="section-label" style="margin-bottom:16px;">
     <span class="tag">Info Terkini</span>
     <h2>Jangan Lewatkan</h2>
-    <img class="section-logo" src="https://ik.imagekit.io/ehc8d8fve/kajian%204d%20news.png" alt="KAJIAN4D">
   </div>
   <div class="dontmiss" id="dontMissGrid">
     <div class="loading-state">Memuat berita...</div>
@@ -797,19 +769,15 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
   </main>
 
   <aside class="sidebar carbon-texture">
-    <div class="sidebar-title" style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
-      <span>Arsip Berita</span>
-      <img class="section-logo" src="https://ik.imagekit.io/ehc8d8fve/kajian%204d%20news.png" alt="KAJIAN4D" style="margin-left:0;">
-    </div>
+    <div class="sidebar-title">Arsip Berita</div>
     <div id="accordion"><div class="loading-state">Memuat arsip...</div></div>
   </aside>
 </div>
 
 <div class="wrap allnews-section carbon-texture">
-  <div class="section-label">
+   <div class="section-label">
     <span class="tag">Semua Berita</span>
     <h2>Daftar Berita</h2>
-    <img class="section-logo" src="https://ik.imagekit.io/ehc8d8fve/kajian%204d%20news.png" alt="KAJIAN4D">
   </div>
   <div class="all-news-grid" id="allNewsGrid"></div>
   <div class="all-news-grid" id="allNewsGrid"></div>
@@ -821,6 +789,7 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
     <b>KAJIAN4D</b> adalah platform berita bola premium yang menyediakan informasi akurat seputar Piala Dunia 2026. PORTAL BERITA TER-UPDATE DAN TERPERCAYA.
   </div>
 
+  <div class="ftr2-grid">
     <div class="ftr2-logo-banner">
     <img src="https://ik.imagekit.io/ehc8d8fve/kajian%204d%20news.png" alt="KAJIAN4D">
   </div>
@@ -1056,7 +1025,7 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
     grid.innerHTML = `
       <div class="hl-main" id="hlMain"></div>
       <div class="hl-small-col">
-        <div class="hl-small-label"><span class="dash"></span>BACA JUGA - NEWS TERUPDATE<img class="section-logo" src="https://ik.imagekit.io/ehc8d8fve/kajian%204d%20news.png" alt="KAJIAN4D"></div>
+        <div class="hl-small-label"><span class="dash"></span>BACA JUGA - NEWS TERUPDATE</div>
         <div class="hl-small-stack">
           <div class="hl-small" id="hlSmallTop"></div>
           <div class="hl-small" id="hlSmallBottom"></div>
