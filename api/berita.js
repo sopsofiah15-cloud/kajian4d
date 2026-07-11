@@ -543,15 +543,15 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
 
       const body = document.createElement('div');
       body.className = 'accordion-body';
-      body.innerHTML = groups[date].map(a => `
-        <a href="${articleUrl(a)}" class="arch-item">
-          <div class="arch-thumb"><img src="${esc(a.thumbnail || '')}" alt=""></div>
+      body.innerHTML = groups[date].map(a => \`
+        <a href="\${articleUrl(a)}" class="arch-item">
+          <div class="arch-thumb"><img src="\${esc(a.thumbnail || '')}" alt=""></div>
           <div class="arch-item-body">
-            <h5>${esc(a.judul)}</h5>
-            <span class="arch-date">${fmtDate(a.tanggal)}</span>
+            <h5>\${esc(a.judul)}</h5>
+            <span class="arch-date">\${fmtDate(a.tanggal)}</span>
           </div>
         </a>
-      `).join('');
+      \`).join('');
 
       item.appendChild(head);
       item.appendChild(body);
@@ -569,8 +569,8 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
     const hotPool = [...highlighted, ...rest].slice(0, 8);
     if(!hotPool.length){ track.innerHTML = '<span>Belum ada berita.</span>'; return; }
 
-    const itemsHtml = hotPool.map(a => `<a href="${articleUrl(a)}">${esc(a.judul)}</a>`).join(' &nbsp;&nbsp;•&nbsp;&nbsp; ');
-    track.innerHTML = `<span>${itemsHtml}&nbsp;&nbsp;&nbsp;</span><span>${itemsHtml}&nbsp;&nbsp;&nbsp;</span>`;
+    const itemsHtml = hotPool.map(a => \`<a href="\${articleUrl(a)}">\${esc(a.judul)}</a>\`).join(' &nbsp;&nbsp;•&nbsp;&nbsp; ');
+    track.innerHTML = \`<span>\${itemsHtml}&nbsp;&nbsp;&nbsp;</span><span>\${itemsHtml}&nbsp;&nbsp;&nbsp;</span>\`;
   }
 
   async function initSidebarAndTicker(){
