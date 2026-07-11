@@ -716,63 +716,6 @@
 
   let activeSliders = [];
 
-  const DEMO_ARTICLES = [
-    { slug:'argentina-vs-brazil', judul:'Argentina vs Brazil: Duel Panas Perebutan Puncak Grup',
-      kategori:['SEPAK BOLA'], tanggal:'2026-07-07', is_highlight:true, views:'2.481',
-      thumbnail:'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=900&q=60' },
-    { slug:'prediksi-portugal-spanyol', judul:'Prediksi Skor Portugal vs Spanyol',
-      kategori:['SEPAK BOLA'], tanggal:'2026-07-07', is_highlight:false, views:'934',
-      thumbnail:'https://images.unsplash.com/photo-1517466787929-bc90951d0974?w=500&q=60' },
-    { slug:'live-score-sync', judul:'Update Sistem Live Score Tersinkron Otomatis',
-      kategori:['TEKNOLOGI'], tanggal:'2026-07-06', is_highlight:false, views:'611',
-      thumbnail:'https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&q=60' },
-    { slug:'atletik-musim-ini', judul:'Persaingan Ketat Cabang Atletik Musim Ini',
-      kategori:['OLAHRAGA'], tanggal:'2026-07-06', is_highlight:false, views:'742',
-      thumbnail:'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=500&q=60' },
-    { slug:'konser-amal-semifinal', judul:'Konser Amal Sambut Semifinal Piala Dunia',
-      kategori:['HIBURAN'], tanggal:'2026-07-05', is_highlight:false, views:'519',
-      thumbnail:'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=500&q=60' },
-    { slug:'sponsor-baru-final', judul:'Sponsor Baru Masuk Jelang Babak Final',
-      kategori:['BISNIS'], tanggal:'2026-07-05', is_highlight:false, views:'388',
-      thumbnail:'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=500&q=60' },
-    { slug:'merchandise-suporter', judul:'Tren Merchandise Suporter Paling Dicari',
-      kategori:['DUNIA'], tanggal:'2026-07-04', is_highlight:false, views:'301',
-      thumbnail:'https://images.unsplash.com/photo-1483721310020-03333e577078?w=500&q=60' },
-    { slug:'rekap-16-besar', judul:'Rekap Lengkap Babak 16 Besar',
-      kategori:['SEPAK BOLA'], tanggal:'2026-07-07', is_highlight:false, views:'1.203',
-      thumbnail:'https://images.unsplash.com/photo-1517927033932-b3d18e61fb3a?w=700&q=60' },
-    { slug:'chip-hemat-daya', judul:'Chip Terbaru Diklaim 2x Lebih Hemat Daya',
-      kategori:['TEKNOLOGI'], tanggal:'2026-07-06', is_highlight:false, views:'402',
-      thumbnail:'https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=200&q=60' },
-    { slug:'kuliner-kekinian', judul:'5 Rekomendasi Kuliner Kekinian Akhir Pekan',
-      kategori:['DUNIA'], tanggal:'2026-07-05', is_highlight:false, views:'288',
-      thumbnail:'https://images.unsplash.com/photo-1553778263-73a83bab9b0c?w=200&q=60' },
-    { slug:'startup-seri-a', judul:'Startup Lokal Raih Pendanaan Seri A',
-      kategori:['BISNIS'], tanggal:'2026-07-04', is_highlight:false, views:'174',
-      thumbnail:'https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=200&q=60' },
-    { slug:'preview-jerman-belanda', judul:'Preview Semifinal: Jerman vs Belanda',
-      kategori:['SEPAK BOLA'], tanggal:'2026-07-06', is_highlight:false, views:'—',
-      thumbnail:'https://images.unsplash.com/photo-1571056641869-6a67cd44b935?w=200&q=60' },
-    { slug:'cedera-pemain-kunci', judul:'Update Cedera Pemain Kunci',
-      kategori:['SEPAK BOLA'], tanggal:'2026-07-06', is_highlight:false, views:'—',
-      thumbnail:'https://images.unsplash.com/photo-1600679472233-4d2c9e4dae51?w=200&q=60' },
-    { slug:'adu-penalti-16-besar', judul:'Hasil Adu Penalti Babak 16 Besar',
-      kategori:['SEPAK BOLA'], tanggal:'2026-07-05', is_highlight:false, views:'—',
-      thumbnail:'https://images.unsplash.com/photo-1522778034537-20a2486be803?w=200&q=60' },
-    { slug:'susunan-pemain-prancis', judul:'Prediksi Susunan Pemain Prancis',
-      kategori:['SEPAK BOLA'], tanggal:'2026-07-03', is_highlight:false, views:'—',
-      thumbnail:'https://images.unsplash.com/photo-1517927033932-b3d18e61fb3a?w=200&q=60' },
-    { slug:'var-8-besar', judul:'Wasit VAR Ditambah di Babak 8 Besar',
-      kategori:['SEPAK BOLA'], tanggal:'2026-07-03', is_highlight:false, views:'—',
-      thumbnail:'https://images.unsplash.com/photo-1517466787929-bc90951d0974?w=200&q=60' },
-    { slug:'rekap-fase-grup', judul:'Rekap Fase Grup Selesai',
-      kategori:['SEPAK BOLA'], tanggal:'2026-07-02', is_highlight:false, views:'—',
-      thumbnail:'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=200&q=60' },
-    { slug:'prediksi-awal-16-besar', judul:'Prediksi Awal 16 Besar',
-      kategori:['SEPAK BOLA'], tanggal:'2026-07-01', is_highlight:false, views:'—',
-      thumbnail:'https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=200&q=60' },
-  ];
-
   function esc(str){
     return (str || '').toString().replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   }
@@ -1179,15 +1122,16 @@
       }else{
         throw new Error('API kosong');
       }
+      renderAll();
+      renderArchive();
     }catch(e){
-      allArticles = DEMO_ARTICLES;
-      isDemoMode = true;
-      document.getElementById('previewNotice').style.display = 'block';
+      document.getElementById('highlightGrid').innerHTML =
+        '<div class="empty-state">Gagal memuat berita. Silakan refresh halaman.</div>';
+      document.getElementById('dontMissGrid').innerHTML = '';
+      document.getElementById('accordion').innerHTML = '';
+      console.error('Gagal fetch artikel:', e);
     }
-    renderAll();
-    renderArchive();
   }
-
   init();
 </script>
 
