@@ -277,7 +277,13 @@
   .hotnews-track span{ padding-right:50px; }
   .hotnews-track a{ color:inherit; text-decoration:none; }
   .hotnews-track a:hover{ color:var(--blue-bright); }
-
+/* ===== STICKY HEADER WRAPPER ===== */
+  .sticky-top-wrap{
+    position:sticky;
+    top:0;
+    z-index:100;
+    background:var(--bg-carbon);
+  }
   @media(max-width:640px){
     .hotnews-label{ font-size:10px; padding:0 10px; }
     .hotnews-track{ font-size:11.5px; }
@@ -394,8 +400,8 @@
 
   aside.sidebar{
   border:1px solid var(--card-border); border-radius:12px; padding:20px;
-  position:sticky; top:20px;
-  max-height:calc(100vh - 40px);
+  position:sticky; top:calc(var(--sticky-header-h, 0px) + 20px);
+  max-height:calc(100vh - var(--sticky-header-h, 0px) - 40px);
   overflow-y:auto;
 }
 aside.sidebar::-webkit-scrollbar{ width:5px; }
@@ -686,7 +692,9 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
 </style>
 </head>
 <body>
-
+  
+<div class="sticky-top-wrap" id="stickyTopWrap">
+  
 <div class="top-ticker-bar">
   <div class="wrap">
     <div class="running-text-box">
@@ -734,10 +742,11 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
     </div>
   </div>
 </div>
+</div>
 <div class="wrap layout">
   <main>
 
-    <div class="highlight-section-card">
+    <div class="highlight-section-card carbon-texture">
   <div class="section-label" style="margin-bottom:16px;">
     <span class="tag">Sorotan</span>
     <h2 id="highlightSectionTitle">Highlight Hari Ini</h2>
@@ -747,7 +756,7 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
   </div>
 </div>
 
-    <div class="dontmiss-card">
+    <div class="dontmiss-card carbon-texture">
   <div class="section-label" style="margin-bottom:16px;">
     <span class="tag">Info Terkini</span>
     <h2>Jangan Lewatkan</h2>
@@ -765,7 +774,7 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
   </aside>
 </div>
 
-<div class="wrap allnews-section">
+<div class="wrap allnews-section carbon-texture">
   <div class="section-label">
     <span class="tag">Semua Berita</span>
     <h2>Daftar Berita</h2>
@@ -1255,7 +1264,12 @@ function renderHotNewsTicker(){
     const btn = document.getElementById('backToTop');
     if(btn) btn.addEventListener('click', () => window.scrollTo({ top:0, behavior:'smooth' }));
   }
-
+  function syncStickyHeaderHeight(){
+    const wrap = document.getElementById('stickyTopWrap');
+    if(!wrap) return;
+    const h = wrap.offsetHeight;
+    document.documentElement.style.setProperty('--sticky-header-h', h + 'px');
+  }
   function renderAll(){
     destroyActiveSliders();
     renderHighlight();
@@ -1268,6 +1282,8 @@ function renderHotNewsTicker(){
     renderFooterCategories();
     initBackToTop();
     loadBannerSettings();
+    syncStickyHeaderHeight();
+    window.addEventListener('resize', syncStickyHeaderHeight);
     try{
       const data = await fetchArticles();
       if(Array.isArray(data) && data.length > 0){
@@ -1278,6 +1294,7 @@ function renderHotNewsTicker(){
       renderAll();
       renderArchive();
       renderHotNewsTicker();
+      syncStickyHeaderHeight();   // <-- tambahan, pastikan ukuran terbaru terukur setelah render selesai
     }catch(e){
       document.getElementById('highlightGrid').innerHTML =
         '<div class="empty-state">Gagal memuat berita. Silakan refresh halaman.</div>';
