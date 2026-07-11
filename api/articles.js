@@ -32,7 +32,7 @@ module.exports = async (req, res) => {
       // Filter khusus artikel highlight (tab "HIGHLIGHT" di menu)
       if (highlight === '1' || highlight === 'true') {
         const rows = await sql`
-          SELECT id, judul, slug, excerpt, kategori, tanggal, thumbnail, konten, is_highlight, updated_at
+          SELECT id, judul, slug, excerpt, kategori, tanggal, thumbnail, konten, is_highlight, views, updated_at
           FROM articles
           WHERE is_highlight = true
           ORDER BY tanggal DESC NULLS LAST, updated_at DESC
@@ -44,7 +44,7 @@ module.exports = async (req, res) => {
       if (kategori && kategori.toUpperCase() !== 'SEMUA') {
         const kat = kategori.toUpperCase();
         const rows = await sql`
-          SELECT id, judul, slug, excerpt, kategori, tanggal, thumbnail, konten, is_highlight, updated_at
+          SELECT id, judul, slug, excerpt, kategori, tanggal, thumbnail, konten, is_highlight, views, updated_at
           FROM articles
           WHERE ${kat} = ANY(kategori)
           ORDER BY tanggal DESC NULLS LAST, updated_at DESC
@@ -54,7 +54,7 @@ module.exports = async (req, res) => {
 
       // "SEMUA" atau tanpa filter -> seluruh artikel, campur semua kategori
       const rows = await sql`
-        SELECT id, judul, slug, excerpt, kategori, tanggal, thumbnail, konten, is_highlight, updated_at
+        SELECT id, judul, slug, excerpt, kategori, tanggal, thumbnail, konten, is_highlight, views, updated_at
         FROM articles
         ORDER BY tanggal DESC NULLS LAST, updated_at DESC
       `;
