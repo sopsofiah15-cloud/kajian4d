@@ -57,7 +57,11 @@ module.exports = async (req, res) => {
         <a href="/berita" style="color:#3a8fd9;">&larr; Kembali ke daftar berita</a></body></html>`);
       return;
     }
-
+// Increment view count — real, bertambah setiap kali halaman ini di-request server
+const viewResult = await sql`
+  UPDATE articles SET views = views + 1 WHERE slug = ${slug} RETURNING views
+`;
+a.views = viewResult[0]?.views ?? 0;
     const settings = await getSettings(sql);
 
     // Ambil kandidat "Baca Juga": artikel lain, urutkan terbaru, lalu filter kategori di JS (aman utk tipe kolom apapun)
@@ -297,12 +301,13 @@ ${a.thumbnail ? `<meta property="og:image" content="${escapeHtml(a.thumbnail)}">
   </div>
 
   <article>
-    <div class="article-head">
-      ${kategoriPillsHead}
-      <h1 class="article-title">${escapeHtml(a.judul)}</h1>
-      <div class="article-meta"><span>${tanggal}</span></div>
-    </div>
-
+    <div class="article-meta">
+  <span>${tanggal}</span>
+  <span class="views-count" style="display:inline-flex;align-items:center;gap:4px;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+    ${(a.views || 0).toLocaleString('id-ID')} kali dibaca
+  </span>
+</div>
     ${a.thumbnail ? `<div class="article-cover"><img src="${escapeHtml(a.thumbnail)}" alt="${escapeHtml(a.judul)}"></div>` : ''}
 
     <div class="article-body">${a.konten || ''}</div>
