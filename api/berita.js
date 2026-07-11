@@ -218,6 +218,13 @@ ${a.thumbnail ? `<meta property="og:image" content="${escapeHtml(a.thumbnail)}">
   .section-label .tag{background:var(--blue-accent);color:#fff;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 10px;border-radius:4px;}
   .section-label h2{font-family:var(--font-display);font-size:19px;color:var(--text-main);font-weight:400;}
   .section-label .kat-name{color:var(--blue-bright);}
+  /* === LOGO BRAND DI SETIAP SECTION === */
+.section-logo{
+  height:1.7em; max-height:30px; width:auto; max-width:110px;
+  object-fit:contain; margin-left:auto; flex-shrink:0;
+  background:#fff; border-radius:5px; padding:3px 8px;
+}
+@media(max-width:480px){ .section-logo{ max-width:70px; max-height:22px; } }
 
   .bacajuga-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:56px;}
   @media(max-width:760px){.bacajuga-grid{grid-template-columns:repeat(2,1fr);}}
