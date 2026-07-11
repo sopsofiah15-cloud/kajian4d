@@ -214,7 +214,75 @@
     0%   { transform: translateX(0%); }
     100% { transform: translateX(-50%); }
   }
+/* ===== TOP TICKER BAR (running text lama, dipindah ke atas) ===== */
+  .top-ticker-bar{
+    background: rgba(13,42,74,0.35);
+    border-bottom:1px solid rgba(58,143,217,0.15);
+    overflow:hidden;
+  }
+  .top-ticker-bar .running-text-box{
+    height:26px;
+    min-height:26px;
+    border:none;
+    border-radius:0;
+    background:transparent;
+    box-shadow:none;
+    width:100%;
+  }
+  .top-ticker-bar .running-text-track{
+    font-size:11px;
+  }
 
+  /* ===== HOT NEWS BAR (fitur baru) ===== */
+  .hotnews-bar{
+    display:flex;
+    align-items:center;
+    background: linear-gradient(90deg, rgba(58,143,217,0.18), rgba(13,42,74,0.22));
+    border-top:1px solid rgba(58,143,217,0.2);
+    border-bottom:1px solid rgba(58,143,217,0.2);
+    overflow:hidden;
+  }
+  .hotnews-label{
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    background:var(--blue-accent);
+    color:#fff;
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:0.8px;
+    text-transform:uppercase;
+    padding:0 16px;
+    height:36px;
+    white-space:nowrap;
+  }
+  .hotnews-track-wrap{
+    flex:1;
+    min-width:0;
+    overflow:hidden;
+    height:36px;
+    display:flex;
+    align-items:center;
+  }
+  .hotnews-track{
+    display:flex;
+    flex-shrink:0;
+    white-space:nowrap;
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--text-main);
+    animation: runningTextMove 32s linear infinite;
+  }
+  .hotnews-track span{ padding-right:50px; }
+  .hotnews-track a{ color:inherit; text-decoration:none; }
+  .hotnews-track a:hover{ color:var(--blue-bright); }
+
+  @media(max-width:640px){
+    .hotnews-label{ font-size:10px; padding:0 10px; }
+    .hotnews-track{ font-size:11.5px; }
+    .top-ticker-bar .running-text-track{ font-size:10px; }
+  }
   .layout{ display:grid; grid-template-columns: 1fr 300px; gap:32px; padding:30px 0 60px; align-items:start; }
   @media(max-width:900px){ .layout{ grid-template-columns:1fr; } }
 
@@ -580,6 +648,18 @@
 </style>
 </head>
 <body>
+
+<div class="top-ticker-bar">
+  <div class="wrap">
+    <div class="running-text-box">
+      <div class="running-text-track" id="runningTextTrack">
+        <span>🔴 LIVE UPDATE - KAJIAN 4D NEWS &nbsp;|&nbsp; Portal Berita Update 2026 &nbsp;|&nbsp; Menyajikan Informasi Terkini Seputar Piala Dunia 2026, Sepak Bola Internasional, Teknologi, Bisnis, Hiburan, dan Berita Dunia. &nbsp;|&nbsp; Cepat • Akurat • Terpercaya • Update Setiap Hari &nbsp;&nbsp;&nbsp;</span>
+        <span>🔴 LIVE UPDATE - KAJIAN 4D NEWS &nbsp;|&nbsp; Portal Berita Update 2026 &nbsp;|&nbsp; Menyajikan Informasi Terkini Seputar Piala Dunia 2026, Sepak Bola Internasional, Teknologi, Bisnis, Hiburan, dan Berita Dunia. &nbsp;|&nbsp; Cepat • Akurat • Terpercaya • Update Setiap Hari &nbsp;&nbsp;&nbsp;</span>
+      </div>
+    </div>
+  </div>
+</div>
+
 <header class="site carbon-texture">
   <div class="wrap header-top">
     <a class="brand" href="/">
@@ -604,16 +684,19 @@
   <nav class="wrap categories">
     <div class="categories-row">
       <ul id="categoryTabs"></ul>
-      <div class="running-text-box">
-        <div class="running-text-track" id="runningTextTrack">
-          <span>🔴 LIVE UPDATE - KAJIAN 4D NEWS &nbsp;|&nbsp; Portal Berita Update 2026 &nbsp;|&nbsp; Menyajikan Informasi Terkini Seputar Piala Dunia 2026, Sepak Bola Internasional, Teknologi, Bisnis, Hiburan, dan Berita Dunia. &nbsp;|&nbsp; Cepat • Akurat • Terpercaya • Update Setiap Hari &nbsp;&nbsp;&nbsp;</span>
-          <span>🔴 LIVE UPDATE - KAJIAN 4D NEWS &nbsp;|&nbsp; Portal Berita Update 2026 &nbsp;|&nbsp; Menyajikan Informasi Terkini Seputar Piala Dunia 2026, Sepak Bola Internasional, Teknologi, Bisnis, Hiburan, dan Berita Dunia. &nbsp;|&nbsp; Cepat • Akurat • Terpercaya • Update Setiap Hari &nbsp;&nbsp;&nbsp;</span>
-        </div>
-      </div>
     </div>
   </nav>
 </header>
+</header>
 
+<div class="hotnews-bar">
+  <div class="hotnews-label">🔥 Hot News</div>
+  <div class="hotnews-track-wrap">
+    <div class="hotnews-track" id="hotNewsTrack">
+      <span>Memuat berita terpopuler...</span>
+    </div>
+  </div>
+</div>
 <div class="wrap layout">
   <main>
 
@@ -1005,7 +1088,34 @@
       container.appendChild(item);
     });
   }
+function renderHotNewsTicker(){
+    const track = document.getElementById('hotNewsTrack');
+    if(!track) return;
+    if(!allArticles.length){
+      track.innerHTML = '<span>Belum ada berita.</span>';
+      return;
+    }
 
+    const highlighted = allArticles.filter(a => a.is_highlight);
+    const rest = allArticles
+      .filter(a => !a.is_highlight)
+      .sort((a, b) => (b.views || 0) - (a.views || 0));
+    const hotPool = [...highlighted, ...rest].slice(0, 8);
+
+    if(!hotPool.length){
+      track.innerHTML = '<span>Belum ada berita.</span>';
+      return;
+    }
+
+    const itemsHtml = hotPool.map(a =>
+      `<a href="${articleUrl(a)}">${esc(a.judul)}</a>`
+    ).join(' &nbsp;&nbsp;•&nbsp;&nbsp; ');
+
+    track.innerHTML = `
+      <span>${itemsHtml}&nbsp;&nbsp;&nbsp;</span>
+      <span>${itemsHtml}&nbsp;&nbsp;&nbsp;</span>
+    `;
+  }
   function renderAllNews(){
     const grid = document.getElementById('allNewsGrid');
     const pool = filteredByTab();
@@ -1124,6 +1234,7 @@
       }
       renderAll();
       renderArchive();
+      renderHotNewsTicker();
     }catch(e){
       document.getElementById('highlightGrid').innerHTML =
         '<div class="empty-state">Gagal memuat berita. Silakan refresh halaman.</div>';
