@@ -203,8 +203,8 @@ ${a.thumbnail ? `<meta property="og:image" content="${escapeHtml(a.thumbnail)}">
   @media(max-width:640px){.article-title{font-size:22px;}}
   .article-meta{display:flex;align-items:center;gap:16px;font-size:12.5px;color:var(--text-dim);flex-wrap:wrap;}
 
-  .article-cover{width:100%;border-radius:12px;overflow:hidden;margin:22px 0 28px;border:1px solid var(--card-border);background:var(--card-bg);max-height:460px;}
-  .article-cover img{width:100%;height:100%;object-fit:cover;max-height:460px;}
+  .article-cover{width:100%;max-width:800px;aspect-ratio:1/1;border-radius:12px;overflow:hidden;margin:22px auto 28px;border:1px solid var(--card-border);background:var(--card-bg);}
+.article-cover img{width:100%;height:100%;object-fit:cover;display:block;}
 
   .article-body{font-size:15.5px;color:#c9d2db;}
   .article-body p{margin-bottom:18px;}
