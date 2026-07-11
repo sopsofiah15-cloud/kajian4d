@@ -145,13 +145,13 @@ ${a.thumbnail ? `<meta property="og:image" content="${escapeHtml(a.thumbnail)}">
     --font-body:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
-  html{-webkit-text-size-adjust:100%;overflow-x:hidden;}
+  html{-webkit-text-size-adjust:100%;overflow-x:clip;}
   body{
     background-color:var(--bg-carbon);
     background-image:
       repeating-linear-gradient(135deg, var(--line-diag) 0px, var(--line-diag) 1px, transparent 1px, transparent 26px),
       radial-gradient(ellipse at top, #171b20 0%, #0b0d10 60%);
-    color:var(--text-main); font-family:var(--font-body); line-height:1.6; min-height:100vh; overflow-x:hidden;
+    color:var(--text-main); font-family:var(--font-body); line-height:1.6; min-height:100vh; overflow-x:clip;
   }
   a{color:inherit;text-decoration:none;}
   img{max-width:100%;display:block;}
@@ -268,11 +268,111 @@ ${a.thumbnail ? `<meta property="og:image" content="${escapeHtml(a.thumbnail)}">
   .ftr2-top-btn{position:absolute;right:20px;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;border:1px solid var(--card-border);background:var(--card-bg);color:var(--blue-bright);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;text-decoration:none;}
   .ftr2-top-btn:hover{background:var(--blue-accent);color:#fff;border-color:var(--blue-accent);}
   @media(max-width:700px){.ftr2-top-btn{display:none;}}
+  /* ===== CARBON TEXTURE (untuk background section & sidebar) ===== */
+.carbon-texture{
+  position:relative; overflow:hidden; background-color: var(--bg-carbon);
+  background-image:
+    linear-gradient(115deg, transparent 0%, transparent 38%, rgba(95,179,255,0.10) 46%, rgba(180,220,255,0.16) 50%, rgba(95,179,255,0.10) 54%, transparent 62%, transparent 100%),
+    repeating-linear-gradient(45deg, rgba(255,255,255,0.045) 0px, rgba(255,255,255,0.045) 2px, rgba(0,0,0,0.35) 2px, rgba(0,0,0,0.35) 4px, rgba(255,255,255,0.02) 4px, rgba(255,255,255,0.02) 6px, rgba(0,0,0,0.3) 6px, rgba(0,0,0,0.3) 8px),
+    repeating-linear-gradient(-45deg, rgba(255,255,255,0.035) 0px, rgba(255,255,255,0.035) 2px, rgba(0,0,0,0.3) 2px, rgba(0,0,0,0.3) 4px, rgba(255,255,255,0.015) 4px, rgba(255,255,255,0.015) 6px, rgba(0,0,0,0.28) 6px, rgba(0,0,0,0.28) 8px),
+    radial-gradient(circle at 15% 0%, rgba(58,143,217,0.18), transparent 45%),
+    radial-gradient(circle at 85% 30%, rgba(95,179,255,0.13), transparent 50%),
+    linear-gradient(180deg, rgba(13,42,74,0.45), var(--bg-carbon-2) 40%, var(--bg-carbon) 100%);
+  background-size: 220% 220%, 8px 8px, 8px 8px, auto, auto, auto;
+  background-position: 0% 0%, 0 0, 0 0, center, center, center;
+  animation: ftrCarbonShine 9s ease-in-out infinite;
+}
+@keyframes ftrCarbonShine{
+  0%{ background-position: -40% -20%, 0 0, 0 0, center, center, center; }
+  50%{ background-position: 140% 60%, 0 0, 0 0, center, center, center; }
+  100%{ background-position: -40% -20%, 0 0, 0 0, center, center, center; }
+}
+.carbon-texture::before{
+  content:''; position:absolute; inset:0; pointer-events:none; z-index:0;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(11,13,16,0.55) 100%);
+}
+.carbon-texture > *{ position:relative; z-index:1; }
+
+/* ===== TOP TICKER BAR ===== */
+.top-ticker-bar{ background: rgba(13,42,74,0.35); border-bottom:1px solid rgba(58,143,217,0.15); overflow:hidden; }
+.top-ticker-bar .running-text-box{ height:26px; min-height:26px; border:none; border-radius:0; background:transparent; box-shadow:none; width:100%; }
+.top-ticker-bar .running-text-track{ font-size:11px; }
+.running-text-box{ overflow:hidden; position:relative; display:flex; align-items:center; }
+.running-text-track{ display:flex; flex-shrink:0; white-space:nowrap; font-size:12.5px; font-weight:600; color:var(--blue-bright); letter-spacing:0.3px; animation: runningTextMove 30s linear infinite; }
+.running-text-track span{ padding-right:50px; }
+@keyframes runningTextMove{ 0%{ transform:translateX(0%); } 100%{ transform:translateX(-50%); } }
+
+/* ===== HOT NEWS BAR ===== */
+.hotnews-bar{ display:flex; align-items:center; background: linear-gradient(90deg, rgba(58,143,217,0.18), rgba(13,42,74,0.22)); border-top:1px solid rgba(58,143,217,0.2); border-bottom:1px solid rgba(58,143,217,0.2); overflow:hidden; }
+.hotnews-label{ flex-shrink:0; display:flex; align-items:center; gap:6px; background:var(--blue-accent); color:#fff; font-size:11px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase; padding:0 16px; height:36px; white-space:nowrap; }
+.hotnews-track-wrap{ flex:1; min-width:0; overflow:hidden; height:36px; display:flex; align-items:center; }
+.hotnews-track{ display:flex; flex-shrink:0; white-space:nowrap; font-size:12.5px; font-weight:600; color:var(--text-main); animation: runningTextMove 32s linear infinite; }
+.hotnews-track span{ padding-right:50px; }
+.hotnews-track a{ color:inherit; text-decoration:none; }
+.hotnews-track a:hover{ color:var(--blue-bright); }
+@media(max-width:640px){
+  .hotnews-label{ font-size:10px; padding:0 10px; }
+  .hotnews-track{ font-size:11.5px; }
+  .top-ticker-bar .running-text-track{ font-size:10px; }
+}
+
+/* ===== STICKY HEADER WRAPPER ===== */
+.sticky-top-wrap{ position:sticky; top:0; z-index:100; background:var(--bg-carbon); }
+
+/* ===== LAYOUT 2 KOLOM + SIDEBAR ===== */
+.layout{ display:grid; grid-template-columns: 1fr 300px; gap:32px; padding:30px 0 20px; align-items:start; }
+@media(max-width:900px){ .layout{ grid-template-columns:1fr; } }
+
+aside.sidebar{
+  border:1px solid var(--card-border); border-radius:12px; padding:20px;
+  position:sticky; top:calc(var(--sticky-header-h, 0px) + 20px);
+  max-height:calc(100vh - var(--sticky-header-h, 0px) - 40px);
+  overflow-y:auto;
+}
+aside.sidebar::-webkit-scrollbar{ width:5px; }
+aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-radius:10px; }
+.sidebar-title{
+  font-size:12px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--blue-bright);
+  margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid rgba(58,143,217,0.2);
+}
+.accordion-item{ border-bottom:1px solid rgba(255,255,255,0.06); }
+.accordion-item:last-child{ border-bottom:none; }
+.accordion-head{
+  width:100%; background:none; border:none; color:var(--text-main); cursor:pointer;
+  display:flex; align-items:center; justify-content:space-between; padding:13px 2px;
+  font-size:13.5px; font-weight:600; text-align:left; font-family:inherit;
+}
+.accordion-head .count{ color:var(--text-faint); font-weight:400; font-size:12px; }
+.accordion-head .chevron{ transition:transform .2s; color:var(--blue-accent); font-size:11px; }
+.accordion-item.open .chevron{ transform:rotate(180deg); }
+.accordion-body{ max-height:0; overflow:hidden; transition:max-height .25s ease; }
+.accordion-item.open .accordion-body{ max-height:600px; }
+.arch-item{ display:flex; gap:10px; padding:10px 2px; align-items:flex-start; }
+.arch-thumb{ width:56px; aspect-ratio:4/3; height:auto; border-radius:5px; overflow:hidden; flex-shrink:0; border:1px solid var(--card-border); background:var(--bg-carbon-2); }
+.arch-thumb img{ width:100%; height:100%; object-fit:cover; }
+.arch-item-body{ min-width:0; flex:1; }
+.arch-item h5{
+  font-size:12.5px; font-weight:500; line-height:1.32; color:var(--text-dim);
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; margin-bottom:4px;
+}
+.arch-item:hover h5{ color:var(--blue-bright); }
+.arch-item .arch-date{ font-size:10px; color:var(--text-faint); }
 </style>
 </head>
 <body>
+<div class="sticky-top-wrap" id="stickyTopWrap">
+<div class="top-ticker-bar">
+  <div class="wrap">
+    <div class="running-text-box">
+      <div class="running-text-track">
+        <span>🔴 LIVE UPDATE - KAJIAN 4D NEWS &nbsp;|&nbsp; Portal Berita Update 2026 &nbsp;|&nbsp; Menyajikan Informasi Terkini Seputar Piala Dunia 2026, Sepak Bola Internasional, Teknologi, Bisnis, Hiburan, dan Berita Dunia. &nbsp;|&nbsp; Cepat • Akurat • Terpercaya • Update Setiap Hari &nbsp;&nbsp;&nbsp;</span>
+        <span>🔴 LIVE UPDATE - KAJIAN 4D NEWS &nbsp;|&nbsp; Portal Berita Update 2026 &nbsp;|&nbsp; Menyajikan Informasi Terkini Seputar Piala Dunia 2026, Sepak Bola Internasional, Teknologi, Bisnis, Hiburan, dan Berita Dunia. &nbsp;|&nbsp; Cepat • Akurat • Terpercaya • Update Setiap Hari &nbsp;&nbsp;&nbsp;</span>
+      </div>
+    </div>
+  </div>
+</div>
 
-<header class="site">
+<header class="site carbon-texture">
   <div class="header-top">
     <a class="brand" href="/berita">
       <div class="brand-logo"><img src="https://ik.imagekit.io/ehc8d8fve/kajian%20icon%20v5?updatedAt=1783465068596" alt="Logo"></div>
@@ -292,7 +392,19 @@ ${a.thumbnail ? `<meta property="og:image" content="${escapeHtml(a.thumbnail)}">
   <nav class="categories"><div class="wrap"><ul>${categoryTabs}</ul></div></nav>
 </header>
 
-<div class="wrap">
+<div class="hotnews-bar">
+  <div class="hotnews-label">🔥 Hot News</div>
+  <div class="hotnews-track-wrap">
+    <div class="hotnews-track" id="hotNewsTrack">
+      <span>Memuat berita terpopuler...</span>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div class="wrap layout">
+<main>
   <div class="breadcrumb">
     <a href="/berita">Beranda</a>
     <span class="sep">/</span>
@@ -321,11 +433,21 @@ ${a.thumbnail ? `<meta property="og:image" content="${escapeHtml(a.thumbnail)}">
     </div>
   </article>
 
-  <div class="section-label">
+ <div class="section-label">
     <span class="tag">Baca Juga</span>
     <h2>Berita lainnya di kategori <span class="kat-name">${escapeHtml(kat)}</span></h2>
   </div>
   <div class="bacajuga-grid">${bacaJugaHtml}</div>
+
+  </main>
+
+  <aside class="sidebar carbon-texture">
+    <div class="sidebar-title">Arsip Berita</div>
+    <div id="accordion"><div class="loading-state">Memuat arsip...</div></div>
+  </aside>
+</div>
+
+<div class="wrap">
   <div class="section-label">
     <span class="tag">Diskusi</span>
     <h2>Komentar Pembaca</h2>
@@ -340,7 +462,6 @@ ${a.thumbnail ? `<meta property="og:image" content="${escapeHtml(a.thumbnail)}">
     </form>
     <div id="commentsList"><div class="loading-state">Memuat komentar...</div></div>
   </div>
-</div>
 </div>
 
 <footer class="site ftr2">
@@ -366,6 +487,8 @@ ${a.thumbnail ? `<meta property="og:image" content="${escapeHtml(a.thumbnail)}">
         <li><span class="ftr2-dot"></span> Hub Kami</li>
       </ul>
     </div>
+    </div>
+    
   <div class="ftr2-divider"></div>
   <div class="ftr2-bottom">
     <div class="ftr2-bottom-inner">
@@ -378,6 +501,99 @@ ${a.thumbnail ? `<meta property="og:image" content="${escapeHtml(a.thumbnail)}">
   </div>
 </footer>
 <script>
+(function(){
+  function esc(str){
+    return (str || '').toString().replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+  function fmtDate(d){
+    if(!d) return '';
+    return new Date(d).toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
+  }
+  function articleUrl(a){ return '/berita/' + a.slug; }
+
+  function syncStickyHeaderHeight(){
+    const wrap = document.getElementById('stickyTopWrap');
+    if(!wrap) return;
+    const h = wrap.offsetHeight;
+    document.documentElement.style.setProperty('--sticky-header-h', h + 'px');
+  }
+
+  function renderSidebarArchive(articles){
+    const container = document.getElementById('accordion');
+    if(!container) return;
+    if(!articles.length){
+      container.innerHTML = '<div class="empty-state">Belum ada arsip.</div>';
+      return;
+    }
+    const groups = {};
+    articles.forEach(a => {
+      const key = fmtDate(a.tanggal) || 'Tanpa Tanggal';
+      groups[key] = groups[key] || [];
+      groups[key].push(a);
+    });
+    container.innerHTML = '';
+    Object.keys(groups).forEach((date) => {
+      const item = document.createElement('div');
+      item.className = 'accordion-item open';
+
+      const head = document.createElement('button');
+      head.className = 'accordion-head';
+      head.innerHTML = '<span>' + esc(date) + ' <span class="count">(' + groups[date].length + ')</span></span><span class="chevron">▾</span>';
+      head.onclick = () => item.classList.toggle('open');
+
+      const body = document.createElement('div');
+      body.className = 'accordion-body';
+      body.innerHTML = groups[date].map(a => `
+        <a href="${articleUrl(a)}" class="arch-item">
+          <div class="arch-thumb"><img src="${esc(a.thumbnail || '')}" alt=""></div>
+          <div class="arch-item-body">
+            <h5>${esc(a.judul)}</h5>
+            <span class="arch-date">${fmtDate(a.tanggal)}</span>
+          </div>
+        </a>
+      `).join('');
+
+      item.appendChild(head);
+      item.appendChild(body);
+      container.appendChild(item);
+    });
+  }
+
+  function renderHotNewsTicker(articles){
+    const track = document.getElementById('hotNewsTrack');
+    if(!track) return;
+    if(!articles.length){ track.innerHTML = '<span>Belum ada berita.</span>'; return; }
+
+    const highlighted = articles.filter(a => a.is_highlight);
+    const rest = articles.filter(a => !a.is_highlight).sort((a, b) => (b.views || 0) - (a.views || 0));
+    const hotPool = [...highlighted, ...rest].slice(0, 8);
+    if(!hotPool.length){ track.innerHTML = '<span>Belum ada berita.</span>'; return; }
+
+    const itemsHtml = hotPool.map(a => `<a href="${articleUrl(a)}">${esc(a.judul)}</a>`).join(' &nbsp;&nbsp;•&nbsp;&nbsp; ');
+    track.innerHTML = `<span>${itemsHtml}&nbsp;&nbsp;&nbsp;</span><span>${itemsHtml}&nbsp;&nbsp;&nbsp;</span>`;
+  }
+
+  async function initSidebarAndTicker(){
+    syncStickyHeaderHeight();
+    window.addEventListener('resize', syncStickyHeaderHeight);
+    try{
+      const res = await fetch('/api/articles');
+      const data = await res.json();
+      if(Array.isArray(data) && data.length){
+        renderSidebarArchive(data);
+        renderHotNewsTicker(data);
+      }
+    }catch(e){
+      const container = document.getElementById('accordion');
+      if(container) container.innerHTML = '<div class="empty-state">Gagal memuat arsip.</div>';
+    }
+    syncStickyHeaderHeight();
+  }
+
+  initSidebarAndTicker();
+})();
+</script>
+  <script>
 (function(){
   const SLUG = ${JSON.stringify(a.slug)};
   const GOOGLE_CLIENT_ID = ${JSON.stringify(process.env.GOOGLE_CLIENT_ID || '')};
