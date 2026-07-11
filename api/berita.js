@@ -396,7 +396,7 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
       ${bannerImgTag}${bannerFallback}
     </a>
   </div>
-  <nav class="categories"><div class="wrap" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;"><ul style="flex:1 1 auto;min-width:0;">${categoryTabs}</ul><img class="section-logo" src="https://ik.imagekit.io/ehc8d8fve/kajian%204d%20news.png" alt="KAJIAN4D" style="margin-left:0;flex-shrink:0;"></div></nav>
+  <nav class="categories"><div class="wrap"><ul>${categoryTabs}</ul></div></nav>
 </header>
 
 <div class="hotnews-bar">
@@ -440,19 +440,15 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
     </div>
   </article>
 
- <div class="section-label">
+<div class="section-label">
     <span class="tag">Baca Juga</span>
     <h2>Berita lainnya di kategori <span class="kat-name">${escapeHtml(kat)}</span></h2>
-    <img class="section-logo" src="https://ik.imagekit.io/ehc8d8fve/kajian%204d%20news.png" alt="KAJIAN4D">
   </div>
 
   </main>
 
-  <aside class="sidebar carbon-texture">
-    <div class="sidebar-title" style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
-      <span>Arsip Berita</span>
-      <img class="section-logo" src="https://ik.imagekit.io/ehc8d8fve/kajian%204d%20news.png" alt="KAJIAN4D" style="margin-left:0;">
-    </div>
+ <aside class="sidebar carbon-texture">
+    <div class="sidebar-title">Arsip Berita</div>
     <div id="accordion"><div class="loading-state">Memuat arsip...</div></div>
   </aside>
 </div>
@@ -476,9 +472,6 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
 
 <footer class="site ftr2">
   <div class="ftr2-notice"><b>KAJIAN4D</b> adalah platform berita bola premium yang menyediakan informasi akurat seputar Piala Dunia 2026. PORTAL BERITA TER-UPDATE DAN TERPERCAYA</div>
-  <div class="ftr2-logo-banner">
-    <img src="https://ik.imagekit.io/ehc8d8fve/kajian%204d%20news.png" alt="KAJIAN4D">
-  </div>
   <div class="ftr2-grid">
     <div class="ftr2-col">
       <div class="ftr2-brand-row">
