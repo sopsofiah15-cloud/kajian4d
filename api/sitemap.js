@@ -24,7 +24,7 @@ module.exports = async (req, res) => {
     const urls = [
       { loc: `${baseUrl}/berita`, lastmod: new Date().toISOString() },
       ...rows.map((r) => ({
-        loc: `${baseUrl}/berita/${r.slug}`,
+        loc: `${baseUrl}/berita/${encodeURI(r.slug)}`,
         lastmod: new Date(r.updated_at || Date.now()).toISOString(),
         image: r.thumbnail,
         title: r.judul,
