@@ -111,6 +111,24 @@ module.exports = async (req, res) => {
 <meta property="og:description" content="${escapeHtml(a.excerpt || '')}">
 ${a.thumbnail ? `<meta property="og:image" content="${escapeHtml(a.thumbnail)}">` : ''}
 <link rel="canonical" href="https://${req.headers.host}/berita/${escapeHtml(a.slug)}">
+<script type="application/ld+json">${JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'NewsArticle',
+  headline: a.judul,
+  description: a.excerpt || '',
+  image: a.thumbnail ? [a.thumbnail] : [],
+  datePublished: a.tanggal ? new Date(a.tanggal).toISOString() : new Date().toISOString(),
+  dateModified: a.updated_at ? new Date(a.updated_at).toISOString() : new Date().toISOString(),
+  author: { '@type': 'Organization', name: 'KAJIAN4D' },
+  publisher: {
+    '@type': 'Organization',
+    name: 'KAJIAN4D',
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://ik.imagekit.io/ehc8d8fve/kajian%20icon%20v5?updatedAt=1783465068596',
+    },
+  },
+})}</script>
 <link rel="icon" type="image/png" href="https://ik.imagekit.io/ehc8d8fve/kajian%20icon%20v5?updatedAt=1783465068596">
 <style>
   :root{
