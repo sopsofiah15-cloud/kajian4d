@@ -330,10 +330,16 @@ body{
   .slide-viewport{ position:absolute; inset:0; overflow:hidden; border-radius:10px; }
   .slide-track{ display:flex; height:100%; width:100%; will-change:transform; }
   .slide-track.animate{ transition:transform .6s cubic-bezier(.4,0,.2,1); }
-  .slide-pane{ position:relative; flex:0 0 100%; height:100%; overflow:hidden; }
-  .slide-pane img{
+  .slide-pane{ position:relative; flex:0 0 100%; height:100%; overflow:hidden; background:var(--bg-carbon-2); }
+.slide-pane-bg{
     position:absolute; inset:0; width:100%; height:100%;
     object-fit:cover; object-position:center;
+    filter:blur(18px) brightness(0.55); transform:scale(1.15);
+  }
+.slide-pane-fg{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:contain; object-position:center;
+    z-index:1;
   }
   .card-overlay{
     position:absolute; inset:0; z-index:2; display:flex; flex-direction:column; justify-content:flex-end; padding:14px 16px;
@@ -919,8 +925,9 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
         <div class="slide-track">
           ${articles.map(a => `
             <a class="slide-pane" href="${articleUrl(a)}">
-              <img src="${esc(a.thumbnail || '')}" alt="">
-              <div class="card-overlay">
+  <img class="slide-pane-bg" src="${esc(a.thumbnail || '')}" alt="" aria-hidden="true">
+  <img class="slide-pane-fg" src="${esc(a.thumbnail || '')}" alt="">
+  <div class="card-overlay">
                 <div class="badge-row">
                   ${a.is_highlight ? '<span class="badge highlight-badge">Highlight</span>' : ''}
                   <span class="badge">${esc(primaryKat(a))}</span>
