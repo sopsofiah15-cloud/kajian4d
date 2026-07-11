@@ -134,6 +134,7 @@ ${a.thumbnail ? `<meta property="og:image" content="${escapeHtml(a.thumbnail)}">
   },
 })}</script>
 <link rel="icon" type="image/png" href="https://ik.imagekit.io/ehc8d8fve/kajian%20icon%20v5?updatedAt=1783465068596">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
   :root{
     --bg-carbon:#0b0d10; --bg-carbon-2:#14171b; --line-diag: rgba(255,255,255,0.025);
@@ -325,6 +326,21 @@ ${a.thumbnail ? `<meta property="og:image" content="${escapeHtml(a.thumbnail)}">
     <h2>Berita lainnya di kategori <span class="kat-name">${escapeHtml(kat)}</span></h2>
   </div>
   <div class="bacajuga-grid">${bacaJugaHtml}</div>
+  <div class="section-label">
+    <span class="tag">Diskusi</span>
+    <h2>Komentar Pembaca</h2>
+  </div>
+  <div class="comments-section" id="commentsSection">
+    <div id="commentLoginArea"></div>
+    <form id="commentForm" style="display:none;margin-bottom:24px;">
+      <textarea id="commentInput" placeholder="Tulis komentar kamu..." maxlength="1000" required
+        style="width:100%;min-height:90px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:8px;padding:12px;color:var(--text-main);font-family:inherit;font-size:13.5px;resize:vertical;"></textarea>
+      <button type="submit" style="margin-top:8px;background:var(--blue-accent);color:#fff;border:none;padding:9px 20px;border-radius:6px;font-weight:600;font-size:13px;cursor:pointer;">Kirim Komentar</button>
+      <span id="commentStatus" style="margin-left:12px;font-size:12px;color:var(--text-dim);"></span>
+    </form>
+    <div id="commentsList"><div class="loading-state">Memuat komentar...</div></div>
+  </div>
+</div>
 </div>
 
 <footer class="site ftr2">
@@ -350,7 +366,6 @@ ${a.thumbnail ? `<meta property="og:image" content="${escapeHtml(a.thumbnail)}">
         <li><span class="ftr2-dot"></span> Hub Kami</li>
       </ul>
     </div>
-  </div>
   <div class="ftr2-divider"></div>
   <div class="ftr2-bottom">
     <div class="ftr2-bottom-inner">
@@ -362,7 +377,101 @@ ${a.thumbnail ? `<meta property="og:image" content="${escapeHtml(a.thumbnail)}">
     <a class="ftr2-top-btn" href="#" title="Kembali ke atas">↑</a>
   </div>
 </footer>
+<script>
+(function(){
+  const SLUG = ${JSON.stringify(a.slug)};
+  const GOOGLE_CLIENT_ID = ${JSON.stringify(process.env.GOOGLE_CLIENT_ID || '')};
+  let currentIdToken = null;
 
+  function esc(str){
+    return (str || '').toString().replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+  function timeAgo(dateStr){
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diff / 60000);
+    if(mins < 1) return 'baru saja';
+    if(mins < 60) return mins + ' menit lalu';
+    const hours = Math.floor(mins / 60);
+    if(hours < 24) return hours + ' jam lalu';
+    const days = Math.floor(hours / 24);
+    if(days < 30) return days + ' hari lalu';
+    return new Date(dateStr).toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
+  }
+
+  async function loadComments(){
+    const listEl = document.getElementById('commentsList');
+    try{
+      const res = await fetch('/api/comments?slug=' + encodeURIComponent(SLUG));
+      const data = await res.json();
+      if(!Array.isArray(data) || data.length === 0){
+        listEl.innerHTML = '<div class="empty-state">Belum ada komentar. Jadilah yang pertama!</div>';
+        return;
+      }
+      listEl.innerHTML = data.map(c => \`
+        <div style="display:flex;gap:12px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
+          <img src="\${esc(c.user_photo || '')}" alt="" style="width:36px;height:36px;border-radius:50%;flex-shrink:0;background:var(--card-bg);">
+          <div style="flex:1;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+              <strong style="font-size:13px;color:var(--text-main);">\${esc(c.user_name)}</strong>
+              <span style="font-size:11px;color:var(--text-faint);">\${timeAgo(c.created_at)}</span>
+            </div>
+            <p style="font-size:13.5px;color:#c9d2db;line-height:1.5;">\${esc(c.content)}</p>
+          </div>
+        </div>
+      \`).join('');
+    }catch(e){
+      listEl.innerHTML = '<div class="empty-state">Gagal memuat komentar.</div>';
+    }
+  }
+
+  function handleGoogleLogin(response){
+    currentIdToken = response.credential;
+    document.getElementById('commentLoginArea').innerHTML = '<p style="font-size:12.5px;color:var(--text-dim);margin-bottom:14px;">✓ Login berhasil, silakan tulis komentar.</p>';
+    document.getElementById('commentForm').style.display = 'block';
+  }
+  window.handleGoogleLogin = handleGoogleLogin;
+
+  function initGoogleLogin(){
+    if(!GOOGLE_CLIENT_ID || !window.google) return;
+    google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: handleGoogleLogin,
+    });
+    google.accounts.id.renderButton(
+      document.getElementById('commentLoginArea'),
+      { theme: 'filled_blue', size: 'medium', text: 'signin_with' }
+    );
+  }
+
+  document.getElementById('commentForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    const input = document.getElementById('commentInput');
+    const statusEl = document.getElementById('commentStatus');
+    const content = input.value.trim();
+    if(!content || !currentIdToken) return;
+
+    statusEl.textContent = 'Mengirim...';
+    try{
+      const res = await fetch('/api/comments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slug: SLUG, content, id_token: currentIdToken }),
+      });
+      const data = await res.json();
+      if(!res.ok) throw new Error(data.error || 'Gagal mengirim komentar.');
+      input.value = '';
+      statusEl.textContent = 'Terkirim!';
+      loadComments();
+      setTimeout(() => { statusEl.textContent = ''; }, 3000);
+    }catch(err){
+      statusEl.textContent = err.message;
+    }
+  });
+
+  loadComments();
+  window.addEventListener('load', () => setTimeout(initGoogleLogin, 300));
+})();
+</script>
 </body>
 </html>`;
     res.status(200).send(html);
