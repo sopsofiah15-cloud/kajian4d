@@ -188,12 +188,13 @@ nav.tabs button:not(.active):hover{border-color:var(--line);color:var(--text);}
   .toolbar button:hover{background:#1c1d20;border-color:var(--line);}
   .toolbar select.toolbar-select{
   background:#0e0f10;border:1px solid var(--line);color:var(--text);
-  border-radius:7px;padding:0 8px;height:34px;font-size:12px;cursor:pointer;outline:none;
+  border-radius:7px;padding:0 6px;height:34px;font-size:12px;cursor:pointer;outline:none;
+  width:auto; max-width:110px; flex:0 0 auto;
 }
 .toolbar select.toolbar-select:hover{border-color:var(--gold);}
 .toolbar input[type="color"]{
   width:34px;height:34px;border:1px solid var(--line);border-radius:7px;
-  background:#0e0f10;cursor:pointer;padding:2px;
+  background:#0e0f10;cursor:pointer;padding:2px;flex:0 0 auto;
 }
   .toolbar .divider{width:1px;background:var(--line);margin:4px 4px;}
   #editor{
@@ -530,15 +531,33 @@ nav.tabs button:not(.active):hover{border-color:var(--line);color:var(--text);}
   <option value="'Courier New', monospace">Courier New</option>
   <option value="Verdana, sans-serif">Verdana</option>
   <option value="'Segoe UI', sans-serif">Segoe UI</option>
+  <option value="Tahoma, sans-serif">Tahoma</option>
+  <option value="'Trebuchet MS', sans-serif">Trebuchet MS</option>
+  <option value="'Roboto', sans-serif">Roboto</option>
+  <option value="'Open Sans', sans-serif">Open Sans</option>
+  <option value="'Poppins', sans-serif">Poppins</option>
+  <option value="'Montserrat', sans-serif">Montserrat</option>
+  <option value="'Lato', sans-serif">Lato</option>
+  <option value="'Playfair Display', serif">Playfair Display</option>
+  <option value="'Merriweather', serif">Merriweather</option>
+  <option value="'Comic Sans MS', cursive">Comic Sans MS</option>
+  <option value="Impact, sans-serif">Impact</option>
+  <option value="'Consolas', monospace">Consolas</option>
 </select>
 <select class="toolbar-select" title="Ukuran Huruf" onchange="execFontSize(this.value)">
   <option value="">Ukuran</option>
-  <option value="1">Kecil</option>
-  <option value="3">Normal</option>
-  <option value="4">Sedang</option>
-  <option value="5">Besar</option>
-  <option value="6">Sangat Besar</option>
-  <option value="7">Ekstra Besar</option>
+  <option value="10">10px</option>
+  <option value="12">12px</option>
+  <option value="14">14px</option>
+  <option value="16">16px</option>
+  <option value="18">18px</option>
+  <option value="20">20px</option>
+  <option value="24">24px</option>
+  <option value="28">28px</option>
+  <option value="32">32px</option>
+  <option value="36">36px</option>
+  <option value="48">48px</option>
+  <option value="64">64px</option>
 </select>
 <input type="color" title="Warna Teks" value="#e9e7e0" onchange="execColor(this.value)">
 <div class="divider"></div>
@@ -745,11 +764,20 @@ function execFontName(font){
   editor.focus();
   document.execCommand('fontName', false, font);
 }
-function execFontSize(size){
-  if(!size) return;
+
+function execFontSize(px){
+  if(!px) return;
   editor.focus();
-  document.execCommand('fontSize', false, size);
+  // trik: pakai execCommand fontSize dengan size legacy "7" (nilai unik/gak dipakai)
+  // lalu semua <font size="7"> hasilnya kita ganti jadi span dengan font-size asli (px)
+  document.execCommand('fontSize', false, '7');
+  const fontTags = editor.querySelectorAll('font[size="7"]');
+  fontTags.forEach(tag => {
+    tag.removeAttribute('size');
+    tag.style.fontSize = px + 'px';
+  });
 }
+
 function execColor(color){
   editor.focus();
   document.execCommand('foreColor', false, color);
