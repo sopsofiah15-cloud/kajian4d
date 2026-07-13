@@ -186,16 +186,6 @@ nav.tabs button:not(.active):hover{border-color:var(--line);color:var(--text);}
     display:flex;align-items:center;justify-content:center;
   }
   .toolbar button:hover{background:#1c1d20;border-color:var(--line);}
-  .toolbar select.toolbar-select{
-  background:#0e0f10;border:1px solid var(--line);color:var(--text);
-  border-radius:7px;padding:0 6px;height:34px;font-size:12px;cursor:pointer;outline:none;
-  width:auto; max-width:110px; flex:0 0 auto;
-}
-.toolbar select.toolbar-select:hover{border-color:var(--gold);}
-.toolbar input[type="color"]{
-  width:34px;height:34px;border:1px solid var(--line);border-radius:7px;
-  background:#0e0f10;cursor:pointer;padding:2px;flex:0 0 auto;
-}
   .toolbar .divider{width:1px;background:var(--line);margin:4px 4px;}
   #editor{
     min-height:260px; padding:16px; border:1px solid var(--line); border-top:none;
@@ -309,199 +299,6 @@ nav.tabs button:not(.active):hover{border-color:var(--line);color:var(--text);}
   }
   #imgInsertPreview img, #imgInsertPreview video{max-width:100%; max-height:210px; width:auto; height:auto; object-fit:contain; border-radius:6px;}
   #imgInsertPreview span{color:var(--muted);font-size:12px;}
-  .badge-row{
-  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
-  background:#0e0f10; border:1px solid var(--line); border-radius:8px;
-  padding:12px 14px; margin-bottom:10px;
-}
-.badge-row .badge-label{
-  min-width:110px; font-size:13px; font-weight:600; color:var(--text);
-}
-.badge-row input[type="text"]{
-  flex:1; min-width:120px; padding:8px 10px; border-radius:7px;
-  background:#0b0c0d; border:1px solid var(--line); color:var(--text); font-size:13px;
-}
-.badge-row input[type="color"]{
-  width:36px; height:36px; border:1px solid var(--line); border-radius:7px;
-  background:#0b0c0d; cursor:pointer; padding:2px; flex:0 0 auto;
-}
-.badge-row select{
-  padding:8px 10px; border-radius:7px; background:#0b0c0d; border:1px solid var(--line);
-  color:var(--text); font-size:12px; cursor:pointer; flex:0 0 auto; max-width:150px;
-}
-.badge-preview-pill{
-  display:inline-block; padding:5px 12px; border-radius:20px; font-weight:700;
-  flex:0 0 auto; white-space:nowrap;
-}
-.badge-row .del-badge{
-  background:transparent; border:1px solid var(--line); color:var(--muted);
-  padding:7px 10px; border-radius:6px; cursor:pointer; font-size:12px; flex:0 0 auto;
-}
-.badge-row .del-badge:hover{color:var(--danger); border-color:var(--danger);}
-  /* =====================================================
-   PENGATURAN BADGE (kategori + custom)
-===================================================== */
-const BADGE_FONT_OPTIONS = [
-  { v:"", l:"Font Default" },
-  { v:"Arial, sans-serif", l:"Arial" },
-  { v:"'Segoe UI', sans-serif", l:"Segoe UI" },
-  { v:"Verdana, sans-serif", l:"Verdana" },
-  { v:"Tahoma, sans-serif", l:"Tahoma" },
-  { v:"'Trebuchet MS', sans-serif", l:"Trebuchet MS" },
-  { v:"Georgia, serif", l:"Georgia" },
-  { v:"'Times New Roman', serif", l:"Times New Roman" },
-  { v:"'Roboto', sans-serif", l:"Roboto" },
-  { v:"'Poppins', sans-serif", l:"Poppins" },
-  { v:"'Montserrat', sans-serif", l:"Montserrat" },
-  { v:"'Lato', sans-serif", l:"Lato" },
-  { v:"Impact, sans-serif", l:"Impact" }
-];
-const BADGE_SIZE_OPTIONS = [10,11,12,13,14,16,18,20,24];
-
-let badgeSettings = {
-  kategori: {},   // { "SEPAK BOLA": {color:"#2196f3", fontSize:12, fontFamily:""} }
-  custom: []      // [{ id:"info-terkini", label:"INFO TERKINI", color:"#2196f3", fontSize:12, fontFamily:"" }]
-};
-
-function defaultBadgeStyle(){
-  return { color:"#2196f3", fontSize:12, fontFamily:"" };
-}
-
-function fontSelectHtml(selectedVal, onchangeAttr){
-  return `<select ${onchangeAttr}>` + BADGE_FONT_OPTIONS.map(f =>
-    `<option value="${f.v}" ${f.v===selectedVal?'selected':''}>${f.l}</option>`
-  ).join('') + `</select>`;
-}
-function sizeSelectHtml(selectedVal, onchangeAttr){
-  return `<select ${onchangeAttr}>` + BADGE_SIZE_OPTIONS.map(s =>
-    `<option value="${s}" ${String(s)===String(selectedVal)?'selected':''}>${s}px</option>`
-  ).join('') + `</select>`;
-}
-
-function renderBadgeSettingsUI(){
-  // --- Kategori badges ---
-  const katBox = document.getElementById('kategoriBadgeList');
-  katBox.innerHTML = KATEGORI_LIST.map(k => {
-    const st = badgeSettings.kategori[k] || defaultBadgeStyle();
-    const safeKey = k.replace(/'/g,"\\'");
-    return `
-      <div class="badge-row" data-kategori="${escapeHtml(k)}">
-        <span class="badge-label">${escapeHtml(titleCaseKategori(k))}</span>
-        <span class="badge-preview-pill" id="preview-kat-${escapeHtml(k)}"
-          style="background:${st.color};color:#191203;font-size:${st.fontSize}px;font-family:${st.fontFamily||'inherit'};">
-          ${escapeHtml(titleCaseKategori(k))}
-        </span>
-        <input type="color" value="${st.color}" onchange="updateKategoriBadge('${safeKey}','color',this.value)">
-        ${sizeSelectHtml(st.fontSize, `onchange="updateKategoriBadge('${safeKey}','fontSize',this.value)"`)}
-        ${fontSelectHtml(st.fontFamily, `onchange="updateKategoriBadge('${safeKey}','fontFamily',this.value)"`)}
-      </div>`;
-  }).join('');
-
-  // --- Custom badges ---
-  const custBox = document.getElementById('customBadgeList');
-  if(badgeSettings.custom.length === 0){
-    custBox.innerHTML = `<p class="hint">Belum ada badge custom. Klik "+ Tambah Badge Custom" untuk membuat.</p>`;
-  } else {
-    custBox.innerHTML = badgeSettings.custom.map((b, idx) => `
-      <div class="badge-row" data-idx="${idx}">
-        <input type="text" placeholder="Contoh: INFO TERKINI" value="${escapeHtml(b.label)}"
-          oninput="updateCustomBadge(${idx},'label',this.value)">
-        <span class="badge-preview-pill" id="preview-cust-${idx}"
-          style="background:${b.color};color:#191203;font-size:${b.fontSize}px;font-family:${b.fontFamily||'inherit'};">
-          ${escapeHtml(b.label || 'PREVIEW')}
-        </span>
-        <input type="color" value="${b.color}" onchange="updateCustomBadge(${idx},'color',this.value)">
-        ${sizeSelectHtml(b.fontSize, `onchange="updateCustomBadge(${idx},'fontSize',this.value)"`)}
-        ${fontSelectHtml(b.fontFamily, `onchange="updateCustomBadge(${idx},'fontFamily',this.value)"`)}
-        <button type="button" class="del-badge" onclick="removeCustomBadge(${idx})">Hapus</button>
-      </div>`).join('');
-  }
-}
-
-function updateKategoriBadge(kategori, field, value){
-  if(!badgeSettings.kategori[kategori]) badgeSettings.kategori[kategori] = defaultBadgeStyle();
-  badgeSettings.kategori[kategori][field] = (field==='fontSize') ? Number(value) : value;
-  const pill = document.getElementById('preview-kat-' + kategori);
-  if(pill){
-    const st = badgeSettings.kategori[kategori];
-    pill.style.background = st.color;
-    pill.style.fontSize = st.fontSize + 'px';
-    pill.style.fontFamily = st.fontFamily || 'inherit';
-  }
-}
-
-function addCustomBadge(){
-  badgeSettings.custom.push({
-    id: 'badge-' + Date.now(),
-    label: '',
-    color: '#2196f3',
-    fontSize: 12,
-    fontFamily: ''
-  });
-  renderBadgeSettingsUI();
-}
-
-function updateCustomBadge(idx, field, value){
-  const b = badgeSettings.custom[idx];
-  if(!b) return;
-  b[field] = (field==='fontSize') ? Number(value) : value;
-  if(field==='label'){
-    b.id = slugify(value) || b.id;
-  }
-  const pill = document.getElementById('preview-cust-' + idx);
-  if(pill){
-    pill.textContent = b.label || 'PREVIEW';
-    pill.style.background = b.color;
-    pill.style.fontSize = b.fontSize + 'px';
-    pill.style.fontFamily = b.fontFamily || 'inherit';
-  }
-}
-
-function removeCustomBadge(idx){
-  badgeSettings.custom.splice(idx, 1);
-  renderBadgeSettingsUI();
-}
-
-async function saveBadgeSettings(){
-  try{
-    // ambil settings lain yang sudah ada dulu, biar tidak ketimpa
-    let existing = {};
-    try{
-      const r = await fetch('/api/settings');
-      if(r.ok) existing = await r.json();
-    }catch(e){}
-
-    const resp = await fetch('/api/settings', {
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+getToken()},
-      body: JSON.stringify({
-        header_image: existing.header_image || '',
-        banner_link: existing.banner_link || '',
-        custom_html: existing.custom_html || '',
-        badge_settings: badgeSettings
-      })
-    });
-    const json = await resp.json();
-    if(!resp.ok) throw new Error(json.error || 'Gagal menyimpan');
-    showToast('Pengaturan badge berhasil disimpan.');
-  }catch(e){
-    showToast('Gagal: ' + e.message);
-  }
-}
-
-async function loadBadgeSettings(){
-  try{
-    const resp = await fetch('/api/settings');
-    const data = await resp.json();
-    if(!resp.ok) return;
-    if(data.badge_settings){
-      badgeSettings = {
-        kategori: data.badge_settings.kategori || {},
-        custom: data.badge_settings.custom || []
-      };
-    }
-  }catch(e){}
-}
 </style>
 </head>
 <body>
@@ -636,7 +433,7 @@ async function loadBadgeSettings(){
     <nav class="tabs">
       <button class="active" data-tab="write" onclick="switchTab('write')">Tulis Berita</button>
       <button data-tab="header" onclick="switchTab('header')">Pengaturan Header</button>
-      <button data-tab="badge" onclick="switchTab('badge')">Pengaturan Badge</button>
+      <button data-tab="list" onclick="switchTab('list')">Daftar Berita</button>
     </nav>
     <div class="login-as">Login Sebagai <b id="whoAmI">Admin Kajian News</b></div>
   </div>
@@ -716,44 +513,6 @@ async function loadBadgeSettings(){
         <button type="button" title="Italic" style="font-style:italic" onclick="exec('italic')">I</button>
         <button type="button" title="Underline" style="text-decoration:underline" onclick="exec('underline')">U</button>
         <div class="divider"></div>
-        <select class="toolbar-select" title="Jenis Huruf" onchange="execFontName(this.value)">
-  <option value="">Font</option>
-  <option value="Arial, sans-serif">Arial</option>
-  <option value="'Times New Roman', serif">Times New Roman</option>
-  <option value="Georgia, serif">Georgia</option>
-  <option value="'Courier New', monospace">Courier New</option>
-  <option value="Verdana, sans-serif">Verdana</option>
-  <option value="'Segoe UI', sans-serif">Segoe UI</option>
-  <option value="Tahoma, sans-serif">Tahoma</option>
-  <option value="'Trebuchet MS', sans-serif">Trebuchet MS</option>
-  <option value="'Roboto', sans-serif">Roboto</option>
-  <option value="'Open Sans', sans-serif">Open Sans</option>
-  <option value="'Poppins', sans-serif">Poppins</option>
-  <option value="'Montserrat', sans-serif">Montserrat</option>
-  <option value="'Lato', sans-serif">Lato</option>
-  <option value="'Playfair Display', serif">Playfair Display</option>
-  <option value="'Merriweather', serif">Merriweather</option>
-  <option value="'Comic Sans MS', cursive">Comic Sans MS</option>
-  <option value="Impact, sans-serif">Impact</option>
-  <option value="'Consolas', monospace">Consolas</option>
-</select>
-<select class="toolbar-select" title="Ukuran Huruf" onchange="execFontSize(this.value)">
-  <option value="">Ukuran</option>
-  <option value="10">10px</option>
-  <option value="12">12px</option>
-  <option value="14">14px</option>
-  <option value="16">16px</option>
-  <option value="18">18px</option>
-  <option value="20">20px</option>
-  <option value="24">24px</option>
-  <option value="28">28px</option>
-  <option value="32">32px</option>
-  <option value="36">36px</option>
-  <option value="48">48px</option>
-  <option value="64">64px</option>
-</select>
-<input type="color" title="Warna Teks" value="#e9e7e0" onchange="execColor(this.value)">
-<div class="divider"></div>
         <button type="button" title="Bullet List" onclick="exec('insertUnorderedList')">•≡</button>
         <button type="button" title="Numbered List" onclick="exec('insertOrderedList')">1≡</button>
         <div class="divider"></div>
@@ -821,27 +580,7 @@ async function loadBadgeSettings(){
         <div class="pagination-bar" id="paginationBar"></div>
       </div>
     </section>
-<!-- ===== TAB: PENGATURAN BADGE ===== -->
-<section id="tab-badge" style="display:none;">
-  <div class="panel">
-    <h2>Pengaturan Badge Kategori</h2>
-    <p class="hint">Atur warna, ukuran, dan jenis font badge untuk tiap kategori berita. Perubahan langsung berlaku di semua section kategori tersebut tanpa edit script.</p>
-    <div id="kategoriBadgeList"></div>
-  </div>
 
-  <div class="panel">
-    <h2>Badge Custom Section</h2>
-    <p class="hint">Buat badge bebas (contoh: "INFO TERKINI", "TERPOPULER", "EKSKLUSIF") lengkap dengan warna, ukuran, dan font sendiri.</p>
-    <div id="customBadgeList"></div>
-    <div class="row-actions">
-      <button class="btn btn-ghost" onclick="addCustomBadge()">+ Tambah Badge Custom</button>
-    </div>
-  </div>
-
-  <div class="row-actions">
-    <button class="btn btn-gold" style="width:auto" onclick="saveBadgeSettings()">Simpan Pengaturan Badge</button>
-  </div>
-</section>
   </main>
 </div>
 
@@ -948,8 +687,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminPanel').style.display = 'block';
     renderArticleList();
-loadHeaderSettings();
-loadBadgeSettings();
+    loadHeaderSettings();
   }
 });
 
@@ -960,11 +698,9 @@ function switchTab(name){
   document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
   document.querySelector(`nav.tabs button[data-tab="${name}"]`).classList.add('active');
   document.getElementById('tab-write').style.display  = name==='write'  ? 'block' : 'none';
-  document.getElementById('tab-header').style.display = name==='header' ? 'block' : 'none';
-  document.getElementById('tab-list').style.display   = name==='list'  ? 'block' : 'none';
-  document.getElementById('tab-badge').style.display  = name==='badge' ? 'block' : 'none';
+  document.getElementById('tab-header').style.display  = name==='header' ? 'block' : 'none';
+  document.getElementById('tab-list').style.display    = name==='list'  ? 'block' : 'none';
   if(name==='list') renderArticleList();
-  if(name==='badge') renderBadgeSettingsUI();
 }
 
 /* =====================================================
@@ -975,29 +711,7 @@ function exec(cmd){
   editor.focus();
   document.execCommand(cmd, false, null);
 }
-function execFontName(font){
-  if(!font) return;
-  editor.focus();
-  document.execCommand('fontName', false, font);
-}
 
-function execFontSize(px){
-  if(!px) return;
-  editor.focus();
-  // trik: pakai execCommand fontSize dengan size legacy "7" (nilai unik/gak dipakai)
-  // lalu semua <font size="7"> hasilnya kita ganti jadi span dengan font-size asli (px)
-  document.execCommand('fontSize', false, '7');
-  const fontTags = editor.querySelectorAll('font[size="7"]');
-  fontTags.forEach(tag => {
-    tag.removeAttribute('size');
-    tag.style.fontSize = px + 'px';
-  });
-}
-
-function execColor(color){
-  editor.focus();
-  document.execCommand('foreColor', false, color);
-}
 /* =====================================================
    SLUG AUTO GENERATE
 ===================================================== */
