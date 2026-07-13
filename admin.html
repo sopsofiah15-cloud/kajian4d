@@ -431,92 +431,93 @@
   <main>
 
     <!-- ===== TAB: TULIS BERITA ===== -->
-    <section id="tab-write">
-      <div class="panel">
-        <h2>Tulis / Edit Artikel</h2>
-        <p class="hint">Isi detail artikel di bawah ini. Slug akan dibuat otomatis dari judul jika dikosongkan.</p>
+<section id="tab-write">
+  <div class="panel">
+    <h2>Tulis / Edit Artikel</h2>
+    <p class="hint">Isi detail artikel di bawah ini. Slug akan dibuat otomatis dari judul jika dikosongkan.</p>
 
-        <div class="grid2">
-          <div class="field">
-            <label>Judul Artikel</label>
-            <input type="text" id="fJudul" placeholder="Contoh: Jadwal Lengkap Piala Dunia 2026" oninput="autoSlug()">
-          </div>
-          <div class="field">
-            <label>Slug (URL artikel, otomatis jika kosong)</label>
-            <input type="text" id="fSlug" placeholder="jadwal-lengkap-piala-dunia-2026">
-          </div>
-        </div>
+    <div class="row-actions" style="margin-top:0;margin-bottom:20px;">
+      <button class="btn btn-gold" style="width:auto" onclick="saveArticle()">POST BERITA</button>
+      <button class="btn btn-ghost" onclick="clearForm()">Bersihkan Form</button>
+    </div>
 
-        <div class="field">
-          <label>Excerpt / Ringkasan Artikel</label>
-          <textarea id="fExcerpt" rows="3" placeholder="Ringkasan singkat artikel yang tampil di daftar berita..."></textarea>
-        </div>
+    <div class="grid2">
+      <div class="field">
+        <label>Judul Artikel</label>
+        <input type="text" id="fJudul" placeholder="Contoh: Jadwal Lengkap Piala Dunia 2026" oninput="autoSlug()">
+      </div>
+      <div class="field">
+        <label>Slug (URL artikel, otomatis jika kosong)</label>
+        <input type="text" id="fSlug" placeholder="jadwal-lengkap-piala-dunia-2026">
+      </div>
+    </div>
 
-        <div class="grid2">
-          <div class="field">
-            <label>Kategori (boleh pilih lebih dari satu)</label>
-            <div class="kategori-checkboxes">
-              <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="SEPAK BOLA"> Sepak Bola</label>
-              <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="TEKNOLOGI"> Teknologi</label>
-              <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="OLAHRAGA"> Olahraga</label>
-              <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="HIBURAN"> Hiburan</label>
-              <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="BISNIS"> Bisnis</label>
-              <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="DUNIA"> DUNIA</label>
-            </div>
-          </div>
-          <div class="field">
-            <label>Tanggal Publish</label>
-            <input type="date" id="fTanggal" value="2026-07-06">
-          </div>
-        </div>
+    <div class="field">
+      <label>Excerpt / Ringkasan Artikel</label>
+      <textarea id="fExcerpt" rows="3" placeholder="Ringkasan singkat artikel yang tampil di daftar berita..."></textarea>
+    </div>
 
-        <div class="field">
-          <label class="highlight-toggle">
-            <input type="checkbox" id="fHighlight">
-            Jadikan Highlight (tampil di kartu highlight utama / carousel beranda)
-          </label>
-        </div>
-
-        <div class="field">
-          <label>Thumbnail Artikel (Gambar / GIF / Video)</label>
-          <div class="thumb-tabs">
-            <button type="button" class="active" id="tabLinkBtn" onclick="switchThumbMode('link')">Link Gambar/Video (Media)</button>
-            <button type="button" id="tabUploadBtn" onclick="switchThumbMode('upload')">Upload dari Storage</button>
-          </div>
-          <div class="thumb-pane active" id="thumbPaneLink">
-            <input type="text" id="fThumbLink" placeholder="https://contoh.com/gambar-thumbnail.jpg / .gif / .mp4" oninput="previewThumb('link')">
-          </div>
-          <div class="thumb-pane" id="thumbPaneUpload">
-            <input type="file" id="fThumbFile" accept="image/*,video/*" onchange="previewThumb('upload')">
-          </div>
-          <div class="thumb-preview" id="thumbPreview"><span>Belum ada gambar/video dipilih</span></div>
-        </div>
-
-        <div class="field">
-          <label>Isi Artikel</label>
-          <div class="toolbar">
-            <button type="button" title="Undo" onclick="exec('undo')">↺</button>
-            <button type="button" title="Redo" onclick="exec('redo')">↻</button>
-            <div class="divider"></div>
-            <button type="button" title="Bold" style="font-weight:800" onclick="exec('bold')">B</button>
-            <button type="button" title="Italic" style="font-style:italic" onclick="exec('italic')">I</button>
-            <button type="button" title="Underline" style="text-decoration:underline" onclick="exec('underline')">U</button>
-            <div class="divider"></div>
-            <button type="button" title="Bullet List" onclick="exec('insertUnorderedList')">•≡</button>
-            <button type="button" title="Numbered List" onclick="exec('insertOrderedList')">1≡</button>
-            <div class="divider"></div>
-            <button type="button" title="Insert/Edit Link" onclick="openLinkModal()">🔗</button>
-            <button type="button" title="Sisipkan Gambar/GIF/Video" onclick="openImageModal()">🖼️</button>
-          </div>
-          <div id="editor" contenteditable="true" data-placeholder="Mulai tulis isi berita di sini..."></div>
-        </div>
-
-        <div class="row-actions">
-          <button class="btn btn-gold" style="width:auto" onclick="saveArticle()">POST BERITA</button>
-          <button class="btn btn-ghost" onclick="clearForm()">Bersihkan Form</button>
+    <div class="grid2">
+      <div class="field">
+        <label>Kategori (boleh pilih lebih dari satu)</label>
+        <div class="kategori-checkboxes">
+          <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="SEPAK BOLA"> Sepak Bola</label>
+          <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="TEKNOLOGI"> Teknologi</label>
+          <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="OLAHRAGA"> Olahraga</label>
+          <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="HIBURAN"> Hiburan</label>
+          <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="BISNIS"> Bisnis</label>
+          <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="DUNIA"> DUNIA</label>
         </div>
       </div>
-    </section>
+      <div class="field">
+        <label>Tanggal Publish</label>
+        <input type="date" id="fTanggal" value="2026-07-06">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="highlight-toggle">
+        <input type="checkbox" id="fHighlight">
+        Jadikan Highlight (tampil di kartu highlight utama / carousel beranda)
+      </label>
+    </div>
+
+    <div class="field">
+      <label>Thumbnail Artikel (Gambar / GIF / Video)</label>
+      <div class="thumb-tabs">
+        <button type="button" class="active" id="tabLinkBtn" onclick="switchThumbMode('link')">Link Gambar/Video (Media)</button>
+        <button type="button" id="tabUploadBtn" onclick="switchThumbMode('upload')">Upload dari Storage</button>
+      </div>
+      <div class="thumb-pane active" id="thumbPaneLink">
+        <input type="text" id="fThumbLink" placeholder="https://contoh.com/gambar-thumbnail.jpg / .gif / .mp4" oninput="previewThumb('link')">
+      </div>
+      <div class="thumb-pane" id="thumbPaneUpload">
+        <input type="file" id="fThumbFile" accept="image/*,video/*" onchange="previewThumb('upload')">
+      </div>
+      <div class="thumb-preview" id="thumbPreview"><span>Belum ada gambar/video dipilih</span></div>
+    </div>
+
+    <div class="field">
+      <label>Isi Artikel</label>
+      <div class="toolbar">
+        <button type="button" title="Undo" onclick="exec('undo')">↺</button>
+        <button type="button" title="Redo" onclick="exec('redo')">↻</button>
+        <div class="divider"></div>
+        <button type="button" title="Bold" style="font-weight:800" onclick="exec('bold')">B</button>
+        <button type="button" title="Italic" style="font-style:italic" onclick="exec('italic')">I</button>
+        <button type="button" title="Underline" style="text-decoration:underline" onclick="exec('underline')">U</button>
+        <div class="divider"></div>
+        <button type="button" title="Bullet List" onclick="exec('insertUnorderedList')">•≡</button>
+        <button type="button" title="Numbered List" onclick="exec('insertOrderedList')">1≡</button>
+        <div class="divider"></div>
+        <button type="button" title="Insert/Edit Link" onclick="openLinkModal()">🔗</button>
+        <button type="button" title="Sisipkan Gambar/GIF/Video" onclick="openImageModal()">🖼️</button>
+      </div>
+      <div id="editor" contenteditable="true" data-placeholder="Mulai tulis isi berita di sini..."></div>
+    </div>
+
+  </div>
+</section>
 
     <!-- ===== TAB: PENGATURAN HEADER ===== -->
     <section id="tab-header" style="display:none;">
