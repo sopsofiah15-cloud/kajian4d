@@ -476,9 +476,9 @@ nav.tabs button:not(.active):hover{border-color:var(--line);color:var(--text);}
         </div>
       </div>
       <div class="field">
-        <label>Tanggal Publish</label>
-        <input type="date" id="fTanggal" value="2026-07-06">
-      </div>
+  <label>Tanggal Publish</label>
+  <input type="date" id="fTanggal">
+</div>
     </div>
 
     <div class="field">
@@ -682,6 +682,7 @@ async function doResetPassword(){
 
 // keep session across reload (same tab)
 window.addEventListener('DOMContentLoaded', ()=>{
+  document.getElementById('fTanggal').value = getTodayDateStr();
   if(sessionStorage.getItem('kajian4d_logged_in') === '1'){
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminPanel').style.display = 'block';
@@ -726,6 +727,14 @@ function autoSlug(){
   if(slugAuto){
     document.getElementById('fSlug').value = slugify(document.getElementById('fJudul').value);
   }
+}
+
+function getTodayDateStr(){
+  const d = new Date();
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
 }
 
 /* =====================================================
@@ -1134,7 +1143,7 @@ function clearForm(){
   document.getElementById('fExcerpt').value = '';
   document.querySelectorAll('.fKategoriChk').forEach(c => c.checked = false);
   document.getElementById('fHighlight').checked = false;
-  document.getElementById('fTanggal').value = '2026-07-06';
+  document.getElementById('fTanggal').value = getTodayDateStr();
   document.getElementById('fThumbLink').value = '';
   document.getElementById('fThumbFile').value = '';
   document.getElementById('thumbPreview').innerHTML = '<span>Belum ada gambar/video dipilih</span>';
