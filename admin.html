@@ -186,6 +186,15 @@ nav.tabs button:not(.active):hover{border-color:var(--line);color:var(--text);}
     display:flex;align-items:center;justify-content:center;
   }
   .toolbar button:hover{background:#1c1d20;border-color:var(--line);}
+  .toolbar select.toolbar-select{
+  background:#0e0f10;border:1px solid var(--line);color:var(--text);
+  border-radius:7px;padding:0 8px;height:34px;font-size:12px;cursor:pointer;outline:none;
+}
+.toolbar select.toolbar-select:hover{border-color:var(--gold);}
+.toolbar input[type="color"]{
+  width:34px;height:34px;border:1px solid var(--line);border-radius:7px;
+  background:#0e0f10;cursor:pointer;padding:2px;
+}
   .toolbar .divider{width:1px;background:var(--line);margin:4px 4px;}
   #editor{
     min-height:260px; padding:16px; border:1px solid var(--line); border-top:none;
@@ -513,6 +522,26 @@ nav.tabs button:not(.active):hover{border-color:var(--line);color:var(--text);}
         <button type="button" title="Italic" style="font-style:italic" onclick="exec('italic')">I</button>
         <button type="button" title="Underline" style="text-decoration:underline" onclick="exec('underline')">U</button>
         <div class="divider"></div>
+        <select class="toolbar-select" title="Jenis Huruf" onchange="execFontName(this.value)">
+  <option value="">Font</option>
+  <option value="Arial, sans-serif">Arial</option>
+  <option value="'Times New Roman', serif">Times New Roman</option>
+  <option value="Georgia, serif">Georgia</option>
+  <option value="'Courier New', monospace">Courier New</option>
+  <option value="Verdana, sans-serif">Verdana</option>
+  <option value="'Segoe UI', sans-serif">Segoe UI</option>
+</select>
+<select class="toolbar-select" title="Ukuran Huruf" onchange="execFontSize(this.value)">
+  <option value="">Ukuran</option>
+  <option value="1">Kecil</option>
+  <option value="3">Normal</option>
+  <option value="4">Sedang</option>
+  <option value="5">Besar</option>
+  <option value="6">Sangat Besar</option>
+  <option value="7">Ekstra Besar</option>
+</select>
+<input type="color" title="Warna Teks" value="#e9e7e0" onchange="execColor(this.value)">
+<div class="divider"></div>
         <button type="button" title="Bullet List" onclick="exec('insertUnorderedList')">•≡</button>
         <button type="button" title="Numbered List" onclick="exec('insertOrderedList')">1≡</button>
         <div class="divider"></div>
@@ -711,7 +740,20 @@ function exec(cmd){
   editor.focus();
   document.execCommand(cmd, false, null);
 }
-
+function execFontName(font){
+  if(!font) return;
+  editor.focus();
+  document.execCommand('fontName', false, font);
+}
+function execFontSize(size){
+  if(!size) return;
+  editor.focus();
+  document.execCommand('fontSize', false, size);
+}
+function execColor(color){
+  editor.focus();
+  document.execCommand('foreColor', false, color);
+}
 /* =====================================================
    SLUG AUTO GENERATE
 ===================================================== */
