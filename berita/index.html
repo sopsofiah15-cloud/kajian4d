@@ -349,20 +349,22 @@ body{
   }
   .badge-row{ display:flex; gap:6px; align-items:center; margin-bottom:6px; flex-wrap:wrap; }
   .badge{
-    background:var(--blue-accent); color:#fff; font-size:9px; font-weight:700;
+    background:var(--v-badge-bg, var(--blue-accent)); color:var(--v-badge-text, #fff);
+    font-size:var(--v-badge-font-size, 9px); font-weight:700;
+    font-family:var(--v-badge-font-family, inherit);
     letter-spacing:0.5px; text-transform:uppercase; padding:3px 8px; border-radius:4px;
     line-height:1.4;
   }
-  .badge.highlight-badge{ background:var(--blue-bright); color:#08131f; }
+  .badge.highlight-badge{ background:var(--v-badge-hl-bg, var(--blue-bright)); color:var(--v-badge-hl-text, #08131f); }
   .card-title{
     font-family:var(--font-display); font-size:17px; line-height:1.28; margin-bottom:6px;
     display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
   }
   .hl-small .card-title{ font-size:12.5px; -webkit-line-clamp:2; }
-  .meta-row{ display:flex; align-items:center; gap:10px; font-size:10.5px; color:var(--text-dim); flex-wrap:wrap; }
-  .hl-small .meta-row{ font-size:9.5px; gap:8px; }
-  .views{ display:flex; align-items:center; gap:4px; color:var(--blue-bright); }
-  .views svg{ width:11px; height:11px; }
+  .meta-row{
+  display:flex; align-items:center; gap:10px;
+  font-size:var(--v-date-font-size, 10.5px); color:var(--v-date-color, var(--text-dim)); flex-wrap:wrap;
+}
 
   .slide-arrow{
     position:absolute; top:50%; transform:translateY(-50%); z-index:4;
@@ -400,9 +402,10 @@ body{
   .dm-item{ display:flex; gap:12px; align-items:flex-start; padding-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.06); transition:opacity .4s ease; }
   .dm-thumb{ width:104px; aspect-ratio:16/9; height:auto; border-radius:6px; overflow:hidden; flex-shrink:0; border:1px solid var(--card-border); background:var(--card-bg); }
   .dm-thumb img{ width:100%; height:100%; object-fit:cover; }
-  .dm-item h4{ font-size:12.5px; font-weight:600; line-height:1.35; margin-bottom:5px; color:var(--text-main); }
-  .dm-list.fading .dm-item{ opacity:0; }
-
+  .dm-item h4{
+  font-size:var(--v-title-size-dontmiss, 12.5px); font-weight:600; line-height:1.35; margin-bottom:5px;
+  color:var(--v-title-color, var(--text-main)); font-family:var(--v-title-font-family, inherit);
+}
   aside.sidebar{
   border:1px solid var(--card-border); border-radius:12px; padding:20px;
   position:sticky; top:calc(var(--sticky-header-h, 0px) + 20px);
@@ -412,7 +415,8 @@ body{
 aside.sidebar::-webkit-scrollbar{ width:5px; }
 aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-radius:10px; }
   .sidebar-title{
-    font-size:12px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--blue-bright);
+    font-size:12px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase;
+    color:var(--v-sidebar-title-color, var(--blue-bright));
     margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid rgba(58,143,217,0.2);
   }
   .accordion-item{ border-bottom:1px solid rgba(255,255,255,0.06); }
@@ -432,7 +436,9 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
 .arch-thumb img{ width:100%; height:100%; object-fit:cover; }
 .arch-item-body{ min-width:0; flex:1; }
 .arch-item h5{
-  font-size:12.5px; font-weight:500; line-height:1.32; color:var(--text-dim);
+  font-size:var(--v-title-size-sidebar, 12.5px); font-weight:500; line-height:1.32;
+  color:var(--v-sidebar-item-color, var(--text-dim));
+  font-family:var(--v-title-font-family, inherit);
   display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
   margin-bottom:4px;
 }
@@ -464,7 +470,10 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
   .an-item:hover{ border-color:var(--blue-accent); }
   .an-thumb{ width:88px; aspect-ratio:4/3; height:auto; border-radius:6px; overflow:hidden; flex-shrink:0; border:1px solid var(--card-border); background:var(--bg-carbon-2); }
   .an-thumb img{ width:100%; height:100%; object-fit:cover; }
-  .an-body h4{ font-size:13.5px; font-weight:600; line-height:1.35; margin:6px 0; color:var(--text-main); }
+  .an-body h4{
+  font-size:var(--v-title-size-allnews, 13.5px); font-weight:600; line-height:1.35; margin:6px 0;
+  color:var(--v-title-color, var(--text-main)); font-family:var(--v-title-font-family, inherit);
+}
 
   .pagination-bar{
     display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:8px; padding:6px 0 4px;
@@ -592,7 +601,7 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
   }
   @media(max-width:800px){ .ftr2-contact li{ justify-content:center; } }
   .ftr2-contact li:hover{ border-color:var(--blue-accent); color:var(--blue-bright); }
-  .ftr2-dot{ width:7px; height:7px; border-radius:50%; background:var(--blue-accent); flex-shrink:0; box-shadow:0 0 8px rgba(58,143,217,0.7); }
+  .ftr2-dot{ width:7px; height:7px; border-radius:50%; background:var(--v-footer-accent, var(--blue-accent)); flex-shrink:0; box-shadow:0 0 8px rgba(58,143,217,0.7); }
 
   .ftr2-divider{
     max-width:1080px; margin:0 auto; height:1px;
@@ -605,10 +614,13 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
   }
   .ftr2-bottom-inner{ text-align:center; }
   .ftr2-brand-big{
-    font-family:var(--font-display); font-size:26px; letter-spacing:2px; font-weight:700;
-    background:linear-gradient(90deg, var(--text-main), var(--blue-bright));
-    -webkit-background-clip:text; background-clip:text; color:transparent;
+   .card-title{
+    font-family:var(--v-title-font-family, var(--font-display));
+    color:var(--v-title-color, var(--text-main));
+    font-size:var(--v-title-size-hero, 17px); line-height:1.28; margin-bottom:6px;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
   }
+  .hl-small .card-title{ font-size:var(--v-title-size-hero, 12.5px); -webkit-line-clamp:2; }
   .ftr2-brand-big span{ color:var(--blue-accent); -webkit-text-fill-color:var(--blue-accent); }
   .ftr2-tagline{ font-size:11.5px; color:var(--text-faint); margin:6px 0 14px; letter-spacing:0.5px; }
   .ftr2-copy{ font-size:11px; color:var(--text-faint); margin-bottom:16px; }
@@ -875,7 +887,7 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
     return res.json();
   }
 
-  async function loadBannerSettings(){
+  async function async function loadBannerSettings(){
     try{
       const res = await fetch('/api/settings');
       if(!res.ok) return;
@@ -891,7 +903,38 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
       if(data.banner_link){
         wrapper.href = data.banner_link;
       }
+      applyVisualSettings(data.visual_settings);  // <-- TAMBAHAN
     }catch(e){}
+  }
+
+  function applyVisualSettings(vs){
+    if(!vs) return;
+    const root = document.documentElement.style;
+    const map = {
+      badge_bg: '--v-badge-bg',
+      badge_text: '--v-badge-text',
+      badge_hl_bg: '--v-badge-hl-bg',
+      badge_hl_text: '--v-badge-hl-text',
+      title_font_family: '--v-title-font-family',
+      title_color: '--v-title-color',
+      date_color: '--v-date-color',
+      date_sidebar_color: '--v-date-sidebar-color',
+      sidebar_title_color: '--v-sidebar-title-color',
+      sidebar_item_color: '--v-sidebar-item-color',
+      footer_accent: '--v-footer-accent',
+      footer_text: '--v-footer-text'
+    };
+    const pxMap = {
+      badge_font_size: '--v-badge-font-size',
+      title_size_hero: '--v-title-size-hero',
+      title_size_dontmiss: '--v-title-size-dontmiss',
+      title_size_allnews: '--v-title-size-allnews',
+      title_size_sidebar: '--v-title-size-sidebar',
+      date_font_size: '--v-date-font-size',
+      date_sidebar_font_size: '--v-date-sidebar-font-size'
+    };
+    Object.keys(map).forEach(k => { if(vs[k]) root.setProperty(map[k], vs[k]); });
+    Object.keys(pxMap).forEach(k => { if(vs[k]) root.setProperty(pxMap[k], vs[k] + 'px'); });
   }
 
   function renderTabs(){
