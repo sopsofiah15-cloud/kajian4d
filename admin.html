@@ -432,7 +432,7 @@ nav.tabs button:not(.active):hover{border-color:var(--line);color:var(--text);}
   <div class="topbar-row">
     <nav class="tabs">
       <button class="active" data-tab="write" onclick="switchTab('write')">Tulis Berita</button>
-      <button data-tab="header" onclick="switchTab('header')">Pengaturan Header</button>
+      <button data-tab="badge" onclick="switchTab('badge')">Pengaturan Badge</button>
       <button data-tab="list" onclick="switchTab('list')">Daftar Berita</button>
     </nav>
     <div class="login-as">Login Sebagai <b id="whoAmI">Admin Kajian News</b></div>
@@ -526,39 +526,134 @@ nav.tabs button:not(.active):hover{border-color:var(--line);color:var(--text);}
 </section>
 
     <!-- ===== TAB: PENGATURAN HEADER ===== -->
-    <section id="tab-header" style="display:none;">
-      <div class="panel">
-        <h2>Pengaturan Header Berita</h2>
-        <p class="hint">Atur gambar/GIF/video header dan latar belakang khusus (custom HTML/CSS) untuk halaman berita.</p>
+    <!-- ===== TAB: PENGATURAN BADGE ===== -->
+<section id="tab-badge" style="display:none;">
 
-        <div class="thumb-tabs">
-          <button type="button" class="active" id="hTabLinkBtn" onclick="switchHeaderMode('link')">Link Gambar/Video</button>
-          <button type="button" id="hTabUploadBtn" onclick="switchHeaderMode('upload')">Upload dari Storage</button>
-        </div>
-        <div class="thumb-pane active" id="headerPaneLink">
-          <input type="text" id="hLink" placeholder="https://contoh.com/header-berita.jpg / .gif / .mp4" oninput="previewHeader('link')">
-        </div>
-        <div class="thumb-pane" id="headerPaneUpload">
-          <input type="file" id="hFile" accept="image/*,video/*" onchange="previewHeader('upload')">
-        </div>
-        <div class="header-preview" id="headerPreview"><span style="display:block;text-align:center;padding:60px 0;color:var(--muted);">Belum ada gambar/video header</span></div>
-
-        <div class="field" style="margin-top:18px;">
-          <label>Link Tombol "Lihat Jadwal" (banner beranda)</label>
-          <input type="text" id="hBannerLink" placeholder="https://contoh.com/jadwal">
-          <p class="hint" style="margin:6px 0 0;">Hanya tombol "Lihat Jadwal" di banner beranda yang akan bisa diklik menuju link ini.</p>
-        </div>
-
-        <div class="field" style="margin-top:18px;">
-          <label>Custom HTML untuk Latar Belakang Berita</label>
-          <textarea id="hCustomHtml" rows="6" placeholder="&lt;div style='background:linear-gradient(...)'&gt;...&lt;/div&gt;"></textarea>
-        </div>
-
-        <div class="row-actions">
-          <button class="btn btn-gold" style="width:auto" onclick="saveHeaderSettings()">Simpan Pengaturan Header</button>
-        </div>
+  <div class="panel">
+    <h2>Badge Kategori</h2>
+    <p class="hint">Mengatur tampilan badge kecil kategori (mis. "SEPAK BOLA") di semua bagian berita.</p>
+    <div class="grid2">
+      <div class="field">
+        <label>Warna Latar Badge</label>
+        <input type="color" id="bBadgeBg" value="#3a8fd9">
       </div>
-    </section>
+      <div class="field">
+        <label>Warna Teks Badge</label>
+        <input type="color" id="bBadgeText" value="#ffffff">
+      </div>
+      <div class="field">
+        <label>Ukuran Font Badge (px)</label>
+        <input type="number" id="bBadgeFontSize" value="9" min="6" max="20">
+      </div>
+      <div class="field">
+        <label>Jenis Font Badge</label>
+        <select id="bBadgeFontFamily" class="font-select"></select>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Badge Highlight</h2>
+    <p class="hint">Badge khusus untuk berita yang ditandai "Highlight".</p>
+    <div class="grid2">
+      <div class="field">
+        <label>Warna Latar Badge Highlight</label>
+        <input type="color" id="bBadgeHlBg" value="#5fb3ff">
+      </div>
+      <div class="field">
+        <label>Warna Teks Badge Highlight</label>
+        <input type="color" id="bBadgeHlText" value="#08131f">
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Judul Berita</h2>
+    <p class="hint">Ukuran diatur terpisah per-bagian, jenis font & warna berlaku untuk semua judul.</p>
+    <div class="grid2">
+      <div class="field">
+        <label>Jenis Font Judul</label>
+        <select id="bTitleFontFamily" class="font-select"></select>
+      </div>
+      <div class="field">
+        <label>Warna Judul</label>
+        <input type="color" id="bTitleColor" value="#e7ebf0">
+      </div>
+      <div class="field">
+        <label>Ukuran Judul — Highlight Utama (px)</label>
+        <input type="number" id="bTitleSizeHero" value="17" min="8" max="40">
+      </div>
+      <div class="field">
+        <label>Ukuran Judul — Jangan Lewatkan (px)</label>
+        <input type="number" id="bTitleSizeDontmiss" value="12.5" min="8" max="40" step="0.5">
+      </div>
+      <div class="field">
+        <label>Ukuran Judul — Semua Berita (px)</label>
+        <input type="number" id="bTitleSizeAllnews" value="13.5" min="8" max="40" step="0.5">
+      </div>
+      <div class="field">
+        <label>Ukuran Judul — Arsip Sidebar (px)</label>
+        <input type="number" id="bTitleSizeSidebar" value="12.5" min="8" max="40" step="0.5">
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Tanggal Berita</h2>
+    <div class="grid2">
+      <div class="field">
+        <label>Warna Tanggal (umum)</label>
+        <input type="color" id="bDateColor" value="#8b96a3">
+      </div>
+      <div class="field">
+        <label>Ukuran Font Tanggal (umum, px)</label>
+        <input type="number" id="bDateFontSize" value="10.5" min="6" max="20" step="0.5">
+      </div>
+      <div class="field">
+        <label>Warna Tanggal (Arsip Sidebar)</label>
+        <input type="color" id="bDateSidebarColor" value="#5b6572">
+      </div>
+      <div class="field">
+        <label>Ukuran Font Tanggal (Arsip Sidebar, px)</label>
+        <input type="number" id="bDateSidebarFontSize" value="10" min="6" max="20" step="0.5">
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Arsip Berita (Sidebar)</h2>
+    <div class="grid2">
+      <div class="field">
+        <label>Warna Judul "Arsip Berita"</label>
+        <input type="color" id="bSidebarTitleColor" value="#5fb3ff">
+      </div>
+      <div class="field">
+        <label>Warna Judul Item Arsip</label>
+        <input type="color" id="bSidebarItemColor" value="#8b96a3">
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Footer</h2>
+    <div class="grid2">
+      <div class="field">
+        <label>Warna Aksen Footer (ikon, link hover, dll)</label>
+        <input type="color" id="bFooterAccent" value="#3a8fd9">
+      </div>
+      <div class="field">
+        <label>Warna Teks Footer</label>
+        <input type="color" id="bFooterText" value="#8b96a3">
+      </div>
+    </div>
+  </div>
+
+  <div class="row-actions">
+    <button class="btn btn-gold" style="width:auto" onclick="saveBadgeSettings()">Simpan Pengaturan Badge</button>
+    <button class="btn btn-ghost" onclick="resetBadgeSettingsToDefault()">Reset ke Tampilan Default</button>
+  </div>
+
+</section>
 
     <!-- ===== TAB: DAFTAR BERITA ===== -->
     <section id="tab-list" style="display:none;">
@@ -683,11 +778,13 @@ async function doResetPassword(){
 // keep session across reload (same tab)
 window.addEventListener('DOMContentLoaded', ()=>{
   document.getElementById('fTanggal').value = getTodayDateStr();
+  populateFontSelects();          // <-- TAMBAH INI
   if(sessionStorage.getItem('kajian4d_logged_in') === '1'){
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminPanel').style.display = 'block';
     renderArticleList();
     loadHeaderSettings();
+    loadBadgeSettingsIntoForm();  // <-- TAMBAH INI
   }
 });
 
@@ -699,6 +796,7 @@ function switchTab(name){
   document.querySelector(`nav.tabs button[data-tab="${name}"]`).classList.add('active');
   document.getElementById('tab-write').style.display  = name==='write'  ? 'block' : 'none';
   document.getElementById('tab-header').style.display  = name==='header' ? 'block' : 'none';
+  document.getElementById('tab-badge').style.display   = name==='badge'  ? 'block' : 'none';
   document.getElementById('tab-list').style.display    = name==='list'  ? 'block' : 'none';
   if(name==='list') renderArticleList();
 }
@@ -1340,6 +1438,136 @@ function showToast(msg){
   clearTimeout(toastTimer);
   toastTimer = setTimeout(()=>{ t.style.display = 'none'; }, 2600);
 }
+/* =====================================================
+   PENGATURAN BADGE / JUDUL / TANGGAL / SIDEBAR / FOOTER
+===================================================== */
+const FONT_OPTIONS = [
+  'Georgia', 'Arial', 'Verdana', 'Tahoma', 'Trebuchet MS',
+  'Segoe UI', 'Times New Roman', 'Courier New', 'Impact', 'Helvetica'
+];
+
+function populateFontSelects(){
+  document.querySelectorAll('.font-select').forEach(sel => {
+    sel.innerHTML = FONT_OPTIONS.map(f => `<option value="${f}">${f}</option>`).join('');
+  });
+}
+
+const BADGE_FIELD_IDS = [
+  'bBadgeBg','bBadgeText','bBadgeFontSize','bBadgeFontFamily',
+  'bBadgeHlBg','bBadgeHlText',
+  'bTitleFontFamily','bTitleColor','bTitleSizeHero','bTitleSizeDontmiss','bTitleSizeAllnews','bTitleSizeSidebar',
+  'bDateColor','bDateFontSize','bDateSidebarColor','bDateSidebarFontSize',
+  'bSidebarTitleColor','bSidebarItemColor',
+  'bFooterAccent','bFooterText'
+];
+
+function collectVisualSettingsFromForm(){
+  return {
+    badge_bg: document.getElementById('bBadgeBg').value,
+    badge_text: document.getElementById('bBadgeText').value,
+    badge_font_size: document.getElementById('bBadgeFontSize').value,
+    badge_font_family: document.getElementById('bBadgeFontFamily').value,
+    badge_hl_bg: document.getElementById('bBadgeHlBg').value,
+    badge_hl_text: document.getElementById('bBadgeHlText').value,
+    title_font_family: document.getElementById('bTitleFontFamily').value,
+    title_color: document.getElementById('bTitleColor').value,
+    title_size_hero: document.getElementById('bTitleSizeHero').value,
+    title_size_dontmiss: document.getElementById('bTitleSizeDontmiss').value,
+    title_size_allnews: document.getElementById('bTitleSizeAllnews').value,
+    title_size_sidebar: document.getElementById('bTitleSizeSidebar').value,
+    date_color: document.getElementById('bDateColor').value,
+    date_font_size: document.getElementById('bDateFontSize').value,
+    date_sidebar_color: document.getElementById('bDateSidebarColor').value,
+    date_sidebar_font_size: document.getElementById('bDateSidebarFontSize').value,
+    sidebar_title_color: document.getElementById('bSidebarTitleColor').value,
+    sidebar_item_color: document.getElementById('bSidebarItemColor').value,
+    footer_accent: document.getElementById('bFooterAccent').value,
+    footer_text: document.getElementById('bFooterText').value
+  };
+}
+
+function fillVisualSettingsForm(vs){
+  if(!vs) return;
+  if(vs.badge_bg) document.getElementById('bBadgeBg').value = vs.badge_bg;
+  if(vs.badge_text) document.getElementById('bBadgeText').value = vs.badge_text;
+  if(vs.badge_font_size) document.getElementById('bBadgeFontSize').value = vs.badge_font_size;
+  if(vs.badge_font_family) document.getElementById('bBadgeFontFamily').value = vs.badge_font_family;
+  if(vs.badge_hl_bg) document.getElementById('bBadgeHlBg').value = vs.badge_hl_bg;
+  if(vs.badge_hl_text) document.getElementById('bBadgeHlText').value = vs.badge_hl_text;
+  if(vs.title_font_family) document.getElementById('bTitleFontFamily').value = vs.title_font_family;
+  if(vs.title_color) document.getElementById('bTitleColor').value = vs.title_color;
+  if(vs.title_size_hero) document.getElementById('bTitleSizeHero').value = vs.title_size_hero;
+  if(vs.title_size_dontmiss) document.getElementById('bTitleSizeDontmiss').value = vs.title_size_dontmiss;
+  if(vs.title_size_allnews) document.getElementById('bTitleSizeAllnews').value = vs.title_size_allnews;
+  if(vs.title_size_sidebar) document.getElementById('bTitleSizeSidebar').value = vs.title_size_sidebar;
+  if(vs.date_color) document.getElementById('bDateColor').value = vs.date_color;
+  if(vs.date_font_size) document.getElementById('bDateFontSize').value = vs.date_font_size;
+  if(vs.date_sidebar_color) document.getElementById('bDateSidebarColor').value = vs.date_sidebar_color;
+  if(vs.date_sidebar_font_size) document.getElementById('bDateSidebarFontSize').value = vs.date_sidebar_font_size;
+  if(vs.sidebar_title_color) document.getElementById('bSidebarTitleColor').value = vs.sidebar_title_color;
+  if(vs.sidebar_item_color) document.getElementById('bSidebarItemColor').value = vs.sidebar_item_color;
+  if(vs.footer_accent) document.getElementById('bFooterAccent').value = vs.footer_accent;
+  if(vs.footer_text) document.getElementById('bFooterText').value = vs.footer_text;
+}
+
+async function saveBadgeSettings(){
+  try{
+    // ambil settings lama dulu supaya header_image/banner_link/custom_html TIDAK ketimpa
+    let existing = {};
+    try{
+      const r = await fetch('/api/settings');
+      if(r.ok) existing = await r.json();
+    }catch(e){}
+
+    const visual_settings = collectVisualSettingsFromForm();
+    const merged = { ...existing, visual_settings };
+
+    const resp = await fetch('/api/settings', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+getToken()},
+      body: JSON.stringify(merged)
+    });
+    const json = await resp.json();
+    if(!resp.ok) throw new Error(json.error || 'Gagal menyimpan');
+    showToast('Pengaturan badge berhasil disimpan.');
+  }catch(e){
+    showToast('Gagal: ' + e.message);
+  }
+}
+
+function resetBadgeSettingsToDefault(){
+  if(!confirm('Kembalikan semua pengaturan badge ke tampilan default?')) return;
+  document.getElementById('bBadgeBg').value = '#3a8fd9';
+  document.getElementById('bBadgeText').value = '#ffffff';
+  document.getElementById('bBadgeFontSize').value = '9';
+  document.getElementById('bBadgeFontFamily').value = 'Georgia';
+  document.getElementById('bBadgeHlBg').value = '#5fb3ff';
+  document.getElementById('bBadgeHlText').value = '#08131f';
+  document.getElementById('bTitleFontFamily').value = 'Georgia';
+  document.getElementById('bTitleColor').value = '#e7ebf0';
+  document.getElementById('bTitleSizeHero').value = '17';
+  document.getElementById('bTitleSizeDontmiss').value = '12.5';
+  document.getElementById('bTitleSizeAllnews').value = '13.5';
+  document.getElementById('bTitleSizeSidebar').value = '12.5';
+  document.getElementById('bDateColor').value = '#8b96a3';
+  document.getElementById('bDateFontSize').value = '10.5';
+  document.getElementById('bDateSidebarColor').value = '#5b6572';
+  document.getElementById('bDateSidebarFontSize').value = '10';
+  document.getElementById('bSidebarTitleColor').value = '#5fb3ff';
+  document.getElementById('bSidebarItemColor').value = '#8b96a3';
+  document.getElementById('bFooterAccent').value = '#3a8fd9';
+  document.getElementById('bFooterText').value = '#8b96a3';
+  saveBadgeSettings();
+}
+
+async function loadBadgeSettingsIntoForm(){
+  try{
+    const resp = await fetch('/api/settings');
+    if(!resp.ok) return;
+    const data = await resp.json();
+    if(data.visual_settings) fillVisualSettingsForm(data.visual_settings);
+  }catch(e){}
+}  
 </script>
 </body>
 </html>
