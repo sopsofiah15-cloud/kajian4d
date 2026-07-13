@@ -128,7 +128,7 @@
   background:linear-gradient(90deg,var(--gold-bright),var(--gold));
   -webkit-background-clip:text;background-clip:text;color:transparent;}
 .brand .sub{font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:-2px;}
-nav.tabs{display:flex;gap:6px;}
+nav.tabs{display:flex;gap:6px;flex-wrap:wrap;}
 nav.tabs button{
   background:transparent;border:1px solid transparent;color:var(--muted);
   padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;
@@ -299,6 +299,54 @@ nav.tabs button:not(.active):hover{border-color:var(--line);color:var(--text);}
   }
   #imgInsertPreview img, #imgInsertPreview video{max-width:100%; max-height:210px; width:auto; height:auto; object-fit:contain; border-radius:6px;}
   #imgInsertPreview span{color:var(--muted);font-size:12px;}
+
+  /* ---------- BADGE SETTINGS ---------- */
+  .badge-card{
+    background:#0e0f10; border:1px solid var(--line); border-radius:10px;
+    padding:16px 18px; margin-bottom:14px;
+  }
+  .badge-card .badge-card-head{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:14px;
+  }
+  .badge-card .badge-card-head h4{
+    margin:0; font-size:13px; letter-spacing:.5px; color:var(--text);
+  }
+  .badge-card-grid{
+    display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;
+  }
+  @media(max-width:820px){.badge-card-grid{grid-template-columns:1fr 1fr;}}
+  @media(max-width:520px){.badge-card-grid{grid-template-columns:1fr;}}
+  .badge-card .field{margin-bottom:0;}
+  .color-input-wrap{display:flex; align-items:center; gap:8px;}
+  .color-input-wrap input[type="color"]{
+    width:38px; height:38px; padding:2px; border-radius:8px; border:1px solid var(--line);
+    background:#0e0f10; cursor:pointer; flex:none;
+  }
+  .color-input-wrap input[type="text"]{flex:1;}
+  .badge-icon-tabs{display:flex; gap:6px; margin-bottom:8px;}
+  .badge-icon-tabs button{
+    flex:1; background:#0b0c0d; border:1px solid var(--line); color:var(--muted);
+    padding:7px; border-radius:7px; cursor:pointer; font-size:11px; font-weight:600;
+  }
+  .badge-icon-tabs button.active{color:#191203;background:linear-gradient(180deg,var(--gold-bright),var(--gold));border-color:transparent;}
+  .badge-icon-pane{display:none;}
+  .badge-icon-pane.active{display:block;}
+  .badge-icon-preview{
+    margin-top:8px; width:34px; height:34px; border-radius:8px; border:1px dashed var(--line);
+    display:flex; align-items:center; justify-content:center; overflow:hidden; background:#0a0a0b;
+  }
+  .badge-icon-preview img{max-width:100%; max-height:100%; object-fit:contain;}
+  .badge-live-preview-wrap{
+    margin-top:14px; padding-top:14px; border-top:1px dashed var(--line);
+    display:flex; align-items:center; gap:10px;
+  }
+  .badge-live-preview-wrap .lbl{font-size:11px; color:var(--muted); letter-spacing:.3px;}
+  .badge-preview-pill{
+    display:inline-flex; align-items:center; gap:6px;
+    padding:4px 12px; border-radius:20px; border:1px solid transparent;
+  }
+  .badge-preview-pill img{width:14px;height:14px;object-fit:contain;border-radius:3px;}
 </style>
 </head>
 <body>
@@ -433,6 +481,7 @@ nav.tabs button:not(.active):hover{border-color:var(--line);color:var(--text);}
     <nav class="tabs">
       <button class="active" data-tab="write" onclick="switchTab('write')">Tulis Berita</button>
       <button data-tab="header" onclick="switchTab('header')">Pengaturan Header</button>
+      <button data-tab="badge" onclick="switchTab('badge')">Pengaturan Badge</button>
       <button data-tab="list" onclick="switchTab('list')">Daftar Berita</button>
     </nav>
     <div class="login-as">Login Sebagai <b id="whoAmI">Admin Kajian News</b></div>
@@ -560,6 +609,20 @@ nav.tabs button:not(.active):hover{border-color:var(--line);color:var(--text);}
       </div>
     </section>
 
+    <!-- ===== TAB: PENGATURAN BADGE ===== -->
+    <section id="tab-badge" style="display:none;">
+      <div class="panel">
+        <h2>Pengaturan Badge Kategori</h2>
+        <p class="hint">Atur tampilan badge (label, warna, font, ukuran, dan ikon) untuk masing-masing kategori. Pengaturan ini dipakai di daftar berita dan pill kategori.</p>
+
+        <div id="badgeSettingsList"></div>
+
+        <div class="row-actions">
+          <button class="btn btn-gold" style="width:auto" onclick="saveBadgeSettings()">Simpan Pengaturan Badge</button>
+        </div>
+      </div>
+    </section>
+
     <!-- ===== TAB: DAFTAR BERITA ===== -->
     <section id="tab-list" style="display:none;">
       <div class="panel">
@@ -635,6 +698,7 @@ async function doLogin(){
     document.getElementById('whoAmI').textContent = id;
     renderArticleList();
     loadHeaderSettings();
+    loadBadgeSettings();
   }catch(e){
     err.textContent = 'Tidak bisa menghubungi server: ' + e.message;
   }
@@ -688,6 +752,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
     document.getElementById('adminPanel').style.display = 'block';
     renderArticleList();
     loadHeaderSettings();
+    loadBadgeSettings();
   }
 });
 
@@ -699,8 +764,10 @@ function switchTab(name){
   document.querySelector(`nav.tabs button[data-tab="${name}"]`).classList.add('active');
   document.getElementById('tab-write').style.display  = name==='write'  ? 'block' : 'none';
   document.getElementById('tab-header').style.display  = name==='header' ? 'block' : 'none';
+  document.getElementById('tab-badge').style.display   = name==='badge' ? 'block' : 'none';
   document.getElementById('tab-list').style.display    = name==='list'  ? 'block' : 'none';
   if(name==='list') renderArticleList();
+  if(name==='badge' && !badgeSettingsLoaded) loadBadgeSettings();
 }
 
 /* =====================================================
@@ -1076,6 +1143,244 @@ async function loadHeaderSettings(){
 }
 
 /* =====================================================
+   BADGE SETTINGS (per kategori)
+===================================================== */
+const BADGE_FONT_OPTIONS = [
+  "Segoe UI", "Arial", "Helvetica", "Georgia", "Times New Roman",
+  "Verdana", "Tahoma", "Trebuchet MS", "Courier New", "Poppins", "Roboto", "Montserrat"
+];
+
+const DEFAULT_BADGE_SETTINGS = {};
+KATEGORI_LIST_SAFE().forEach(k => {
+  DEFAULT_BADGE_SETTINGS[k] = {
+    label: titleCaseKategoriSafe(k),
+    bg: "#1c1d20",
+    color: "#e8c766",
+    font: "Segoe UI",
+    size: 11,
+    icon: ""
+  };
+});
+
+// helper wrappers (kategori list & titlecase are defined later in the file;
+// these thin wrappers just avoid ordering issues at script parse time)
+function KATEGORI_LIST_SAFE(){
+  return ["SEPAK BOLA","TEKNOLOGI","OLAHRAGA","HIBURAN","BISNIS","DUNIA"];
+}
+function titleCaseKategoriSafe(k){
+  return k.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+}
+
+let badgeSettings = JSON.parse(JSON.stringify(DEFAULT_BADGE_SETTINGS));
+let badgeSettingsLoaded = false;
+let currentBadgeIconMime = {}; // per-kategori mime saat upload file baru
+
+function renderBadgeSettingsForm(){
+  const wrap = document.getElementById('badgeSettingsList');
+  const kategoriList = KATEGORI_LIST_SAFE();
+  wrap.innerHTML = kategoriList.map(k => {
+    const b = badgeSettings[k] || DEFAULT_BADGE_SETTINGS[k];
+    const safeId = k.replace(/\s+/g,'_');
+    const fontOptions = BADGE_FONT_OPTIONS.map(f => `<option value="${f}" ${b.font===f?'selected':''}>${f}</option>`).join('');
+    const iconPreview = b.icon ? `<img src="${b.icon}" alt="icon">` : '';
+    return `
+      <div class="badge-card" data-kategori="${k}">
+        <div class="badge-card-head">
+          <h4>${escapeHtml(titleCaseKategoriSafe(k))}</h4>
+        </div>
+        <div class="badge-card-grid">
+          <div class="field">
+            <label>Teks Badge</label>
+            <input type="text" id="bLabel_${safeId}" value="${escapeHtml(b.label || '')}" oninput="updateBadgePreview('${k}')">
+          </div>
+          <div class="field">
+            <label>Warna Latar</label>
+            <div class="color-input-wrap">
+              <input type="color" id="bBgColor_${safeId}" value="${b.bg}" oninput="syncColorText('${k}','bg')">
+              <input type="text" id="bBg_${safeId}" value="${b.bg}" oninput="syncColorPicker('${k}','bg')">
+            </div>
+          </div>
+          <div class="field">
+            <label>Warna Teks</label>
+            <div class="color-input-wrap">
+              <input type="color" id="bColorColor_${safeId}" value="${b.color}" oninput="syncColorText('${k}','color')">
+              <input type="text" id="bColor_${safeId}" value="${b.color}" oninput="syncColorPicker('${k}','color')">
+            </div>
+          </div>
+          <div class="field">
+            <label>Jenis Font</label>
+            <select id="bFont_${safeId}" onchange="updateBadgePreview('${k}')">${fontOptions}</select>
+          </div>
+          <div class="field">
+            <label>Ukuran Font (px)</label>
+            <input type="number" id="bSize_${safeId}" min="8" max="24" value="${b.size}" oninput="updateBadgePreview('${k}')">
+          </div>
+          <div class="field">
+            <label>Ikon Badge (opsional)</label>
+            <div class="badge-icon-tabs">
+              <button type="button" class="active" id="bIconTabLink_${safeId}" onclick="switchBadgeIconMode('${k}','link')">Link</button>
+              <button type="button" id="bIconTabUpload_${safeId}" onclick="switchBadgeIconMode('${k}','upload')">Upload</button>
+            </div>
+            <div class="badge-icon-pane active" id="bIconPaneLink_${safeId}">
+              <input type="text" id="bIconLink_${safeId}" placeholder="https://.../icon.png" value="${b.icon && !b.icon.startsWith('data:') ? escapeHtml(b.icon) : ''}" oninput="previewBadgeIcon('${k}','link')">
+            </div>
+            <div class="badge-icon-pane" id="bIconPaneUpload_${safeId}">
+              <input type="file" id="bIconFile_${safeId}" accept="image/*" onchange="previewBadgeIcon('${k}','upload')">
+            </div>
+            <div class="badge-icon-preview" id="bIconPreview_${safeId}">${iconPreview}</div>
+          </div>
+        </div>
+        <div class="badge-live-preview-wrap">
+          <span class="lbl">Preview:</span>
+          <span class="badge-preview-pill" id="bPreview_${safeId}"></span>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  kategoriList.forEach(k => updateBadgePreview(k));
+}
+
+function switchBadgeIconMode(k, mode){
+  const safeId = k.replace(/\s+/g,'_');
+  document.getElementById(`bIconTabLink_${safeId}`).classList.toggle('active', mode==='link');
+  document.getElementById(`bIconTabUpload_${safeId}`).classList.toggle('active', mode==='upload');
+  document.getElementById(`bIconPaneLink_${safeId}`).classList.toggle('active', mode==='link');
+  document.getElementById(`bIconPaneUpload_${safeId}`).classList.toggle('active', mode==='upload');
+}
+
+function previewBadgeIcon(k, mode){
+  const safeId = k.replace(/\s+/g,'_');
+  const previewBox = document.getElementById(`bIconPreview_${safeId}`);
+  if(mode === 'link'){
+    const url = document.getElementById(`bIconLink_${safeId}`).value.trim();
+    if(!badgeSettings[k]) badgeSettings[k] = JSON.parse(JSON.stringify(DEFAULT_BADGE_SETTINGS[k]));
+    badgeSettings[k].icon = url;
+    delete currentBadgeIconMime[k];
+    previewBox.innerHTML = url ? `<img src="${url}" alt="icon">` : '';
+  } else {
+    const file = document.getElementById(`bIconFile_${safeId}`).files[0];
+    if(!file) return;
+    currentBadgeIconMime[k] = file.type || '';
+    const reader = new FileReader();
+    reader.onload = e => {
+      if(!badgeSettings[k]) badgeSettings[k] = JSON.parse(JSON.stringify(DEFAULT_BADGE_SETTINGS[k]));
+      badgeSettings[k].icon = e.target.result;
+      previewBox.innerHTML = `<img src="${e.target.result}" alt="icon">`;
+      updateBadgePreview(k);
+    };
+    reader.readAsDataURL(file);
+  }
+  updateBadgePreview(k);
+}
+
+function syncColorText(k, field){
+  const safeId = k.replace(/\s+/g,'_');
+  const pickerId = field === 'bg' ? `bBgColor_${safeId}` : `bColorColor_${safeId}`;
+  const textId = field === 'bg' ? `bBg_${safeId}` : `bColor_${safeId}`;
+  document.getElementById(textId).value = document.getElementById(pickerId).value;
+  updateBadgePreview(k);
+}
+
+function syncColorPicker(k, field){
+  const safeId = k.replace(/\s+/g,'_');
+  const pickerId = field === 'bg' ? `bBgColor_${safeId}` : `bColorColor_${safeId}`;
+  const textId = field === 'bg' ? `bBg_${safeId}` : `bColor_${safeId}`;
+  const val = document.getElementById(textId).value.trim();
+  if(/^#([0-9a-f]{3}){1,2}$/i.test(val)){
+    document.getElementById(pickerId).value = val;
+  }
+  updateBadgePreview(k);
+}
+
+function updateBadgePreview(k){
+  const safeId = k.replace(/\s+/g,'_');
+  const label = document.getElementById(`bLabel_${safeId}`)?.value || '';
+  const bg = document.getElementById(`bBg_${safeId}`)?.value || '#1c1d20';
+  const color = document.getElementById(`bColor_${safeId}`)?.value || '#e8c766';
+  const font = document.getElementById(`bFont_${safeId}`)?.value || 'Segoe UI';
+  const size = document.getElementById(`bSize_${safeId}`)?.value || 11;
+  const icon = (badgeSettings[k] && badgeSettings[k].icon) || '';
+
+  const preview = document.getElementById(`bPreview_${safeId}`);
+  if(!preview) return;
+  preview.style.background = bg;
+  preview.style.color = color;
+  preview.style.fontFamily = font;
+  preview.style.fontSize = size + 'px';
+  preview.innerHTML = (icon ? `<img src="${icon}" alt="">` : '') + escapeHtml(label || titleCaseKategoriSafe(k));
+}
+
+function collectBadgeSettingsFromForm(){
+  const kategoriList = KATEGORI_LIST_SAFE();
+  const out = {};
+  kategoriList.forEach(k => {
+    const safeId = k.replace(/\s+/g,'_');
+    out[k] = {
+      label: document.getElementById(`bLabel_${safeId}`).value.trim() || titleCaseKategoriSafe(k),
+      bg: document.getElementById(`bBg_${safeId}`).value.trim() || '#1c1d20',
+      color: document.getElementById(`bColor_${safeId}`).value.trim() || '#e8c766',
+      font: document.getElementById(`bFont_${safeId}`).value,
+      size: parseInt(document.getElementById(`bSize_${safeId}`).value, 10) || 11,
+      icon: (badgeSettings[k] && badgeSettings[k].icon) || ''
+    };
+  });
+  return out;
+}
+
+async function saveBadgeSettings(){
+  try{
+    const collected = collectBadgeSettingsFromForm();
+    // upload semua ikon berbentuk data URL dulu
+    for(const k of Object.keys(collected)){
+      if(collected[k].icon && collected[k].icon.startsWith('data:')){
+        const safeId = k.replace(/\s+/g,'_').toLowerCase();
+        collected[k].icon = await uploadIfNeeded(collected[k].icon, 'badge-icon-' + safeId + '-' + Date.now() + '.png');
+      }
+    }
+    const resp = await fetch('/api/badge-settings', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+getToken()},
+      body: JSON.stringify({ badges: collected })
+    });
+    const json = await resp.json();
+    if(!resp.ok) throw new Error(json.error || 'Gagal menyimpan');
+    badgeSettings = collected;
+    badgeSettingsLoaded = true;
+    renderBadgeSettingsForm();
+    showToast('Pengaturan badge berhasil disimpan.');
+    renderArticleList();
+  }catch(e){
+    showToast('Gagal: ' + e.message);
+  }
+}
+
+async function loadBadgeSettings(){
+  try{
+    const resp = await fetch('/api/badge-settings');
+    const data = await resp.json();
+    if(resp.ok && data && data.badges){
+      const kategoriList = KATEGORI_LIST_SAFE();
+      kategoriList.forEach(k => {
+        badgeSettings[k] = Object.assign({}, DEFAULT_BADGE_SETTINGS[k], data.badges[k] || {});
+      });
+    }
+  }catch(e){
+    // pakai default jika gagal memuat
+  } finally {
+    badgeSettingsLoaded = true;
+    renderBadgeSettingsForm();
+  }
+}
+
+function getBadgeStyleFor(k){
+  const key = (k || '').toUpperCase();
+  const b = badgeSettings[key] || DEFAULT_BADGE_SETTINGS[key];
+  if(!b) return null;
+  return b;
+}
+
+/* =====================================================
    ARTICLES: SAVE / LIST / EDIT / DELETE
 ===================================================== */
 let editingSlug = null;
@@ -1232,7 +1537,14 @@ function renderFilteredTable(){
 
   tbody.innerHTML = pageItems.map((a) => {
     const kategoriArr = getKategoriArr(a);
-    const kategoriPills = kategoriArr.map(k => `<span class="pill">${escapeHtml(k)}</span>`).join('') || '—';
+    const kategoriPills = kategoriArr.map(k => {
+      const bs = getBadgeStyleFor(k);
+      if(bs){
+        const iconHtml = bs.icon ? `<img src="${bs.icon}" alt="" style="width:12px;height:12px;object-fit:contain;border-radius:2px;margin-right:4px;vertical-align:-1px;">` : '';
+        return `<span class="pill" style="background:${bs.bg};color:${bs.color};font-family:${bs.font};font-size:${bs.size}px;border-color:${bs.bg};">${iconHtml}${escapeHtml(bs.label || titleCaseKategori(k))}</span>`;
+      }
+      return `<span class="pill">${escapeHtml(k)}</span>`;
+    }).join('') || '—';
     const highlightBadge = a.is_highlight ? '<span class="pill pill-highlight">HIGHLIGHT</span>' : '';
     const thumbCell = a.thumbnail
       ? (isVideoSrc(a.thumbnail) ? `<video class="mini" src="${a.thumbnail}" muted></video>` : `<img class="mini" src="${a.thumbnail}">`)
