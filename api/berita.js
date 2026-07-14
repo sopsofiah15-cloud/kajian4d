@@ -238,6 +238,30 @@ ${a.thumbnail ? `<meta property="og:image" content="${escapeHtml(a.thumbnail)}">
   .bj-meta{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--text-dim);flex-wrap:wrap;}
   .bj-empty{grid-column:1/-1;padding:30px 20px;text-align:center;color:var(--text-faint);font-size:13px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;}
 
+  /* ====== SECTION BARU: SEMUA BERITA (LINTAS KATEGORI) ====== */
+  .db-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
+  .db-tabs button{white-space:nowrap;font-family:inherit;font-size:12px;font-weight:600;color:var(--text-dim);background:var(--card-bg);border:1px solid var(--card-border);padding:7px 14px;border-radius:999px;cursor:pointer;transition:all .2s;}
+  .db-tabs button:hover{border-color:var(--blue-accent);color:var(--blue-bright);}
+  .db-tabs button.active{background:var(--blue-accent);color:#fff;border-color:var(--blue-accent);}
+
+  .allnews-section{padding:20px 20px 28px;border:1px solid var(--card-border);background:var(--card-bg);border-radius:12px;margin-bottom:40px;}
+  .all-news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:22px;}
+  @media(max-width:900px){.all-news-grid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:560px){.all-news-grid{grid-template-columns:1fr;}}
+  .an-item{display:flex;gap:12px;align-items:flex-start;background:var(--card-bg);border:1px solid var(--card-border);border-radius:8px;padding:10px;transition:border-color .2s;}
+  .an-item:hover{border-color:var(--blue-accent);}
+  .an-thumb{width:88px;aspect-ratio:4/3;height:auto;border-radius:6px;overflow:hidden;flex-shrink:0;border:1px solid var(--card-border);background:var(--bg-carbon-2);}
+  .an-thumb img{width:100%;height:100%;object-fit:cover;}
+  .an-body h4{font-size:13.5px;font-weight:600;line-height:1.35;margin:6px 0;color:var(--text-main);}
+  .an-meta{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--text-dim);flex-wrap:wrap;}
+
+  .pagination-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;padding:6px 0 4px;}
+  .pg-btn{font-family:inherit;font-size:12.5px;font-weight:600;color:var(--text-dim);background:var(--card-bg);border:1px solid var(--card-border);padding:8px 14px;border-radius:6px;cursor:pointer;transition:all .2s;}
+  .pg-btn:hover:not(:disabled){border-color:var(--blue-accent);color:var(--blue-bright);}
+  .pg-btn.active{background:var(--blue-accent);color:#fff;border-color:var(--blue-accent);}
+  .pg-btn:disabled{opacity:.4;cursor:not-allowed;}
+  .pg-num{min-width:38px;text-align:center;}
+
   footer.site.ftr2{position:relative;overflow:hidden;margin-top:20px;border-top:1px solid rgba(58,143,217,0.25);
     background:radial-gradient(circle at 15% 0%, rgba(58,143,217,0.14), transparent 45%),radial-gradient(circle at 85% 30%, rgba(95,179,255,0.10), transparent 50%),linear-gradient(180deg, rgba(13,42,74,0.35), var(--bg-carbon-2) 40%, var(--bg-carbon) 100%);}
   .ftr2-notice{max-width:860px;margin:0 auto;padding:30px 20px 26px;font-size:13px;color:var(--text-dim);text-align:center;line-height:1.7;border-bottom:1px solid rgba(255,255,255,0.06);}
@@ -445,6 +469,17 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
     <span class="tag">Baca Juga</span>
     <h2>Berita lainnya di kategori <span class="kat-name">${escapeHtml(kat)}</span></h2>
   </div>
+  <div class="bacajuga-grid">${bacaJugaHtml}</div>
+
+  <div class="allnews-section carbon-texture">
+    <div class="section-label">
+      <span class="tag">Semua Berita</span>
+      <h2>Berita Terbaru — <span class="kat-name" id="dbKatLabel">Semua Kategori</span></h2>
+    </div>
+    <div class="db-tabs" id="dbTabs"></div>
+    <div class="all-news-grid" id="dbGrid"><div class="loading-state">Memuat berita...</div></div>
+    <div class="pagination-bar" id="dbPagination"></div>
+  </div>
 
   </main>
 
@@ -580,19 +615,138 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
     track.innerHTML = \`<span>\${itemsHtml}&nbsp;&nbsp;&nbsp;</span><span>\${itemsHtml}&nbsp;&nbsp;&nbsp;</span>\`;
   }
 
+  // ====== SECTION BARU: "Semua Berita" lintas kategori dengan tab + pagination ======
+  const DB_CATEGORIES = ['SEMUA', 'SEPAK BOLA', 'TEKNOLOGI', 'OLAHRAGA', 'HIBURAN', 'BISNIS', 'GAYA HIDUP', 'HIGHLIGHT'];
+  const DB_ITEMS_PER_PAGE = 6;
+  let dbAllArticles = [];
+  let dbCurrentCategory = 'SEMUA';
+  let dbCurrentPage = 1;
+
+  function dbKatList(a){
+    if(Array.isArray(a.kategori)) return a.kategori.filter(Boolean).map(k => String(k).toUpperCase());
+    if(typeof a.kategori === 'string' && a.kategori.trim()) return a.kategori.split(',').map(k => k.trim().toUpperCase()).filter(Boolean);
+    return [];
+  }
+  function dbPrimaryKat(a){
+    const k = dbKatList(a);
+    return k.length ? k[0] : 'BERITA';
+  }
+  function dbFiltered(){
+    if(dbCurrentCategory === 'SEMUA') return dbAllArticles;
+    if(dbCurrentCategory === 'HIGHLIGHT') return dbAllArticles.filter(a => a.is_highlight);
+    return dbAllArticles.filter(a => dbKatList(a).includes(dbCurrentCategory));
+  }
+
+  function renderDbTabs(){
+    const wrap = document.getElementById('dbTabs');
+    if(!wrap) return;
+    wrap.innerHTML = DB_CATEGORIES.map(c =>
+      \`<button type="button" data-cat="\${esc(c)}" class="\${c === dbCurrentCategory ? 'active' : ''}">\${esc(c)}</button>\`
+    ).join('');
+    wrap.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        dbCurrentCategory = btn.dataset.cat;
+        dbCurrentPage = 1;
+        renderDbTabs();
+        renderDbGrid();
+        const label = document.getElementById('dbKatLabel');
+        if(label) label.textContent = dbCurrentCategory === 'SEMUA' ? 'Semua Kategori' : dbCurrentCategory;
+      });
+    });
+  }
+
+  function renderDbGrid(){
+    const grid = document.getElementById('dbGrid');
+    const pagBar = document.getElementById('dbPagination');
+    if(!grid) return;
+
+    const pool = dbFiltered().slice().sort((x, y) => new Date(y.tanggal || 0) - new Date(x.tanggal || 0));
+    const totalPages = Math.max(1, Math.ceil(pool.length / DB_ITEMS_PER_PAGE));
+    if(dbCurrentPage > totalPages) dbCurrentPage = totalPages;
+    if(dbCurrentPage < 1) dbCurrentPage = 1;
+
+    const start = (dbCurrentPage - 1) * DB_ITEMS_PER_PAGE;
+    const pageItems = pool.slice(start, start + DB_ITEMS_PER_PAGE);
+
+    if(!pool.length){
+      grid.innerHTML = '<div class="bj-empty">Belum ada berita di kategori ini.</div>';
+    } else {
+      grid.innerHTML = pageItems.map(a => \`
+        <a href="\${articleUrl(a)}" class="an-item">
+          <div class="an-thumb"><img src="\${esc(a.thumbnail || '')}" alt=""></div>
+          <div class="an-body">
+            <span class="badge" style="font-size:9px;padding:2px 7px;">\${esc(dbPrimaryKat(a))}</span>
+            <h4>\${esc(a.judul)}</h4>
+            <div class="an-meta"><span>\${fmtDate(a.tanggal)}</span>\${a.views ? \`<span>\${esc(a.views)}x dibaca</span>\` : ''}</div>
+          </div>
+        </a>
+      \`).join('');
+    }
+    renderDbPagination(totalPages, pagBar);
+  }
+
+  function renderDbPagination(totalPages, bar){
+    if(!bar) return;
+    if(totalPages <= 1){ bar.innerHTML = ''; return; }
+
+    let pageNums = [];
+    for(let i = 1; i <= totalPages; i++) pageNums.push(i);
+    let visible = pageNums;
+    if(totalPages > 5){
+      let startP = Math.max(1, dbCurrentPage - 2);
+      let endP = Math.min(totalPages, startP + 4);
+      startP = Math.max(1, endP - 4);
+      visible = pageNums.slice(startP - 1, endP);
+    }
+
+    bar.innerHTML = \`
+      <button class="pg-btn" data-act="start" \${dbCurrentPage === 1 ? 'disabled' : ''}>&laquo; Start</button>
+      <button class="pg-btn" data-act="prev" \${dbCurrentPage === 1 ? 'disabled' : ''}>Prev</button>
+      \${visible.map(p => \`<button class="pg-btn pg-num \${p === dbCurrentPage ? 'active' : ''}" data-page="\${p}">\${p}</button>\`).join('')}
+      <button class="pg-btn" data-act="next" \${dbCurrentPage === totalPages ? 'disabled' : ''}>Next</button>
+      <button class="pg-btn" data-act="end" \${dbCurrentPage === totalPages ? 'disabled' : ''}>End &raquo;</button>
+    \`;
+
+    bar.querySelectorAll('.pg-num').forEach(btn => {
+      btn.addEventListener('click', () => {
+        dbCurrentPage = parseInt(btn.dataset.page, 10);
+        renderDbGrid();
+        const sect = document.querySelector('.allnews-section');
+        if(sect) sect.scrollIntoView({ behavior:'smooth', block:'start' });
+      });
+    });
+    bar.querySelectorAll('[data-act]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const act = btn.dataset.act;
+        if(act === 'start') dbCurrentPage = 1;
+        if(act === 'end') dbCurrentPage = totalPages;
+        if(act === 'prev') dbCurrentPage = Math.max(1, dbCurrentPage - 1);
+        if(act === 'next') dbCurrentPage = Math.min(totalPages, dbCurrentPage + 1);
+        renderDbGrid();
+        const sect = document.querySelector('.allnews-section');
+        if(sect) sect.scrollIntoView({ behavior:'smooth', block:'start' });
+      });
+    });
+  }
+
   async function initSidebarAndTicker(){
     syncStickyHeaderHeight();
     window.addEventListener('resize', syncStickyHeaderHeight);
+    renderDbTabs();
     try{
       const res = await fetch('/api/articles');
       const data = await res.json();
       if(Array.isArray(data) && data.length){
         renderSidebarArchive(data);
         renderHotNewsTicker(data);
+        dbAllArticles = data;
+        renderDbGrid();
       }
     }catch(e){
       const container = document.getElementById('accordion');
       if(container) container.innerHTML = '<div class="empty-state">Gagal memuat arsip.</div>';
+      const grid = document.getElementById('dbGrid');
+      if(grid) grid.innerHTML = '<div class="bj-empty">Gagal memuat berita.</div>';
     }
     syncStickyHeaderHeight();
   }
