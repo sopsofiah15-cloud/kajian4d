@@ -420,7 +420,8 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
     <span class="current">${escapeHtml(a.judul)}</span>
   </div>
 
-  <article>
+    <article>
+    <h1 class="article-title">${escapeHtml(a.judul)}</h1>
     <div class="article-meta">
   <span>${tanggal}</span>
   <span class="views-count" style="display:inline-flex;align-items:center;gap:4px;">
