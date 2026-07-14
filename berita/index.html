@@ -878,6 +878,13 @@ function renderCategoryBadge(a, extraStyle){
   }
   return `<span class="badge" style="${style}">${esc(kat)}</span>`;
 }
+  function renderArchiveDateBadge(dateText){
+  const bs = getBadgeStyleFor('ARSIP');
+  if(bs){
+    return `<span class="badge" style="background:${esc(bs.bg)};color:${esc(bs.color)};font-family:${esc(bs.font)};font-size:${esc(String(bs.size))}px;">${esc(dateText)}</span>`;
+  }
+  return `<span class="badge">${esc(dateText)}</span>`;
+}
   let allArticles = [];
   let currentCategory = 'SEMUA';
   let currentPage = 1;
@@ -1158,7 +1165,7 @@ function renderCategoryBadge(a, extraStyle){
 
       const head = document.createElement('button');
       head.className = 'accordion-head';
-      head.innerHTML = `<span>${esc(date)} <span class="count">(${groups[date].length})</span></span><span class="chevron">▾</span>`;
+      head.innerHTML = `<span>${renderArchiveDateBadge(date)} <span class="count">(${groups[date].length})</span></span><span class="chevron">▾</span>`;
       head.onclick = () => item.classList.toggle('open');
 
       const body = document.createElement('div');
@@ -1169,9 +1176,9 @@ function renderCategoryBadge(a, extraStyle){
     <div class="arch-item-body">
       <h5>${esc(a.judul)}</h5>
       <div class="arch-meta-row">
-        ${renderCategoryBadge(a, 'font-size:8.5px;padding:2px 6px;')}
-        <span class="arch-date">${fmtDate(a.tanggal)}</span>
-      </div>
+  ${renderCategoryBadge(a, 'font-size:8.5px;padding:2px 6px;')}
+  ${renderArchiveDateBadge(fmtDate(a.tanggal))}
+</div>
     </div>
   </a>
 `).join('');
