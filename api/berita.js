@@ -671,16 +671,17 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
     if(!pool.length){
       grid.innerHTML = '<div class="bj-empty">Belum ada berita di kategori ini.</div>';
     } else {
-      grid.innerHTML = pageItems.map(a => `
-  <a href="${articleUrl(a)}" class="an-item">
-    <div class="an-thumb"><img src="${esc(a.thumbnail || '')}" alt=""></div>
-    <div class="an-body">
-      <span class="badge" style="font-size:9px;padding:2px 7px;">${esc(dbPrimaryKat(a))}</span>
-      <h4>${esc(a.judul)}</h4>
-      <div class="an-meta"><span>${fmtDate(a.tanggal)}</span>${a.views ? `<span>${esc(a.views)}x dibaca</span>` : ''}</div>
-    </div>
-  </a>
-`).join('');
+      grid.innerHTML = pageItems.map(a => \`
+        <a href="\${articleUrl(a)}" class="an-item">
+          <div class="an-thumb"><img src="\${esc(a.thumbnail || '')}" alt=""></div>
+          <div class="an-body">
+            <span class="badge" style="font-size:9px;padding:2px 7px;">\${esc(dbPrimaryKat(a))}</span>
+            <h4>\${esc(a.judul)}</h4>
+            <div class="an-meta"><span>\${fmtDate(a.tanggal)}</span>\${a.views ? \`<span>\${esc(a.views)}x dibaca</span>\` : ''}</div>
+          </div>
+        </a>
+      \`).join('');
+    }
     renderDbPagination(totalPages, pagBar);
   }
 
