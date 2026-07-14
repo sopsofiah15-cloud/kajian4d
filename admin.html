@@ -1165,9 +1165,10 @@ KATEGORI_LIST_SAFE().forEach(k => {
 // helper wrappers (kategori list & titlecase are defined later in the file;
 // these thin wrappers just avoid ordering issues at script parse time)
 function KATEGORI_LIST_SAFE(){
-  return ["SEPAK BOLA","TEKNOLOGI","OLAHRAGA","HIBURAN","BISNIS","DUNIA"];
+  return ["SEPAK BOLA","TEKNOLOGI","OLAHRAGA","HIBURAN","BISNIS","DUNIA","ARSIP"];
 }
 function titleCaseKategoriSafe(k){
+  if(k === 'ARSIP') return 'Arsip Berita (Tanggal)';
   return k.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
 }
 
