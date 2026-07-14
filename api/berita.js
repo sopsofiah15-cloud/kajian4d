@@ -684,7 +684,16 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
     }
     renderDbPagination(totalPages, pagBar);
   }
-
+function scrollToGridIfNeeded(){
+  const sect = document.querySelector('.allnews-section');
+  if(!sect) return;
+  const rect = sect.getBoundingClientRect();
+  // hanya scroll kalau section udah nggak kelihatan di layar (di atas viewport)
+  const isVisible = rect.top >= 0 && rect.top < window.innerHeight * 0.5;
+  if(!isVisible){
+    sect.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+}
   function renderDbPagination(totalPages, bar){
     if(!bar) return;
     if(totalPages <= 1){ bar.innerHTML = ''; return; }
@@ -708,25 +717,23 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
     \`;
 
     bar.querySelectorAll('.pg-num').forEach(btn => {
-      btn.addEventListener('click', () => {
-        dbCurrentPage = parseInt(btn.dataset.page, 10);
-        renderDbGrid();
-        const sect = document.querySelector('.allnews-section');
-        if(sect) sect.scrollIntoView({ behavior:'smooth', block:'start' });
-      });
-    });
-    bar.querySelectorAll('[data-act]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const act = btn.dataset.act;
-        if(act === 'start') dbCurrentPage = 1;
-        if(act === 'end') dbCurrentPage = totalPages;
-        if(act === 'prev') dbCurrentPage = Math.max(1, dbCurrentPage - 1);
-        if(act === 'next') dbCurrentPage = Math.min(totalPages, dbCurrentPage + 1);
-        renderDbGrid();
-        const sect = document.querySelector('.allnews-section');
-        if(sect) sect.scrollIntoView({ behavior:'smooth', block:'start' });
-      });
-    });
+  btn.addEventListener('click', () => {
+    dbCurrentPage = parseInt(btn.dataset.page, 10);
+    renderDbGrid();
+    scrollToGridIfNeeded();
+  });
+});
+bar.querySelectorAll('[data-act]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const act = btn.dataset.act;
+    if(act === 'start') dbCurrentPage = 1;
+    if(act === 'end') dbCurrentPage = totalPages;
+    if(act === 'prev') dbCurrentPage = Math.max(1, dbCurrentPage - 1);
+    if(act === 'next') dbCurrentPage = Math.min(totalPages, dbCurrentPage + 1);
+    renderDbGrid();
+    scrollToGridIfNeeded();
+  });
+});
   }
 
   async function initSidebarAndTicker(){
