@@ -845,7 +845,32 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
   const HL_BOXED_INTERVAL_MS  = 10000;
 
   const EYE_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>';
+  let badgeSettings = {};
 
+async function loadBadgeSettingsData(){
+  try{
+    const res = await fetch('/api/badge-settings');
+    if(!res.ok) return;
+    const data = await res.json();
+    if(data && data.badges) badgeSettings = data.badges;
+  }catch(e){}
+}
+
+function getBadgeStyleFor(kat){
+  const key = (kat || '').toUpperCase();
+  return badgeSettings[key] || null;
+}
+
+function renderCategoryBadge(a, extraStyle){
+  const kat = primaryKat(a);
+  const bs = getBadgeStyleFor(kat);
+  const style = extraStyle || '';
+  if(bs){
+    const iconHtml = bs.icon ? `<img src="${esc(bs.icon)}" alt="" style="width:11px;height:11px;object-fit:contain;border-radius:2px;margin-right:4px;vertical-align:-1px;">` : '';
+    return `<span class="badge" style="background:${esc(bs.bg)};color:${esc(bs.color)};font-family:${esc(bs.font)};font-size:${esc(String(bs.size))}px;${style}">${iconHtml}${esc(bs.label || kat)}</span>`;
+  }
+  return `<span class="badge" style="${style}">${esc(kat)}</span>`;
+}
   let allArticles = [];
   let currentCategory = 'SEMUA';
   let currentPage = 1;
@@ -930,7 +955,7 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
   <div class="card-overlay">
                 <div class="badge-row">
                   ${a.is_highlight ? '<span class="badge highlight-badge">Highlight</span>' : ''}
-                  <span class="badge">${esc(primaryKat(a))}</span>
+                  ${renderCategoryBadge(a)}
                 </div>
                 <div class="card-title">${esc(a.judul)}</div>
                 <div class="meta-row">
@@ -1077,7 +1102,7 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
           <div>
             <h4>${esc(a.judul)}</h4>
             <div class="meta-row">
-              <span class="badge" style="font-size:9px;padding:2px 7px;">${esc(primaryKat(a))}</span>
+              ${renderCategoryBadge(a, 'font-size:9px;padding:2px 7px;')}
               <span>${fmtDate(a.tanggal)}</span>
               ${a.views ? `<span class="views">${EYE_SVG}<span>${esc(a.views)}</span></span>` : ''}
             </div>
@@ -1190,7 +1215,7 @@ function renderHotNewsTicker(){
         <a href="${articleUrl(a)}" class="an-item">
           <div class="an-thumb"><img src="${esc(a.thumbnail || '')}" alt=""></div>
           <div class="an-body">
-            <span class="badge" style="font-size:9px;padding:2px 7px;">${esc(primaryKat(a))}</span>
+            ${renderCategoryBadge(a, 'font-size:9px;padding:2px 7px;')}
             <h4>${esc(a.judul)}</h4>
             <div class="meta-row"><span>${fmtDate(a.tanggal)}</span>${a.views ? `<span class="views">${EYE_SVG} ${esc(a.views)}</span>` : ''}</div>
           </div>
@@ -1289,6 +1314,7 @@ function renderHotNewsTicker(){
     loadBannerSettings();
     syncStickyHeaderHeight();
     window.addEventListener('resize', syncStickyHeaderHeight);
+     await loadBadgeSettingsData();
     try{
       const data = await fetchArticles();
       if(Array.isArray(data) && data.length > 0){
