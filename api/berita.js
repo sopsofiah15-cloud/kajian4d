@@ -244,16 +244,16 @@ ${a.thumbnail ? `<meta property="og:image" content="${escapeHtml(a.thumbnail)}">
   .db-tabs button:hover{border-color:var(--blue-accent);color:var(--blue-bright);}
   .db-tabs button.active{background:var(--blue-accent);color:#fff;border-color:var(--blue-accent);}
 
-  .allnews-section{padding:20px 20px 28px;border:1px solid var(--card-border);background:var(--card-bg);border-radius:12px;margin-bottom:40px;}
   .all-news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:22px;}
-  @media(max-width:900px){.all-news-grid{grid-template-columns:repeat(2,1fr);}}
-  @media(max-width:560px){.all-news-grid{grid-template-columns:1fr;}}
-  .an-item{display:flex;gap:12px;align-items:flex-start;background:var(--card-bg);border:1px solid var(--card-border);border-radius:8px;padding:10px;transition:border-color .2s;}
-  .an-item:hover{border-color:var(--blue-accent);}
-  .an-thumb{width:88px;aspect-ratio:4/3;height:auto;border-radius:6px;overflow:hidden;flex-shrink:0;border:1px solid var(--card-border);background:var(--bg-carbon-2);}
-  .an-thumb img{width:100%;height:100%;object-fit:cover;}
-  .an-body h4{font-size:13.5px;font-weight:600;line-height:1.35;margin:6px 0;color:var(--text-main);}
-  .an-meta{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--text-dim);flex-wrap:wrap;}
+@media(max-width:760px){.all-news-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:480px){.all-news-grid{grid-template-columns:1fr;}}
+.an-item{display:block;background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;overflow:hidden;transition:border-color .2s, transform .2s;}
+.an-item:hover{border-color:var(--blue-accent);transform:translateY(-3px);}
+.an-thumb{width:100%;height:130px;overflow:hidden;background:var(--bg-carbon-2);}
+.an-thumb img{width:100%;height:100%;object-fit:cover;}
+.an-body{padding:12px 14px 16px;}
+.an-body h4{font-size:13.5px;font-weight:600;line-height:1.35;margin:8px 0 8px;color:var(--text-main);}
+.an-meta{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--text-dim);flex-wrap:wrap;}
 
   .pagination-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;padding:6px 0 4px;}
   .pg-btn{font-family:inherit;font-size:12.5px;font-weight:600;color:var(--text-dim);background:var(--card-bg);border:1px solid var(--card-border);padding:8px 14px;border-radius:6px;cursor:pointer;transition:all .2s;}
@@ -671,17 +671,16 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
     if(!pool.length){
       grid.innerHTML = '<div class="bj-empty">Belum ada berita di kategori ini.</div>';
     } else {
-      grid.innerHTML = pageItems.map(a => \`
-        <a href="\${articleUrl(a)}" class="an-item">
-          <div class="an-thumb"><img src="\${esc(a.thumbnail || '')}" alt=""></div>
-          <div class="an-body">
-            <span class="badge" style="font-size:9px;padding:2px 7px;">\${esc(dbPrimaryKat(a))}</span>
-            <h4>\${esc(a.judul)}</h4>
-            <div class="an-meta"><span>\${fmtDate(a.tanggal)}</span>\${a.views ? \`<span>\${esc(a.views)}x dibaca</span>\` : ''}</div>
-          </div>
-        </a>
-      \`).join('');
-    }
+      grid.innerHTML = pageItems.map(a => `
+  <a href="${articleUrl(a)}" class="an-item">
+    <div class="an-thumb"><img src="${esc(a.thumbnail || '')}" alt=""></div>
+    <div class="an-body">
+      <span class="badge" style="font-size:9px;padding:2px 7px;">${esc(dbPrimaryKat(a))}</span>
+      <h4>${esc(a.judul)}</h4>
+      <div class="an-meta"><span>${fmtDate(a.tanggal)}</span>${a.views ? `<span>${esc(a.views)}x dibaca</span>` : ''}</div>
+    </div>
+  </a>
+`).join('');
     renderDbPagination(totalPages, pagBar);
   }
 
