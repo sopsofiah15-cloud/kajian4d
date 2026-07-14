@@ -176,6 +176,9 @@ nav.tabs button:not(.active):hover{border-color:var(--line);color:var(--text);}
 
   /* toolbar */
   .toolbar{
+    position: sticky;
+    top: 70px;  /* sesuaikan dengan tinggi header.topbar kamu yang juga sticky */
+    z-index: 5;
     display:flex; flex-wrap:wrap; gap:4px; padding:8px;
     background:#0e0f10; border:1px solid var(--line); border-radius:10px 10px 0 0;
     border-bottom:none;
@@ -188,7 +191,11 @@ nav.tabs button:not(.active):hover{border-color:var(--line);color:var(--text);}
   .toolbar button:hover{background:#1c1d20;border-color:var(--line);}
   .toolbar .divider{width:1px;background:var(--line);margin:4px 4px;}
   #editor{
-    min-height:260px; padding:16px; border:1px solid var(--line); border-top:none;
+    #editor{
+    min-height:260px;
+    max-height:500px;       /* atur sesuai selera, ini tinggi tetap box editor */
+    overflow-y:auto;        /* isi artikel scroll di dalam box ini saja */
+    padding:16px; border:1px solid var(--line); border-top:none;
     border-radius:0 0 10px 10px; background:#0b0c0d; line-height:1.7; font-size:14px;
     outline:none; overflow-wrap:anywhere;
   }
