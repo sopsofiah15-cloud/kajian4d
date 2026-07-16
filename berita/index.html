@@ -411,10 +411,14 @@ body{
 }
 aside.sidebar::-webkit-scrollbar{ width:5px; }
 aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-radius:10px; }
-  .sidebar-title{
-    font-size:12px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--blue-bright);
+  .sidebar-title-row{
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
     margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid rgba(58,143,217,0.2);
-  }
+}
+.sidebar-title-text{
+    font-family:var(--font-display); font-size:16px; color:var(--text-main); font-weight:400;
+    display:flex; align-items:center; gap:6px;
+}
   .sidebar-badge{
   display:inline-flex; align-items:center; justify-content:center;
   min-width:20px; height:20px; padding:0 6px;
@@ -788,7 +792,10 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
   </main>
 
   <aside class="sidebar carbon-texture">
-    <div class="sidebar-title">Arsip Berita <span class="sidebar-badge" id="archiveTotalBadge"></span></div>
+    <div class="sidebar-title-row">
+  <span class="tag">Arsip</span>
+  <h2 class="sidebar-title-text">Berita <span class="sidebar-badge" id="archiveTotalBadge"></span></h2>
+</div>
     <div id="accordion"><div class="loading-state">Memuat arsip...</div></div>
   </aside>
 </div>
