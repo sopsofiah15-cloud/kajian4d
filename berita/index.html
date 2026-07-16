@@ -415,6 +415,15 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
     font-size:12px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--blue-bright);
     margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid rgba(58,143,217,0.2);
   }
+  .sidebar-badge{
+  display:inline-flex; align-items:center; justify-content:center;
+  min-width:20px; height:20px; padding:0 6px;
+  border-radius:999px; background:var(--blue-accent); color:#fff;
+  font-size:11px; font-weight:700; margin-left:4px; vertical-align:middle;
+}
+.accordion-head.no-toggle{ cursor:default; }
+.accordion-head.no-toggle .chevron{ display:none; }
+.arch-item-preview{ padding-top:4px; }
   .accordion-item{ border-bottom:1px solid rgba(255,255,255,0.06); }
   .accordion-item:last-child{ border-bottom:none; }
   .accordion-head{
@@ -779,7 +788,7 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
   </main>
 
   <aside class="sidebar carbon-texture">
-    <div class="sidebar-title">Arsip Berita</div>
+    <div class="sidebar-title">Arsip Berita <span class="sidebar-badge" id="archiveTotalBadge"></span></div>
     <div id="accordion"><div class="loading-state">Memuat arsip...</div></div>
   </aside>
 </div>
@@ -1154,8 +1163,11 @@ if(!groups.length) groups.push([]);
 
   function renderArchive(){
     const container = document.getElementById('accordion');
+    const totalBadge = document.getElementById('archiveTotalBadge');
+
     if(!allArticles.length){
       container.innerHTML = '<div class="empty-state">Belum ada arsip.</div>';
+      if(totalBadge) totalBadge.textContent = '';
       return;
     }
 
@@ -1166,32 +1178,57 @@ if(!groups.length) groups.push([]);
       groups[key].push(a);
     });
 
+    if(totalBadge) totalBadge.textContent = allArticles.length;
+
     container.innerHTML = '';
-    Object.keys(groups).forEach((date, idx) => {
+    Object.keys(groups).forEach((date) => {
+      const list = groups[date];
+      const preview = list[0];
+      const rest = list.slice(1);
+
       const item = document.createElement('div');
-      item.className = 'accordion-item open';
+      item.className = 'accordion-item';
 
       const head = document.createElement('button');
-      head.className = 'accordion-head';
-      head.innerHTML = `<span>${renderArchiveDateBadge(date)} <span class="count">(${groups[date].length})</span></span><span class="chevron">▾</span>`;
-      head.onclick = () => item.classList.toggle('open');
+      head.className = 'accordion-head' + (rest.length ? '' : ' no-toggle');
+      head.innerHTML = `<span>${renderArchiveDateBadge(date)} <span class="count">(${list.length})</span></span><span class="chevron">▾</span>`;
+      if(rest.length){
+        head.onclick = () => item.classList.toggle('open');
+      }
 
-      const body = document.createElement('div');
-      body.className = 'accordion-body';
-      body.innerHTML = groups[date].map(a => `
-  <a href="${articleUrl(a)}" class="arch-item">
-    <div class="arch-thumb"><img src="${esc(a.thumbnail || '')}" alt=""></div>
-    <div class="arch-item-body">
-      <h5>${esc(a.judul)}</h5>
-      <div class="arch-meta-row">
-  ${renderCategoryBadge(a, 'font-size:8.5px;padding:2px 6px;')}
-  ${renderArchiveDateBadge(fmtDate(a.tanggal))}
-</div>
-    </div>
-  </a>
-`).join('');
+      const previewEl = document.createElement('a');
+      previewEl.href = articleUrl(preview);
+      previewEl.className = 'arch-item arch-item-preview';
+      previewEl.innerHTML = `
+        <div class="arch-thumb"><img src="${esc(preview.thumbnail || '')}" alt=""></div>
+        <div class="arch-item-body">
+          <h5>${esc(preview.judul)}</h5>
+          <div class="arch-meta-row">
+            ${renderCategoryBadge(preview, 'font-size:8.5px;padding:2px 6px;')}
+          </div>
+        </div>
+      `;
+
       item.appendChild(head);
-      item.appendChild(body);
+      item.appendChild(previewEl);
+
+      if(rest.length){
+        const body = document.createElement('div');
+        body.className = 'accordion-body';
+        body.innerHTML = rest.map(a => `
+          <a href="${articleUrl(a)}" class="arch-item">
+            <div class="arch-thumb"><img src="${esc(a.thumbnail || '')}" alt=""></div>
+            <div class="arch-item-body">
+              <h5>${esc(a.judul)}</h5>
+              <div class="arch-meta-row">
+                ${renderCategoryBadge(a, 'font-size:8.5px;padding:2px 6px;')}
+              </div>
+            </div>
+          </a>
+        `).join('');
+        item.appendChild(body);
+      }
+
       container.appendChild(item);
     });
   }
