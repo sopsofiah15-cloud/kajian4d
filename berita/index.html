@@ -24,7 +24,7 @@
     --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
   *{ box-sizing:border-box; margin:0; padding:0; }
-  html{ -webkit-text-size-adjust:100%; overflow-x:clip; }
+  html{ -webkit-text-size-adjust:100%; overflow-x:hidden; overflow-x:clip; }
 body{
   background-color: var(--bg-carbon);
   background-image:
@@ -425,8 +425,8 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
   .accordion-head .count{ color:var(--text-faint); font-weight:400; font-size:12px; }
   .accordion-head .chevron{ transition:transform .2s; color:var(--blue-accent); font-size:11px; }
   .accordion-item.open .chevron{ transform:rotate(180deg); }
-  .accordion-body{ max-height:0; overflow:hidden; transition:max-height .25s ease; }
-  .accordion-item.open .accordion-body{ max-height:600px; }
+  .accordion-body{ max-height:0; overflow:hidden; transition:max-height .3s ease; }
+  .accordion-item.open .accordion-body{ max-height:none; overflow:visible; }
   .arch-item{ display:flex; gap:10px; padding:10px 2px; align-items:flex-start; }
 .arch-thumb{ width:56px; aspect-ratio:4/3; height:auto; border-radius:5px; overflow:hidden; flex-shrink:0; border:1px solid var(--card-border); background:var(--bg-carbon-2); }
 .arch-thumb img{ width:100%; height:100%; object-fit:cover; }
@@ -461,8 +461,6 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
 }
 @media(max-width:900px){ .all-news-grid{ grid-template-columns:repeat(2,1fr); } }
 @media(max-width:560px){ .all-news-grid{ grid-template-columns:1fr; } }
-  @media(max-width:900px){ .all-news-grid{ grid-template-columns:repeat(2,1fr); } }
-  @media(max-width:560px){ .all-news-grid{ grid-template-columns:1fr; } }
   .an-item{
     display:flex; gap:12px; align-items:flex-start;
     background:var(--card-bg); border:1px solid var(--card-border); border-radius:8px; padding:10px;
@@ -839,8 +837,6 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
   </div>
 </footer>
 
-<div class="note-banner" id="previewNotice">Mode preview — belum terhubung ke database asli. Data di bawah adalah contoh; akan otomatis berganti ke berita asli begitu API terhubung.</div>
-
 <script>
   const CATEGORIES = ['SEMUA', 'SEPAK BOLA', 'TEKNOLOGI', 'OLAHRAGA', 'HIBURAN', 'BISNIS', 'DUNIA', 'HIGHLIGHT'];
   const ITEMS_PER_PAGE = 6;
@@ -853,14 +849,18 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
 
   const EYE_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>';
   let badgeSettings = {};
-
-async function loadBadgeSettingsData(){
+  function sanitizeCssValue(val, fallback){
+  if(typeof val !== 'string') return fallback;
+  if(/^[a-zA-Z0-9#,.\-%\s]+$/.test(val)) return val;
+  return fallback;
+}
+ async function loadBadgeSettingsData(){
   try{
     const res = await fetch('/api/badge-settings');
     if(!res.ok) return;
     const data = await res.json();
     if(data && data.badges) badgeSettings = data.badges;
-  }catch(e){}
+  }catch(e){ console.error('Gagal memuat pengaturan:', e); }
 }
 
 function getBadgeStyleFor(kat){
@@ -873,8 +873,12 @@ function renderCategoryBadge(a, extraStyle){
   const bs = getBadgeStyleFor(kat);
   const style = extraStyle || '';
   if(bs){
+    const safeBg = sanitizeCssValue(bs.bg, '#3a8fd9');
+    const safeColor = sanitizeCssValue(bs.color, '#fff');
+    const safeFont = sanitizeCssValue(bs.font, 'inherit');
+    const safeSize = sanitizeCssValue(String(bs.size), '9');
     const iconHtml = bs.icon ? `<img src="${esc(bs.icon)}" alt="" style="width:11px;height:11px;object-fit:contain;border-radius:2px;margin-right:4px;vertical-align:-1px;">` : '';
-    return `<span class="badge" style="background:${esc(bs.bg)};color:${esc(bs.color)};font-family:${esc(bs.font)};font-size:${esc(String(bs.size))}px;${style}">${iconHtml}${esc(bs.label || kat)}</span>`;
+    return `<span class="badge" style="background:${safeBg};color:${safeColor};font-family:${safeFont};font-size:${safeSize}px;${style}">${iconHtml}${esc(bs.label || kat)}</span>`;
   }
   return `<span class="badge" style="${style}">${esc(kat)}</span>`;
 }
@@ -888,7 +892,7 @@ function renderCategoryBadge(a, extraStyle){
   let allArticles = [];
   let currentCategory = 'SEMUA';
   let currentPage = 1;
-  let isDemoMode = false;
+  
 
   let activeSliders = [];
 
@@ -896,9 +900,11 @@ function renderCategoryBadge(a, extraStyle){
     return (str || '').toString().replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   }
   function fmtDate(d){
-    if(!d) return '';
-    return new Date(d).toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
-  }
+  if(!d) return '';
+  const date = new Date(d);
+  if(isNaN(date.getTime())) return '';
+  return date.toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
+}
   function katList(a){
     return Array.isArray(a.kategori) ? a.kategori : (a.kategori ? [a.kategori] : []);
   }
@@ -906,7 +912,7 @@ function renderCategoryBadge(a, extraStyle){
     const k = katList(a);
     return k.length ? k[0] : 'BERITA';
   }
-  function articleUrl(a){ return `/berita/${a.slug}`; }
+  function articleUrl(a){ return `/berita/${esc(a.slug)}`; }
 
   async function fetchArticles(){
     const res = await fetch('/api/articles');
@@ -928,11 +934,15 @@ function renderCategoryBadge(a, extraStyle){
         if(fallback) fallback.style.display = 'none';
       }
       if(data.banner_link){
-        wrapper.href = data.banner_link;
+        try{
+          const u = new URL(data.banner_link, window.location.origin);
+          if(u.protocol === 'http:' || u.protocol === 'https:'){
+            wrapper.href = data.banner_link;
+          }
+        }catch(e){}
       }
     }catch(e){}
   }
-
   function renderTabs(){
     const ul = document.getElementById('categoryTabs');
     ul.innerHTML = CATEGORIES.map(c =>
@@ -1056,7 +1066,8 @@ function renderCategoryBadge(a, extraStyle){
 
     const mainArticles = ordered;
     const smallTopArticles = ordered.length > 1 ? ordered.slice(1) : ordered;
-    const smallBottomArticles = ordered.length > 2 ? [...ordered.slice(2), ordered[1]] : ordered;
+    const remaining = ordered.slice(2);
+const smallBottomArticles = remaining.length >= 2 ? remaining : ordered;
 
     grid.innerHTML = `
       <div class="hl-main" id="hlMain"></div>
@@ -1100,14 +1111,11 @@ function renderCategoryBadge(a, extraStyle){
 
     const listEl = document.getElementById('dmList');
     const groupSize = 3;
-    const groups = [];
-    for(let i = 0; i < pool.length; i += groupSize){
-      let g = pool.slice(i, i + groupSize);
-      let fillIdx = 0;
-      while(g.length < groupSize && pool.length){ g.push(pool[fillIdx % pool.length]); fillIdx++; }
-      groups.push(g);
-    }
-    if(!groups.length) groups.push(pool.slice(0, groupSize));
+const groups = [];
+for(let i = 0; i < pool.length; i += groupSize){
+  groups.push(pool.slice(i, i + groupSize));
+}
+if(!groups.length) groups.push([]);
 
     function renderGroup(g){
       listEl.innerHTML = g.map(a => `
@@ -1331,7 +1339,7 @@ function renderHotNewsTicker(){
     loadBannerSettings();
     syncStickyHeaderHeight();
     window.addEventListener('resize', syncStickyHeaderHeight);
-     await loadBadgeSettingsData();
+    await loadBadgeSettingsData();
     try{
       const data = await fetchArticles();
       if(Array.isArray(data) && data.length > 0){
@@ -1342,7 +1350,7 @@ function renderHotNewsTicker(){
       renderAll();
       renderArchive();
       renderHotNewsTicker();
-      syncStickyHeaderHeight();   // <-- tambahan, pastikan ukuran terbaru terukur setelah render selesai
+      syncStickyHeaderHeight();
     }catch(e){
       document.getElementById('highlightGrid').innerHTML =
         '<div class="empty-state">Gagal memuat berita. Silakan refresh halaman.</div>';
