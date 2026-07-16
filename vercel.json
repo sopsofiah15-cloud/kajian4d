@@ -1,11 +1,11 @@
 {
-     "rewrites": [
-       { "source": "/berita", "destination": "/berita/index.html" },
-       { "source": "/berita/", "destination": "/berita/index.html" },
-       { "source": "/berita/:slug", "destination": "/api/berita?slug=:slug" },
-       { "source": "/sitemap.xml", "destination": "/api/sitemap" }
-     ],
-     "redirects": [
-       { "source": "/", "destination": "/berita", "permanent": false }
-     ]
-   }
+  "rewrites": [
+    { "source": "/", "destination": "/berita/index.html" },
+    { "source": "/berita/:slug", "destination": "/api/berita?slug=:slug" },
+    { "source": "/sitemap.xml", "destination": "/api/sitemap" }
+  ],
+  "redirects": [
+    { "source": "/berita", "destination": "/", "permanent": true },
+    { "source": "/berita/", "destination": "/", "permanent": true }
+  ]
+}
