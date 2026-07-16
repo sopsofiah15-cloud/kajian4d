@@ -126,6 +126,10 @@ a.views = viewResult[0]?.views ?? 0;
 <meta property="og:type" content="article">
 <meta property="og:url" content="${SITE_URL}/berita/${escapeHtml(a.slug)}">
 <meta property="og:site_name" content="KAJIAN4D NEWS">
+<meta property="og:title" content="${escapeHtml(a.judul)}">
+<meta property="og:description" content="${escapeHtml(metaDesc)}">
+${a.thumbnail ? `<meta property="og:image" content="${escapeHtml(a.thumbnail)}">` : ''}
+<meta property="og:locale" content="id_ID">
 <meta property="article:published_time" content="${a.tanggal ? new Date(a.tanggal).toISOString() : ''}">
 <meta property="article:section" content="${escapeHtml(kat)}">
 
