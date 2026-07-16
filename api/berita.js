@@ -2,6 +2,7 @@ const { getSql } = require('../lib/db');
 
 const CATEGORIES = ['SEMUA', 'SEPAK BOLA', 'TEKNOLOGI', 'OLAHRAGA', 'HIBURAN', 'BISNIS', 'GAYA HIDUP', 'HIGHLIGHT'];
 const BACA_JUGA_LIMIT = 6;
+const SITE_URL = 'https://kajian4d.vercel.app';
 
 function escapeHtml(str) {
   return (str || '').toString().replace(/[&<>"']/g, (m) => ({
@@ -12,6 +13,10 @@ function escapeHtml(str) {
 function fmtDate(d) {
   if (!d) return '';
   return new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function stripHtml(html) {
+  return (html || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
 // Kategori bisa tersimpan sebagai array (TEXT[]) ATAU string biasa (mis. "SEPAK BOLA" atau "SEPAK BOLA,HIGHLIGHT").
@@ -54,7 +59,7 @@ module.exports = async (req, res) => {
         <link rel="icon" href="https://ik.imagekit.io/ehc8d8fve/kajian%20icon%20v5?updatedAt=1783465068596"></head>
         <body style="background:#0b0d10;color:#e7ebf0;font-family:sans-serif;text-align:center;padding:100px 20px;">
         <h1 style="color:#5fb3ff;">404</h1><p>Artikel tidak ditemukan.</p>
-        <a href="/berita" style="color:#3a8fd9;">&larr; Kembali ke daftar berita</a></body></html>`);
+        <a href="/" style="color:#3a8fd9;">&larr; Kembali ke daftar berita</a></body></html>`);
       return;
     }
 // Increment view count — real, bertambah setiap kali halaman ini di-request server
@@ -66,6 +71,12 @@ a.views = viewResult[0]?.views ?? 0;
 
     // Ambil kandidat "Baca Juga": artikel lain, urutkan terbaru, lalu filter kategori di JS (aman utk tipe kolom apapun)
     const kat = primaryKat(a);
+
+    // Meta description: pakai excerpt kalau ada isinya, kalau kosong ambil dari isi konten artikel (dibersihkan dari tag HTML)
+    const metaDesc = a.excerpt && a.excerpt.trim()
+      ? a.excerpt.trim()
+      : stripHtml(a.konten).slice(0, 155) + '...';
+
     let related = [];
     try {
       const candidates = await sql`
@@ -82,9 +93,9 @@ a.views = viewResult[0]?.views ?? 0;
     const kategoriPillsHead = `<span class="badge">${escapeHtml(kat)}</span>`;
 
     const categoryTabs = CATEGORIES.filter((c) => c !== 'HIGHLIGHT')
-      .map((c) => `<li><a href="/berita?kategori=${encodeURIComponent(c)}">${escapeHtml(c)}</a></li>`).join('');
+      .map((c) => `<li><a href="/?kategori=${encodeURIComponent(c)}">${escapeHtml(c)}</a></li>`).join('');
     const footerChips = CATEGORIES.filter((c) => c !== 'SEMUA' && c !== 'HIGHLIGHT')
-      .map((c) => `<a class="ftr2-chip" href="/berita?kategori=${encodeURIComponent(c)}">${escapeHtml(c)}</a>`).join('');
+      .map((c) => `<a class="ftr2-chip" href="/?kategori=${encodeURIComponent(c)}">${escapeHtml(c)}</a>`).join('');
 
     const bannerImgTag = settings.header_image
       ? `<img class="banner-img" src="${escapeHtml(settings.header_image)}" alt="Banner promosi">`
@@ -110,16 +121,25 @@ a.views = viewResult[0]?.views ?? 0;
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${escapeHtml(a.judul)} - KAJIAN4D</title>
-<meta name="description" content="${escapeHtml(a.excerpt || '')}">
-<meta property="og:title" content="${escapeHtml(a.judul)}">
-<meta property="og:description" content="${escapeHtml(a.excerpt || '')}">
-${a.thumbnail ? `<meta property="og:image" content="${escapeHtml(a.thumbnail)}">` : ''}
-<link rel="canonical" href="https://${req.headers.host}/berita/${escapeHtml(a.slug)}">
+<meta name="description" content="${escapeHtml(metaDesc)}">
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="${SITE_URL}/berita/${escapeHtml(a.slug)}">
+<meta property="og:site_name" content="KAJIAN4D NEWS">
+<meta property="article:published_time" content="${a.tanggal ? new Date(a.tanggal).toISOString() : ''}">
+<meta property="article:section" content="${escapeHtml(kat)}">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${escapeHtml(a.judul)}">
+<meta name="twitter:description" content="${escapeHtml(a.excerpt || '')}">
+${a.thumbnail ? `<meta name="twitter:image" content="${escapeHtml(a.thumbnail)}">` : ''}
+
+<link rel="canonical" href="${SITE_URL}/berita/${escapeHtml(a.slug)}">
 <script type="application/ld+json">${JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'NewsArticle',
   headline: a.judul,
-  description: a.excerpt || '',
+  description: metaDesc,
   image: a.thumbnail ? [a.thumbnail] : [],
   datePublished: a.tanggal ? new Date(a.tanggal).toISOString() : new Date().toISOString(),
   dateModified: a.updated_at ? new Date(a.updated_at).toISOString() : new Date().toISOString(),
@@ -405,7 +425,7 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
 
 <header class="site carbon-texture">
   <div class="header-top">
-    <a class="brand" href="/berita">
+    <a class="brand" href="/">
       <div class="brand-logo"><img src="https://ik.imagekit.io/ehc8d8fve/kajian%20icon%20v5?updatedAt=1783465068596" alt="Logo"></div>
       <div class="brand-stack">
         <div class="brand-name">
@@ -437,9 +457,9 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
 <div class="wrap layout">
 <main>
   <div class="breadcrumb">
-    <a href="/berita">Beranda</a>
+    <a href="/">Beranda</a>
     <span class="sep">/</span>
-    <a href="/berita?kategori=${encodeURIComponent(kat)}">${escapeHtml(kat)}</a>
+    <a href="/?kategori=${encodeURIComponent(kat)}">${escapeHtml(kat)}</a>
     <span class="sep">/</span>
     <span class="current">${escapeHtml(a.judul.length > 40 ? a.judul.slice(0, 40) + '...' : a.judul)}</span>
   </div>
