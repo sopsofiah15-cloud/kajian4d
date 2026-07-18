@@ -1747,7 +1747,6 @@ function renderFilteredTable(){
         <td>${a.tanggal ? String(a.tanggal).slice(0,10) : '-'}</td>
         <td>${escapeHtml(a.slug)}</td>
         <td class="tbl-actions">
-          <button onclick="previewSavedArticle('${a.slug}')">Preview</button>
           <button onclick="editArticle('${a.slug}')">Edit</button>
           <button class="del" onclick="deleteArticle('${a.slug}')">Hapus</button>
         </td>
