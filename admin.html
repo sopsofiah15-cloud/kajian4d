@@ -522,13 +522,16 @@ nav.tabs button:not(.active):hover{border-color:var(--line);color:var(--text);}
       <div class="field">
         <label>Kategori (boleh pilih lebih dari satu)</label>
         <div class="kategori-checkboxes">
-          <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="SEPAK BOLA"> Sepak Bola</label>
-          <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="TEKNOLOGI"> Teknologi</label>
-          <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="OLAHRAGA"> Olahraga</label>
-          <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="HIBURAN"> Hiburan</label>
-          <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="BISNIS"> Bisnis</label>
-          <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="DUNIA"> DUNIA</label>
-        </div>
+  <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="SEPAK BOLA"> Sepak Bola</label>
+  <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="OLAHRAGA"> Olahraga</label>
+  <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="TEKNOLOGI & OTOMOTIF"> Teknologi & Otomotif</label>
+  <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="HIBURAN"> Hiburan</label>
+  <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="ENTERTAIMENT"> Entertaiment</label>
+  <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="BISNIS"> Bisnis</label>
+  <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="BERITA DUNIA"> Berita Dunia</label>
+  <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="LIFESTYLE"> Lifestyle</label>
+  <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="FILM & SERIES"> Film & Series</label>
+</div>
       </div>
       <div class="field">
   <label>Tanggal Publish</label>
@@ -1171,7 +1174,7 @@ KATEGORI_LIST_SAFE().forEach(k => {
 // helper wrappers (kategori list & titlecase are defined later in the file;
 // these thin wrappers just avoid ordering issues at script parse time)
 function KATEGORI_LIST_SAFE(){
-  return ["SEPAK BOLA","TEKNOLOGI","OLAHRAGA","HIBURAN","BISNIS","DUNIA","ARSIP"];
+  return ["SEPAK BOLA","OLAHRAGA","TEKNOLOGI & OTOMOTIF","HIBURAN","ENTERTAIMENT","BISNIS","BERITA DUNIA","LIFESTYLE","FILM & SERIES","ARSIP"];
 }
 function titleCaseKategoriSafe(k){
   if(k === 'ARSIP') return 'Arsip Berita (Tanggal)';
@@ -1398,7 +1401,7 @@ const ARTICLES_PER_PAGE = 10;
 
 // Kategori dasar (sama seperti checkbox form). Kategori baru yang muncul dari
 // data lama (misal ditulis manual) akan otomatis ditambahkan ke bar filter juga.
-const KATEGORI_LIST = ["SEPAK BOLA","TEKNOLOGI","OLAHRAGA","HIBURAN","BISNIS","DUNIA"];
+const KATEGORI_LIST = ["SEPAK BOLA","OLAHRAGA","TEKNOLOGI & OTOMOTIF","HIBURAN","ENTERTAIMENT","BISNIS","BERITA DUNIA","LIFESTYLE","FILM & SERIES"];
 
 function getKategoriChecked(){
   return Array.from(document.querySelectorAll('.fKategoriChk:checked')).map(c => c.value);
