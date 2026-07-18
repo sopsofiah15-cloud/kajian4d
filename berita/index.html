@@ -890,7 +890,19 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
 </footer>
 
 <script>
-  const CATEGORIES = ['SEMUA', 'HIGHLIGHT & VIRAL', 'SEPAK BOLA', 'OLAHRAGA', 'TEKNOLOGI & OTOMOTIF', 'HIBURAN', 'ENTERTAIMENT', 'BISNIS', 'BERITA DUNIA', 'LIFESTYLE', 'FILM & SERIES'];
+  const CATEGORIES = [
+  { value: 'SEMUA', label: 'SEMUA' },
+  { value: 'HIGHLIGHT', label: 'HIGHLIGHT & VIRAL' },
+  { value: 'SEPAK BOLA', label: 'SEPAK BOLA' },
+  { value: 'OLAHRAGA', label: 'OLAHRAGA' },
+  { value: 'TEKNOLOGI', label: 'TEKNOLOGI & OTOMOTIF' },
+  { value: 'HIBURAN', label: 'HIBURAN' },
+  { value: 'ENTERTAIMENT', label: 'ENTERTAIMENT' },
+  { value: 'BISNIS', label: 'BISNIS' },
+  { value: 'DUNIA', label: 'BERITA DUNIA' },
+  { value: 'LIFESTYLE', label: 'LIFESTYLE' },
+  { value: 'FILM & SERIES', label: 'FILM & SERIES' }
+];
   const ITEMS_PER_PAGE = 6;
 
   const HL_MAIN_INTERVAL_MS   = 7000;
@@ -998,7 +1010,7 @@ function renderCategoryBadge(a, extraStyle){
   function renderTabs(){
     const ul = document.getElementById('categoryTabs');
     ul.innerHTML = CATEGORIES.map(c =>
-      `<li><button data-cat="${esc(c)}" class="${c === currentCategory ? 'active' : ''}">${esc(c)}</button></li>`
+      `<li><button data-cat="${esc(c.value)}" class="${c.value === currentCategory ? 'active' : ''}">${esc(c.label)}</button></li>`
     ).join('');
     ul.querySelectorAll('button').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -1105,7 +1117,7 @@ function renderCategoryBadge(a, extraStyle){
     const title = document.getElementById('highlightSectionTitle');
 
     const pool = filteredByTab();
-    title.textContent = currentCategory === 'SEMUA' ? 'Highlight Hari Ini' : `Highlight — ${currentCategory}`;
+    title.textContent = currentCategory === 'SEMUA' ? 'Highlight Hari Ini' : `Highlight — ${CATEGORIES.find(c => c.value === currentCategory)?.label || currentCategory}`;
 
     if(!pool.length){
       grid.innerHTML = '<div class="empty-state">Belum ada berita di kategori ini.</div>';
@@ -1392,11 +1404,11 @@ function renderHotNewsTicker(){
     if(el) el.scrollIntoView({ behavior:'smooth', block:'start' });
   }
 
-  function renderFooterCategories(){
+  function function renderFooterCategories(){
     const wrap = document.getElementById('footerCategoryList');
     if(!wrap) return;
-    const cats = CATEGORIES.filter(c => c !== 'SEMUA' && c !== 'HIGHLIGHT & VIRAL');
-    wrap.innerHTML = cats.map(c => `<button type="button" class="ftr2-chip" data-cat="${esc(c)}">${esc(c)}</button>`).join('');
+    const cats = CATEGORIES.filter(c => c.value !== 'SEMUA' && c.value !== 'HIGHLIGHT');
+    wrap.innerHTML = cats.map(c => `<button type="button" class="ftr2-chip" data-cat="${esc(c.value)}">${esc(c.label)}</button>`).join('');
     wrap.querySelectorAll('.ftr2-chip').forEach(btn => {
       btn.addEventListener('click', () => {
         currentCategory = btn.dataset.cat;
