@@ -493,7 +493,7 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
     <span class="sep">/</span>
     <a href="/?kategori=${encodeURIComponent(kat)}">${escapeHtml(kat)}</a>
     <span class="sep">/</span>
-    <span class="current">${escapeHtml(a.judul.length > 40 ? a.judul.slice(0, 40) + '...' : a.judul)}</span>
+    <span class="current">${escapeHtml((a.judul || '').length > 40 ? a.judul.slice(0, 40) + '...' : (a.judul || ''))}</span>
   </div>
 
     <article>
