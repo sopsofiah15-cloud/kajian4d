@@ -160,7 +160,7 @@ ${a.thumbnail ? `<meta name="twitter:image" content="${escapeHtml(a.thumbnail)}"
 <script type="application/ld+json">${JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'NewsArticle',
-  headline: a.judul,
+  headline: a.judul || '',
   description: metaDesc,
   image: a.thumbnail ? [a.thumbnail] : [],
   datePublished: a.tanggal ? new Date(a.tanggal).toISOString() : new Date().toISOString(),
@@ -511,8 +511,8 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
 
     <div class="share-row">
       <span class="lbl">Bagikan:</span>
-      <a class="share-btn" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(a.judul + ' - https://' + req.headers.host + '/berita/' + a.slug)}">WhatsApp</a>
-      <a class="share-btn" target="_blank" rel="noopener" href="https://t.me/share/url?url=${encodeURIComponent('https://' + req.headers.host + '/berita/' + a.slug)}&text=${encodeURIComponent(a.judul)}">Telegram</a>
+      <a class="share-btn" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent((a.judul || '') + ' - https://' + req.headers.host + '/berita/' + a.slug)}">WhatsApp</a>
+      <a class="share-btn" target="_blank" rel="noopener" href="https://t.me/share/url?url=${encodeURIComponent('https://' + req.headers.host + '/berita/' + a.slug)}&text=${encodeURIComponent(a.judul || '')}">Telegram</a>
       <a class="share-btn" target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://' + req.headers.host + '/berita/' + a.slug)}">Facebook</a>
     </div>
   </article>
