@@ -1112,14 +1112,27 @@ function renderCategoryBadge(a, extraStyle){
       return;
     }
 
-    const highlighted = pool.filter(a => a.is_highlight);
-    const rest = pool.filter(a => !a.is_highlight);
-    const ordered = [...highlighted, ...rest];
+    // Slider utama HANYA berisi artikel berlabel Highlight & Viral (lintas semua kategori),
+    // diurutkan dari yang paling baru.
+    const highlighted = pool
+      .filter(a => a.is_highlight)
+      .slice()
+      .sort((a, b) => new Date(b.tanggal || 0) - new Date(a.tanggal || 0));
 
-    const mainArticles = ordered;
-    const smallTopArticles = ordered.length > 1 ? ordered.slice(1) : ordered;
-    const remaining = ordered.slice(2);
-const smallBottomArticles = remaining.length >= 2 ? remaining : ordered;
+    if(!highlighted.length){
+      grid.innerHTML = '<div class="empty-state">Belum ada berita berlabel Highlight & Viral.</div>';
+      return;
+    }
+
+    // "Baca Juga - News Terupdate" berisi SEMUA berita (lintas kategori, terlepas label Highlight),
+    // diurutkan dari yang paling baru diposting.
+    const latestNews = pool
+      .slice()
+      .sort((a, b) => new Date(b.tanggal || 0) - new Date(a.tanggal || 0));
+
+    const mainArticles = highlighted;
+    const smallTopArticles = latestNews;
+    const smallBottomArticles = latestNews.length > 1 ? [...latestNews.slice(1), latestNews[0]] : latestNews;
 
     grid.innerHTML = `
       <div class="hl-main" id="hlMain"></div>
