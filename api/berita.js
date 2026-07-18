@@ -924,6 +924,6 @@ bar.querySelectorAll('[data-act]').forEach(btn => {
 </html>`;
     res.status(200).send(html);
   } catch (err) {
-    res.status(500).send(`<pre style="color:#e7ebf0;background:#0b0d10;padding:20px;">Terjadi kesalahan server: ${escapeHtml(err.message)}</pre>`);
+    console.error('ERROR DI /api/berita:', err);
+    res.status(500).send(`<pre style="color:#e7ebf0;background:#0b0d10;padding:20px;white-space:pre-wrap;">Terjadi kesalahan server:\n\n${escapeHtml(err.message)}\n\n${escapeHtml(err.stack || '')}</pre>`);
   }
-};
