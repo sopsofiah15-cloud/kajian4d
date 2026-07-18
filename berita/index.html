@@ -1025,7 +1025,7 @@ function renderCategoryBadge(a, extraStyle){
 
   function filteredByTab(){
     if(currentCategory === 'SEMUA') return allArticles;
-    if(currentCategory === 'HIGHLIGHT & VIRAL') return allArticles.filter(a => a.is_highlight);
+    if(currentCategory === 'HIGHLIGHT') return allArticles.filter(a => a.is_highlight);
     return allArticles.filter(a => katList(a).includes(currentCategory));
   }
 
@@ -1404,7 +1404,7 @@ function renderHotNewsTicker(){
     if(el) el.scrollIntoView({ behavior:'smooth', block:'start' });
   }
 
-  function function renderFooterCategories(){
+  function renderFooterCategories(){
     const wrap = document.getElementById('footerCategoryList');
     if(!wrap) return;
     const cats = CATEGORIES.filter(c => c.value !== 'SEMUA' && c.value !== 'HIGHLIGHT');
