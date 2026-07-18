@@ -1,6 +1,18 @@
 const { getSql } = require('../lib/db');
 
-const CATEGORIES = ['SEMUA', 'HIGHLIGHT & VIRAL', 'SEPAK BOLA', 'OLAHRAGA', 'TEKNOLOGI & OTOMOTIF', 'HIBURAN', 'ENTERTAIMENT', 'BISNIS', 'BERITA DUNIA', 'LIFESTYLE', 'FILM & SERIES'];
+const CATEGORIES = [
+  { value: 'SEMUA', label: 'SEMUA' },
+  { value: 'HIGHLIGHT', label: 'HIGHLIGHT & VIRAL' },
+  { value: 'SEPAK BOLA', label: 'SEPAK BOLA' },
+  { value: 'OLAHRAGA', label: 'OLAHRAGA' },
+  { value: 'TEKNOLOGI', label: 'TEKNOLOGI & OTOMOTIF' },
+  { value: 'HIBURAN', label: 'HIBURAN' },
+  { value: 'ENTERTAIMENT', label: 'ENTERTAIMENT' },
+  { value: 'BISNIS', label: 'BISNIS' },
+  { value: 'DUNIA', label: 'BERITA DUNIA' },
+  { value: 'LIFESTYLE', label: 'LIFESTYLE' },
+  { value: 'FILM & SERIES', label: 'FILM & SERIES' }
+];
 const BACA_JUGA_LIMIT = 6;
 const SITE_URL = 'https://kajian4d.vercel.app';
 
@@ -96,10 +108,10 @@ a.views = viewResult[0]?.views ?? 0;
     const tanggal = fmtDate(a.tanggal);
     const kategoriPillsHead = `<span class="badge">${escapeHtml(kat)}</span>`;
 
-    const categoryTabs = CATEGORIES.filter((c) => c !== 'HIGHLIGHT & VIRAL')
-      .map((c) => `<li><a href="/?kategori=${encodeURIComponent(c)}">${escapeHtml(c)}</a></li>`).join('');
-    const footerChips = CATEGORIES.filter((c) => c !== 'SEMUA' && c !== 'HIGHLIGHT & VIRAL')
-      .map((c) => `<a class="ftr2-chip" href="/?kategori=${encodeURIComponent(c)}">${escapeHtml(c)}</a>`).join('');
+    const categoryTabs = CATEGORIES.filter((c) => c.value !== 'HIGHLIGHT')
+      .map((c) => `<li><a href="/?kategori=${encodeURIComponent(c.value)}">${escapeHtml(c.label)}</a></li>`).join('');
+const footerChips = CATEGORIES.filter((c) => c.value !== 'SEMUA' && c.value !== 'HIGHLIGHT')
+      .map((c) => `<a class="ftr2-chip" href="/?kategori=${encodeURIComponent(c.value)}">${escapeHtml(c.label)}</a>`).join('');
 
     const bannerImgTag = settings.header_image
       ? `<img class="banner-img" src="${escapeHtml(settings.header_image)}" alt="Banner promosi">`
@@ -654,7 +666,19 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
   }
 
   // ====== SECTION BARU: "Semua Berita" lintas kategori dengan tab + pagination ======
-  const DB_CATEGORIES = ['SEMUA', 'HIGHLIGHT & VIRAL', 'SEPAK BOLA', 'OLAHRAGA', 'TEKNOLOGI & OTOMOTIF', 'HIBURAN', 'ENTERTAIMENT', 'BISNIS', 'BERITA DUNIA', 'LIFESTYLE', 'FILM & SERIES'];
+  const CATEGORIES = [
+  { value: 'SEMUA', label: 'SEMUA' },
+  { value: 'HIGHLIGHT', label: 'HIGHLIGHT & VIRAL' },
+  { value: 'SEPAK BOLA', label: 'SEPAK BOLA' },
+  { value: 'OLAHRAGA', label: 'OLAHRAGA' },
+  { value: 'TEKNOLOGI', label: 'TEKNOLOGI & OTOMOTIF' },
+  { value: 'HIBURAN', label: 'HIBURAN' },
+  { value: 'ENTERTAIMENT', label: 'ENTERTAIMENT' },
+  { value: 'BISNIS', label: 'BISNIS' },
+  { value: 'DUNIA', label: 'BERITA DUNIA' },
+  { value: 'LIFESTYLE', label: 'LIFESTYLE' },
+  { value: 'FILM & SERIES', label: 'FILM & SERIES' }
+];
   const DB_ITEMS_PER_PAGE = 6;
   let dbAllArticles = [];
   let dbCurrentCategory = 'SEMUA';
@@ -671,7 +695,7 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
   }
   function dbFiltered(){
     if(dbCurrentCategory === 'SEMUA') return dbAllArticles;
-    if(dbCurrentCategory === 'HIGHLIGHT & VIRAL') return dbAllArticles.filter(a => a.is_highlight);
+    if(dbCurrentCategory === 'HIGHLIGHT') return dbAllArticles.filter(a => a.is_highlight);
     return dbAllArticles.filter(a => dbKatList(a).includes(dbCurrentCategory));
   }
 
@@ -679,7 +703,7 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
     const wrap = document.getElementById('dbTabs');
     if(!wrap) return;
     wrap.innerHTML = DB_CATEGORIES.map(c =>
-      \`<button type="button" data-cat="\${esc(c)}" class="\${c === dbCurrentCategory ? 'active' : ''}">\${esc(c)}</button>\`
+      `<button type="button" data-cat="${esc(c.value)}" class="${c.value === dbCurrentCategory ? 'active' : ''}">${esc(c.label)}</button>`
     ).join('');
     wrap.querySelectorAll('button').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -688,7 +712,7 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
         renderDbTabs();
         renderDbGrid();
         const label = document.getElementById('dbKatLabel');
-        if(label) label.textContent = dbCurrentCategory === 'SEMUA' ? 'Semua Kategori' : dbCurrentCategory;
+if(label) label.textContent = dbCurrentCategory === 'SEMUA' ? 'Semua Kategori' : (DB_CATEGORIES.find(c => c.value === dbCurrentCategory)?.label || dbCurrentCategory);
       });
     });
   }
