@@ -624,11 +624,7 @@ nav.tabs button:not(.active):hover{border-color:var(--line);color:var(--text);}
         <h2>Pengaturan Badge Kategori</h2>
         <p class="hint">Atur tampilan badge (label, warna, font, ukuran, dan ikon) untuk masing-masing kategori. Pengaturan ini dipakai di daftar berita dan pill kategori.</p>
 
-        <div id="badgeSettingsList"></div>
-
-        <div class="row-actions">
-          <button class="btn btn-gold" style="width:auto" onclick="saveBadgeSettings()">Simpan Pengaturan Badge</button>
-        </div>
+       <div id="badgeSettingsList"></div>
       </div>
     </section>
 
@@ -1195,10 +1191,11 @@ function renderBadgeSettingsForm(){
     const safeId = k.replace(/\s+/g,'_');
     const fontOptions = BADGE_FONT_OPTIONS.map(f => `<option value="${f}" ${b.font===f?'selected':''}>${f}</option>`).join('');
     const iconPreview = b.icon ? `<img src="${b.icon}" alt="icon">` : '';
-    return `
+   return `
       <div class="badge-card" data-kategori="${k}">
         <div class="badge-card-head">
           <h4>${escapeHtml(titleCaseKategoriSafe(k))}</h4>
+          <button type="button" class="btn btn-gold" style="width:auto;padding:7px 16px;font-size:12px;" onclick="saveBadgeSettings()">Terapkan</button>
         </div>
         <div class="badge-card-grid">
           <div class="field">
