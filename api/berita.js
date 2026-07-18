@@ -15,8 +15,13 @@ function fmtDate(d) {
   return new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
-function stripHtml(html) {
-  return (html || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+function linkifyKonten(html) {
+  if (!html) return '';
+  // regex ini cari URL polos yang BELUM ada di dalam atribut href="..."
+  return html.replace(
+    /(?<!href=["'])(https?:\/\/[^\s<"']+)/g,
+    (match) => `<a href="${match}" target="_blank" rel="noopener noreferrer">${match}</a>`
+  );
 }
 
 // Kategori bisa tersimpan sebagai array (TEXT[]) ATAU string biasa (mis. "SEPAK BOLA" atau "SEPAK BOLA,HIGHLIGHT").
@@ -232,6 +237,16 @@ ${a.thumbnail ? `<meta name="twitter:image" content="${escapeHtml(a.thumbnail)}"
 
   .article-body{font-size:15.5px;color:#c9d2db;}
   .article-body p{margin-bottom:18px;}
+  .article-body a{
+  color: var(--blue-bright);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  word-break: break-word;
+  transition: color .2s;
+}
+.article-body a:hover{
+  color: #fff;
+}
 
   .share-row{display:flex;align-items:center;gap:10px;margin:30px 0 46px;padding-top:24px;border-top:1px solid rgba(255,255,255,0.06);flex-wrap:wrap;}
   .share-row span.lbl{font-size:12px;color:var(--text-faint);letter-spacing:0.5px;text-transform:uppercase;margin-right:6px;}
@@ -479,7 +494,7 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
 </div>
     ${a.thumbnail ? `<div class="article-cover"><img src="${escapeHtml(a.thumbnail)}" alt="${escapeHtml(a.judul)}"></div>` : ''}
 
-    <div class="article-body">${a.konten || ''}</div>
+    <div class="article-body">${linkifyKonten(a.konten)}</div>
 
     <div class="share-row">
       <span class="lbl">Bagikan:</span>
