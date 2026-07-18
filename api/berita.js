@@ -26,7 +26,9 @@ function fmtDate(d) {
   if (!d) return '';
   return new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 }
-
+function stripHtml(html) {
+  return (html || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+}
 function linkifyKonten(html) {
   if (!html) return '';
   return html.replace(
@@ -702,7 +704,7 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
   function renderDbTabs(){
     const wrap = document.getElementById('dbTabs');
     if(!wrap) return;
-    wrap.innerHTML = DB_CATEGORIES.map(c =>
+    wrap.innerHTML = CATEGORIES.map(c =>
       `<button type="button" data-cat="${esc(c.value)}" class="${c.value === dbCurrentCategory ? 'active' : ''}">${esc(c.label)}</button>`
     ).join('');
     wrap.querySelectorAll('button').forEach(btn => {
@@ -712,7 +714,7 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
         renderDbTabs();
         renderDbGrid();
         const label = document.getElementById('dbKatLabel');
-if(label) label.textContent = dbCurrentCategory === 'SEMUA' ? 'Semua Kategori' : (DB_CATEGORIES.find(c => c.value === dbCurrentCategory)?.label || dbCurrentCategory);
+        if(label) label.textContent = dbCurrentCategory === 'SEMUA' ? 'Semua Kategori' : (CATEGORIES.find(c => c.value === dbCurrentCategory)?.label || dbCurrentCategory);
       });
     });
   }
