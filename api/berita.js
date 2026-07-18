@@ -701,11 +701,11 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
     return dbAllArticles.filter(a => dbKatList(a).includes(dbCurrentCategory));
   }
 
-  function renderDbTabs(){
+ function renderDbTabs(){
     const wrap = document.getElementById('dbTabs');
     if(!wrap) return;
     wrap.innerHTML = CATEGORIES.map(c =>
-      `<button type="button" data-cat="${esc(c.value)}" class="${c.value === dbCurrentCategory ? 'active' : ''}">${esc(c.label)}</button>`
+      \`<button type="button" data-cat="\${esc(c.value)}" class="\${c.value === dbCurrentCategory ? 'active' : ''}">\${esc(c.label)}</button>\`
     ).join('');
     wrap.querySelectorAll('button').forEach(btn => {
       btn.addEventListener('click', () => {
