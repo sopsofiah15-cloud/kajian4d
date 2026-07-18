@@ -17,9 +17,8 @@ function fmtDate(d) {
 
 function linkifyKonten(html) {
   if (!html) return '';
-  // regex ini cari URL polos yang BELUM ada di dalam atribut href="..."
   return html.replace(
-    /(?<!href=["'])(https?:\/\/[^\s<"']+)/g,
+    /(?<!href=["'])(?<!src=["'])(https?:\/\/[^\s<"']+)/g,
     (match) => `<a href="${match}" target="_blank" rel="noopener noreferrer">${match}</a>`
   );
 }
