@@ -890,7 +890,7 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
 </footer>
 
 <script>
-  const CATEGORIES = ['SEMUA', 'SEPAK BOLA', 'TEKNOLOGI', 'OLAHRAGA', 'HIBURAN', 'BISNIS', 'DUNIA', 'HIGHLIGHT'];
+  const CATEGORIES = ['SEMUA', 'HIGHLIGHT & VIRAL', 'SEPAK BOLA', 'OLAHRAGA', 'TEKNOLOGI & OTOMOTIF', 'HIBURAN', 'ENTERTAIMENT', 'BISNIS', 'BERITA DUNIA', 'LIFESTYLE', 'FILM & SERIES'];
   const ITEMS_PER_PAGE = 6;
 
   const HL_MAIN_INTERVAL_MS   = 7000;
@@ -1013,7 +1013,7 @@ function renderCategoryBadge(a, extraStyle){
 
   function filteredByTab(){
     if(currentCategory === 'SEMUA') return allArticles;
-    if(currentCategory === 'HIGHLIGHT') return allArticles.filter(a => a.is_highlight);
+    if(currentCategory === 'HIGHLIGHT & VIRAL') return allArticles.filter(a => a.is_highlight);
     return allArticles.filter(a => katList(a).includes(currentCategory));
   }
 
@@ -1382,7 +1382,7 @@ function renderHotNewsTicker(){
   function renderFooterCategories(){
     const wrap = document.getElementById('footerCategoryList');
     if(!wrap) return;
-    const cats = CATEGORIES.filter(c => c !== 'SEMUA' && c !== 'HIGHLIGHT');
+    const cats = CATEGORIES.filter(c => c !== 'SEMUA' && c !== 'HIGHLIGHT & VIRAL');
     wrap.innerHTML = cats.map(c => `<button type="button" class="ftr2-chip" data-cat="${esc(c)}">${esc(c)}</button>`).join('');
     wrap.querySelectorAll('.ftr2-chip').forEach(btn => {
       btn.addEventListener('click', () => {
