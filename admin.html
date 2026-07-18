@@ -524,11 +524,11 @@ nav.tabs button:not(.active):hover{border-color:var(--line);color:var(--text);}
         <div class="kategori-checkboxes">
   <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="SEPAK BOLA"> Sepak Bola</label>
   <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="OLAHRAGA"> Olahraga</label>
-  <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="TEKNOLOGI & OTOMOTIF"> Teknologi & Otomotif</label>
+  <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="TEKNOLOGI"> Teknologi & Otomotif</label>
   <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="HIBURAN"> Hiburan</label>
   <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="ENTERTAIMENT"> Entertaiment</label>
   <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="BISNIS"> Bisnis</label>
-  <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="BERITA DUNIA"> Berita Dunia</label>
+  <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="DUNIA"> Berita Dunia</label>
   <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="LIFESTYLE"> Lifestyle</label>
   <label class="chk-item"><input type="checkbox" class="fKategoriChk" value="FILM & SERIES"> Film & Series</label>
 </div>
@@ -1178,6 +1178,8 @@ function KATEGORI_LIST_SAFE(){
 }
 function titleCaseKategoriSafe(k){
   if(k === 'ARSIP') return 'Arsip Berita (Tanggal)';
+  if(k === 'TEKNOLOGI') return 'Teknologi & Otomotif';
+  if(k === 'DUNIA') return 'Berita Dunia';
   return k.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
 }
 
@@ -1401,7 +1403,7 @@ const ARTICLES_PER_PAGE = 10;
 
 // Kategori dasar (sama seperti checkbox form). Kategori baru yang muncul dari
 // data lama (misal ditulis manual) akan otomatis ditambahkan ke bar filter juga.
-const KATEGORI_LIST = ["SEPAK BOLA","OLAHRAGA","TEKNOLOGI & OTOMOTIF","HIBURAN","ENTERTAIMENT","BISNIS","BERITA DUNIA","LIFESTYLE","FILM & SERIES"];
+const KATEGORI_LIST = ["SEPAK BOLA","OLAHRAGA","TEKNOLOGI","HIBURAN","ENTERTAIMENT","BISNIS","DUNIA","LIFESTYLE","FILM & SERIES"];
 
 function getKategoriChecked(){
   return Array.from(document.querySelectorAll('.fKategoriChk:checked')).map(c => c.value);
@@ -1492,7 +1494,12 @@ function getKategoriArr(a){
     : (a.kategori ? String(a.kategori).split(',').map(s => s.trim()).filter(Boolean) : []);
 }
 
+const KATEGORI_LABEL_OVERRIDE = {
+  'TEKNOLOGI': 'Teknologi & Otomotif',
+  'DUNIA': 'Berita Dunia'
+};
 function titleCaseKategori(k){
+  if(KATEGORI_LABEL_OVERRIDE[k.toUpperCase()]) return KATEGORI_LABEL_OVERRIDE[k.toUpperCase()];
   return k.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
 }
 
