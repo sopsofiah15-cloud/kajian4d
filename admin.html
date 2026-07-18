@@ -361,8 +361,8 @@ nav.tabs button:not(.active):hover{border-color:var(--line);color:var(--text);}
 <div class="modal-overlay" id="previewModal">
   <div class="modal-box" style="width:92vw;max-width:820px;height:88vh;padding:0;display:flex;flex-direction:column;">
     <h3 style="padding:16px 20px;margin:0;border-bottom:1px solid var(--line);">
-      Preview Berita <span class="modal-close" onclick="closePreviewModal()">✕</span>
-    </h3>
+  <span id="previewModalTitle">Preview Berita</span> <span class="modal-close" onclick="closePreviewModal()">✕</span>
+</h3>
     <iframe id="previewFrame" style="flex:1;width:100%;border:none;background:#0b0d10;"></iframe>
   </div>
 </div>
@@ -622,8 +622,9 @@ nav.tabs button:not(.active):hover{border-color:var(--line);color:var(--text);}
           <textarea id="hCustomHtml" rows="6" placeholder="&lt;div style='background:linear-gradient(...)'&gt;...&lt;/div&gt;"></textarea>
         </div>
 
-        <div class="row-actions">
+   <div class="row-actions">
           <button class="btn btn-gold" style="width:auto" onclick="saveHeaderSettings()">Simpan Pengaturan Header</button>
+          <button class="btn btn-ghost" style="width:auto" onclick="previewHeaderInHomepage()">Preview di Halaman Utama</button>
         </div>
       </div>
     </section>
@@ -635,6 +636,10 @@ nav.tabs button:not(.active):hover{border-color:var(--line);color:var(--text);}
         <p class="hint">Atur tampilan badge (label, warna, font, ukuran, dan ikon) untuk masing-masing kategori. Pengaturan ini dipakai di daftar berita dan pill kategori.</p>
 
        <div id="badgeSettingsList"></div>
+
+        <div class="row-actions">
+          <button class="btn btn-ghost" style="width:auto" onclick="previewBadgeInHomepage()">Preview di Halaman Utama</button>
+        </div>
       </div>
     </section>
 
@@ -825,14 +830,102 @@ function previewArticle(){
   </div>
 </body></html>`;
 
+  showPreviewModal('Preview Detail Berita', html);
+}
+
+function showPreviewModal(title, html){
+  document.getElementById('previewModalTitle').textContent = title;
   document.getElementById('previewFrame').srcdoc = html;
   document.getElementById('previewModal').classList.add('show');
 }
+/* =====================================================
+   PREVIEW: HALAMAN UTAMA (dipakai oleh tab Header & tab Badge)
+===================================================== */
+function buildHomepageMockup(opts){
+  const headerUrl = opts.headerUrl || '';
+  const headerMime = opts.headerMime || '';
+  const bannerLink = opts.bannerLink || '#';
+  const badgeMap = opts.badgeMap || {};
 
-function closePreviewModal(){
-  document.getElementById('previewModal').classList.remove('show');
+  const bannerHtml = headerUrl
+    ? (isVideoSrc(headerUrl, headerMime)
+        ? `<video src="${headerUrl}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;" muted loop autoplay playsinline></video>`
+        : `<img src="${headerUrl}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;">`)
+    : `<span style="position:relative;z-index:2;font-size:13px;color:#5fb3ff;">Cek Berita &amp; Skor Real-Time</span>`;
+
+  const sampleArticles = (cachedArticles && cachedArticles.length ? cachedArticles.slice(0,6) : [
+    {judul:'Contoh Judul Berita Sepak Bola', kategori:['SEPAK BOLA'], thumbnail:''},
+    {judul:'Contoh Judul Berita Teknologi', kategori:['TEKNOLOGI'], thumbnail:''},
+    {judul:'Contoh Judul Berita Dunia', kategori:['DUNIA'], thumbnail:''},
+  ]);
+
+  const cardsHtml = sampleArticles.map(a => {
+    const kArr = getKategoriArr(a);
+    const kKey = (kArr[0] || 'BERITA').toUpperCase();
+    const b = badgeMap[kKey] || { label:kKey, bg:'#3a8fd9', color:'#fff', font:'Segoe UI', size:10 };
+    const badgeHtml = `<span style="display:inline-flex;align-items:center;gap:4px;background:${b.bg};color:${b.color};font-family:${b.font};font-size:${b.size}px;font-weight:700;text-transform:uppercase;padding:3px 9px;border-radius:4px;">${b.icon ? `<img src="${b.icon}" style="width:11px;height:11px;object-fit:contain;">` : ''}${escapeHtml(b.label || kKey)}</span>`;
+    const thumb = a.thumbnail
+      ? `<img src="${a.thumbnail}" style="width:100%;height:120px;object-fit:cover;">`
+      : `<div style="width:100%;height:120px;background:#14171b;"></div>`;
+    return `<div style="background:#15181d;border:1px solid rgba(58,143,217,0.18);border-radius:10px;overflow:hidden;">
+      ${thumb}
+      <div style="padding:10px 12px;">${badgeHtml}<h4 style="font-size:13px;margin:8px 0 0;color:#e7ebf0;">${escapeHtml(a.judul)}</h4></div>
+    </div>`;
+  }).join('');
+
+  return `<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8">
+  <style>
+    body{background:#0b0d10;color:#e7ebf0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;margin:0;}
+    .wrap{max-width:1000px;margin:0 auto;padding:0 20px;}
+    .note{background:rgba(58,143,217,0.12);color:#5fb3ff;font-size:12px;padding:10px 16px;text-align:center;}
+    .banner{position:relative;height:80px;margin:20px 0;border-radius:10px;overflow:hidden;border:1px solid rgba(58,143,217,0.18);
+      background:linear-gradient(135deg,#0d2a4a,#0f2d4d,#14171b);display:flex;align-items:center;justify-content:center;}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:10px 0 40px;}
+    @media(max-width:700px){.grid{grid-template-columns:1fr;}}
+  </style></head>
+  <body>
+    <div class="note">🔍 PREVIEW HALAMAN UTAMA — belum disimpan/dipublikasikan</div>
+    <div class="wrap">
+      <div class="banner" title="Link tujuan: ${escapeHtml(bannerLink)}">${bannerHtml}</div>
+      <div class="grid">${cardsHtml}</div>
+    </div>
+  </body></html>`;
 }
-// keep session across reload (same tab)
+
+function previewHeaderInHomepage(){
+  const html = buildHomepageMockup({
+    headerUrl: currentHeaderDataUrl,
+    headerMime: currentHeaderMime,
+    bannerLink: document.getElementById('hBannerLink').value.trim(),
+    badgeMap: badgeSettings
+  });
+  showPreviewModal('Preview Halaman Utama — Header', html);
+}
+
+function previewBadgeInHomepage(){
+  const liveBadgeMap = {};
+  KATEGORI_LIST_SAFE().forEach(k => {
+    const safeId = k.replace(/\s+/g,'_');
+    const labelEl = document.getElementById(`bLabel_${safeId}`);
+    if(!labelEl) return;
+    liveBadgeMap[k] = {
+      label: labelEl.value.trim() || titleCaseKategoriSafe(k),
+      bg: document.getElementById(`bBg_${safeId}`).value.trim() || '#1c1d20',
+      color: document.getElementById(`bColor_${safeId}`).value.trim() || '#e8c766',
+      font: document.getElementById(`bFont_${safeId}`).value,
+      size: parseInt(document.getElementById(`bSize_${safeId}`).value, 10) || 11,
+      icon: (badgeSettings[k] && badgeSettings[k].icon) || ''
+    };
+  });
+  const html = buildHomepageMockup({
+    headerUrl: currentHeaderDataUrl,
+    headerMime: currentHeaderMime,
+    bannerLink: '',
+    badgeMap: liveBadgeMap
+  });
+  showPreviewModal('Preview Halaman Utama — Badge', html);
+}
+  // keep session across reload (same tab)
 window.addEventListener('DOMContentLoaded', ()=>{
   document.getElementById('fTanggal').value = getTodayDateStr();
   if(sessionStorage.getItem('kajian4d_logged_in') === '1'){
