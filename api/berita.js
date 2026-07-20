@@ -261,10 +261,24 @@ ${a.thumbnail ? `<meta name="twitter:image" content="${escapeHtml(a.thumbnail)}"
   color: #fff;
 }
 
-  .share-row{display:flex;align-items:center;gap:10px;margin:30px 0 46px;padding-top:24px;border-top:1px solid rgba(255,255,255,0.06);flex-wrap:wrap;}
-  .share-row span.lbl{font-size:12px;color:var(--text-faint);letter-spacing:0.5px;text-transform:uppercase;margin-right:6px;}
-  .share-btn{font-size:12.5px;font-weight:600;color:var(--text-dim);background:var(--card-bg);border:1px solid var(--card-border);padding:8px 16px;border-radius:999px;cursor:pointer;transition:all .2s;}
-  .share-btn:hover{border-color:var(--blue-accent);color:var(--blue-bright);}
+.share-row{display:flex;align-items:center;gap:14px;margin:30px 0 46px;padding-top:24px;border-top:1px solid rgba(255,255,255,0.06);flex-wrap:wrap;}
+.share-row span.lbl{font-size:12px;color:var(--text-faint);letter-spacing:0.5px;text-transform:uppercase;margin-right:2px;}
+.share-card{max-width:fit-content;border-radius:15px;display:flex;backdrop-filter:blur(15px);box-shadow:inset 0 0 20px rgba(255,255,255,0.192),inset 0 0 5px rgba(255,255,255,0.274),0 5px 5px rgba(0,0,0,0.164);transition:0.5s;}
+.share-card:hover{background:rgba(173,173,173,0.05);}
+.share-card ul{padding:0.6rem;margin:0;display:flex;list-style:none;gap:0.6rem;align-items:center;flex-wrap:wrap;}
+.share-card ul li{cursor:pointer;position:relative;}
+.share-card ul li a{text-decoration:none;display:block;}
+.share-svg{transition:all 0.3s;padding:0.7rem;height:34px;width:34px;border-radius:100%;color:var(--blue-bright);fill:currentColor;box-shadow:inset 0 0 20px rgba(255,255,255,0.3),inset 0 0 5px rgba(255,255,255,0.5),0 5px 5px rgba(0,0,0,0.164);}
+.share-text{opacity:0;border-radius:5px;padding:5px 9px;font-size:11px;white-space:nowrap;transition:all 0.3s;color:var(--blue-bright);background-color:rgba(255,255,255,0.3);position:absolute;top:8px;left:8px;z-index:9999;box-shadow:-5px 0 1px rgba(153,153,153,0.2),-10px 0 1px rgba(153,153,153,0.2),inset 0 0 20px rgba(255,255,255,0.3),inset 0 0 5px rgba(255,255,255,0.5),0 5px 5px rgba(0,0,0,0.082);}
+.iso-pro{transition:0.5s;position:relative;}
+.iso-pro:hover a>.share-svg{transform:translate(15px,-15px);border-radius:100%;}
+.iso-pro:hover .share-text{opacity:1;transform:translate(25px,-2px) skew(-5deg);}
+.iso-pro:hover .share-svg{transform:translate(5px,-5px);}
+.iso-pro span.iso-ring{opacity:0;position:absolute;top:8px;left:8px;color:var(--blue-bright);border-color:var(--blue-bright);box-shadow:inset 0 0 20px rgba(255,255,255,0.3),inset 0 0 5px rgba(255,255,255,0.5),0 5px 5px rgba(0,0,0,0.164);border-radius:50%;transition:all 0.3s;height:34px;width:34px;}
+.iso-pro:hover span.iso-ring{opacity:1;}
+.iso-pro:hover span.iso-ring:nth-child(1){opacity:0.2;}
+.iso-pro:hover span.iso-ring:nth-child(2){opacity:0.4;transform:translate(5px,-5px);}
+.iso-pro:hover span.iso-ring:nth-child(3){opacity:0.6;transform:translate(10px,-10px);}
 
   .section-label{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
   .section-label .tag{background:var(--blue-accent);color:#fff;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 10px;border-radius:4px;}
@@ -510,11 +524,47 @@ aside.sidebar::-webkit-scrollbar-thumb{ background:var(--card-border); border-ra
     <div class="article-body">${linkifyKonten(a.konten)}</div>
 
     <div class="share-row">
-      <span class="lbl">Bagikan:</span>
-      <a class="share-btn" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent((a.judul || '') + ' - https://' + req.headers.host + '/berita/' + a.slug)}">WhatsApp</a>
-      <a class="share-btn" target="_blank" rel="noopener" href="https://t.me/share/url?url=${encodeURIComponent('https://' + req.headers.host + '/berita/' + a.slug)}&text=${encodeURIComponent(a.judul || '')}">Telegram</a>
-      <a class="share-btn" target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://' + req.headers.host + '/berita/' + a.slug)}">Facebook</a>
-    </div>
+  <span class="lbl">Bagikan:</span>
+  <div class="share-card">
+    <ul>
+      <li class="iso-pro">
+        <span class="iso-ring"></span><span class="iso-ring"></span><span class="iso-ring"></span>
+        <a target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent((a.judul || '') + ' - https://' + req.headers.host + '/berita/' + a.slug)}">
+          <svg class="share-svg" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.372-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12.004 2C6.486 2 2 6.486 2 12.004c0 2.117.664 4.077 1.792 5.686L2.5 22l4.44-1.264A9.947 9.947 0 0 0 12.004 22C17.522 22 22 17.518 22 12.004 22 6.486 17.522 2 12.004 2zm0 18.15c-1.783 0-3.443-.526-4.836-1.43l-.347-.223-3.234.92.906-3.15-.226-.323A8.144 8.144 0 0 1 3.85 12.004c0-4.5 3.653-8.154 8.154-8.154 4.5 0 8.15 3.653 8.15 8.154 0 4.5-3.65 8.146-8.15 8.146z"/></svg>
+        </a>
+        <span class="share-text">WhatsApp</span>
+      </li>
+      <li class="iso-pro">
+        <span class="iso-ring"></span><span class="iso-ring"></span><span class="iso-ring"></span>
+        <a target="_blank" rel="noopener" href="https://t.me/share/url?url=${encodeURIComponent('https://' + req.headers.host + '/berita/' + a.slug)}&text=${encodeURIComponent(a.judul || '')}">
+          <svg class="share-svg" viewBox="0 0 24 24"><path d="M21.94 4.36 18.6 19.94c-.25 1.12-.9 1.39-1.83.87l-5.06-3.73-2.44 2.35c-.27.27-.5.5-1.02.5l.37-5.16 9.39-8.48c.41-.36-.09-.56-.63-.2L6.6 13.1 1.6 11.5c-1.09-.34-1.1-1.08.23-1.6l19.5-7.5c.9-.34 1.7.21 1.61 1.96z"/></svg>
+        </a>
+        <span class="share-text">Telegram</span>
+      </li>
+      <li class="iso-pro">
+        <span class="iso-ring"></span><span class="iso-ring"></span><span class="iso-ring"></span>
+        <a target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://' + req.headers.host + '/berita/' + a.slug)}">
+          <svg class="share-svg" viewBox="0 0 24 24"><path d="M13.5 21v-7.5H16l.5-3.5h-3V7.9c0-.99.28-1.66 1.7-1.66H16.6V3.14C16.32 3.1 15.35 3 14.23 3 11.9 3 10.3 4.42 10.3 7.05V10H7.8v3.5h2.5V21h3.2z"/></svg>
+        </a>
+        <span class="share-text">Facebook</span>
+      </li>
+      <li class="iso-pro">
+        <span class="iso-ring"></span><span class="iso-ring"></span><span class="iso-ring"></span>
+        <a target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?url=${encodeURIComponent('https://' + req.headers.host + '/berita/' + a.slug)}&text=${encodeURIComponent(a.judul || '')}">
+          <svg class="share-svg" viewBox="0 0 24 24"><path d="M18.9 2H22l-7.19 8.21L23.4 22h-6.62l-5.18-6.77L5.66 22H2.5l7.7-8.79L1 2h6.79l4.68 6.19L18.9 2zm-1.16 18.1h1.83L7.4 3.8H5.44L17.74 20.1z"/></svg>
+        </a>
+        <span class="share-text">Twitter</span>
+      </li>
+      <li class="iso-pro">
+        <span class="iso-ring"></span><span class="iso-ring"></span><span class="iso-ring"></span>
+        <a href="#" class="ig-copy-link" data-url="https://${req.headers.host}/berita/${a.slug}">
+          <svg class="share-svg" viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 0 1-1.38-.9 3.7 3.7 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.21 8.8 2.2 12 2.2zm0 1.8c-3.14 0-3.5.01-4.74.07-.96.04-1.48.2-1.82.34-.46.18-.78.39-1.13.73-.34.35-.55.67-.73 1.13-.14.34-.3.86-.34 1.82C3.18 8.5 3.17 8.86 3.17 12s.01 3.5.07 4.74c.04.96.2 1.48.34 1.82.18.46.39.78.73 1.13.35.34.67.55 1.13.73.34.14.86.3 1.82.34 1.24.06 1.6.07 4.74.07s3.5-.01 4.74-.07c.96-.04 1.48-.2 1.82-.34.46-.18.78-.39 1.13-.73.34-.35.55-.67.73-1.13.14-.34.3-.86.34-1.82.06-1.24.07-1.6.07-4.74s-.01-3.5-.07-4.74c-.04-.96-.2-1.48-.34-1.82a3.03 3.03 0 0 0-.73-1.13 3.03 3.03 0 0 0-1.13-.73c-.34-.14-.86-.3-1.82-.34C15.5 4.01 15.14 4 12 4zm0 3.85a4.15 4.15 0 1 1 0 8.3 4.15 4.15 0 0 1 0-8.3zm0 1.8a2.35 2.35 0 1 0 0 4.7 2.35 2.35 0 0 0 0-4.7zm4.32-2a.97.97 0 1 1 0 1.94.97.97 0 0 1 0-1.94z"/></svg>
+        </a>
+        <span class="share-text">Instagram</span>
+      </li>
+    </ul>
+  </div>
+</div>
   </article>
 
 <div class="section-label">
@@ -823,6 +873,14 @@ bar.querySelectorAll('[data-act]').forEach(btn => {
   }
 
   initSidebarAndTicker();
+  document.querySelectorAll('.ig-copy-link').forEach(el => {
+  el.addEventListener('click', (e) => {
+    e.preventDefault();
+    navigator.clipboard.writeText(el.dataset.url).then(() => {
+      alert('Link disalin! Tempel di caption/DM Instagram kamu.');
+    });
+  });
+});
 })();
 </script>
   <script>
