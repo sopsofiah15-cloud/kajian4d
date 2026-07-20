@@ -466,9 +466,7 @@ nav.tabs button:not(.active):hover{color:var(--text);}
 </style>
 </head>
 <body>
-  
-  <!-- ============== PREVIEW MODAL ============== -->
-<div class="modal-overlay" id="previewModal">
+  <div class="modal-overlay" id="previewModal">
   <div class="modal-box" style="width:92vw;max-width:820px;height:88vh;padding:0;display:flex;flex-direction:column;">
     <h3 style="padding:16px 20px;margin:0;border-bottom:1px solid var(--line);">
   <span id="previewModalTitle">Preview Berita</span> <span class="modal-close" onclick="closePreviewModal()">✕</span>
@@ -477,7 +475,6 @@ nav.tabs button:not(.active):hover{color:var(--text);}
   </div>
 </div>
 
-<!-- ============== LOGIN SCREEN ============== -->
 <div id="loginScreen">
   <div class="login-card">
     <img class="logo" src="https://ik.imagekit.io/ehc8d8fve/85b2dee3-176c-4c06-84cf-03d2c9b74ef0.png" alt="KAJIAN4D">
@@ -499,7 +496,6 @@ nav.tabs button:not(.active):hover{color:var(--text);}
   </div>
 </div>
 
-<!-- ============== RESET PASSWORD MODAL ============== -->
 <div class="modal-overlay" id="resetModal">
   <div class="modal-box">
     <h3>Reset Password Admin <span class="modal-close" onclick="closeResetModal()">✕</span></h3>
@@ -519,7 +515,6 @@ nav.tabs button:not(.active):hover{color:var(--text);}
   </div>
 </div>
 
-<!-- ============== INSERT / EDIT LINK MODAL ============== -->
 <div class="modal-overlay" id="linkModal">
   <div class="modal-box">
     <h3>Insert/Edit Link <span class="modal-close" onclick="closeLinkModal()">✕</span></h3>
@@ -549,7 +544,6 @@ nav.tabs button:not(.active):hover{color:var(--text);}
   </div>
 </div>
 
-<!-- ============== INSERT IMAGE MODAL ============== -->
 <div class="modal-overlay" id="imageModal">
   <div class="modal-box">
     <h3>Sisipkan Gambar/GIF/Video <span class="modal-close" onclick="closeImageModal()">✕</span></h3>
@@ -586,7 +580,6 @@ nav.tabs button:not(.active):hover{color:var(--text);}
   </div>
 </div>
 
-<!-- ============== ADMIN PANEL ============== -->
 <div id="adminPanel">
   <header class="topbar">
   <div class="topbar-row">
@@ -616,8 +609,7 @@ nav.tabs button:not(.active):hover{color:var(--text);}
 
   <main>
 
-    <!-- ===== TAB: TULIS BERITA ===== -->
-<section id="tab-write">
+    <section id="tab-write">
   <div class="panel">
     <h2>Tulis / Edit Artikel</h2>
     <p class="hint">Isi detail artikel di bawah ini. Slug akan dibuat otomatis dari judul jika dikosongkan.</p>
@@ -703,7 +695,6 @@ nav.tabs button:not(.active):hover{color:var(--text);}
   </div>
 </section>
 
-    <!-- ===== TAB: PENGATURAN HEADER ===== -->
     <section id="tab-header" style="display:none;">
       <div class="panel">
         <h2>Pengaturan Header Berita</h2>
@@ -739,7 +730,6 @@ nav.tabs button:not(.active):hover{color:var(--text);}
       </div>
     </section>
 
-    <!-- ===== TAB: PENGATURAN BADGE ===== -->
     <section id="tab-badge" style="display:none;">
       <div class="panel">
         <h2>Pengaturan Badge Kategori</h2>
@@ -753,7 +743,6 @@ nav.tabs button:not(.active):hover{color:var(--text);}
       </div>
     </section>
 
-    <!-- ===== TAB: DAFTAR BERITA ===== -->
     <section id="tab-list" style="display:none;">
       <div class="panel">
         <h2>Daftar Berita Tersimpan</h2>
@@ -780,9 +769,6 @@ nav.tabs button:not(.active):hover{color:var(--text);}
 <div class="toast" id="toast"></div>
 
 <script>
-/* =====================================================
-   MEDIA HELPERS (gambar / gif / video)
-===================================================== */
 function isVideoSrc(src, mimeType){
   if(mimeType && mimeType.startsWith('video/')) return true;
   if(!src) return false;
@@ -798,9 +784,6 @@ function renderMediaTag(src, mimeType, extraAttrs, extraStyle){
   return `<img src="${src}" ${extraAttrs||''} style="${style}">`;
 }
 
-/* =====================================================
-   AUTH / LOGIN  (backend asli via /api/login & /api/reset-password)
-===================================================== */
 function getToken(){
   return sessionStorage.getItem('kajian4d_token') || '';
 }
@@ -873,9 +856,6 @@ async function doResetPassword(){
     err.textContent = 'Tidak bisa menghubungi server: ' + e.message;
   }
 }
-/* =====================================================
-   PREVIEW BERITA (gabungan: tulis berita + header + badge)
-===================================================== */
 function previewArticle(){
   const judul = document.getElementById('fJudul').value.trim() || '(Judul belum diisi)';
   const excerpt = document.getElementById('fExcerpt').value.trim();
@@ -885,7 +865,6 @@ function previewArticle(){
   const thumbUrl = currentThumbDataUrl || '';
   const isHighlight = document.getElementById('fHighlight').checked;
 
-  // Ambil kategori utama untuk badge preview
   const katKey = (kategoriArr[0] || '').toUpperCase();
   const bs = getBadgeStyleFor(katKey);
   const badgeHtml = bs
@@ -948,9 +927,6 @@ function showPreviewModal(title, html){
   document.getElementById('previewFrame').srcdoc = html;
   document.getElementById('previewModal').classList.add('show');
 }
-/* =====================================================
-   PREVIEW: HALAMAN UTAMA (dipakai oleh tab Header & tab Badge)
-===================================================== */
 function buildHomepageMockup(opts){
   const headerUrl = opts.headerUrl || '';
   const headerMime = opts.headerMime || '';
@@ -1035,7 +1011,6 @@ function previewBadgeInHomepage(){
   });
   showPreviewModal('Preview Halaman Utama — Badge', html);
 }
-  // keep session across reload (same tab)
 window.addEventListener('DOMContentLoaded', ()=>{
   document.getElementById('fTanggal').value = getTodayDateStr();
   if(sessionStorage.getItem('kajian4d_logged_in') === '1'){
@@ -1047,9 +1022,6 @@ window.addEventListener('DOMContentLoaded', ()=>{
   }
 });
 
-/* =====================================================
-   TABS
-===================================================== */
 function switchTab(name){
   document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
   document.querySelector(`nav.tabs button[data-tab="${name}"]`).classList.add('active');
@@ -1061,18 +1033,12 @@ function switchTab(name){
   if(name==='badge' && !badgeSettingsLoaded) loadBadgeSettings();
 }
 
-/* =====================================================
-   RICH TEXT TOOLBAR
-===================================================== */
 const editor = document.getElementById('editor');
 function exec(cmd){
   editor.focus();
   document.execCommand(cmd, false, null);
 }
 
-/* =====================================================
-   SLUG AUTO GENERATE
-===================================================== */
 let slugAuto = true;
 document.getElementById('fSlug').addEventListener('input', ()=>{ slugAuto = false; });
 function slugify(str){
@@ -1095,9 +1061,6 @@ function getTodayDateStr(){
   return `${yyyy}-${mm}-${dd}`;
 }
 
-/* =====================================================
-   INSERT / EDIT LINK
-===================================================== */
 let savedRange = null;
 
 function saveCurrentSelection(){
@@ -1116,7 +1079,6 @@ function restoreSelection(){
   if(savedRange){
     sel.addRange(savedRange);
   } else {
-    // place caret at end of editor
     const r = document.createRange();
     r.selectNodeContents(editor);
     r.collapse(false);
@@ -1133,7 +1095,6 @@ function openLinkModal(){
     savedRange = null;
   }
 
-  // check if selection/cursor is inside an existing link -> edit mode
   let node = sel.anchorNode;
   let linkEl = null;
   while(node && node !== editor){
@@ -1179,7 +1140,7 @@ function insertLink(){
   if(title) a.setAttribute('title', title);
   a.setAttribute('target', target);
   if(target === '_blank') a.setAttribute('rel','noopener noreferrer');
-  a.textContent = text; // plain readable text, not raw code
+  a.textContent = text;
 
   editor.focus();
   const sel = window.getSelection();
@@ -1188,7 +1149,6 @@ function insertLink(){
     sel.addRange(savedRange);
     savedRange.deleteContents();
     savedRange.insertNode(a);
-    // move caret after the link
     const r2 = document.createRange();
     r2.setStartAfter(a);
     r2.collapse(true);
@@ -1201,9 +1161,6 @@ function insertLink(){
   closeLinkModal();
 }
 
-/* =====================================================
-   INSERT IMAGE / GIF / VIDEO (di dalam isi artikel)
-===================================================== */
 let currentInsertImageUrl = '';
 let currentInsertImageMime = '';
 
@@ -1292,7 +1249,6 @@ async function insertImageIntoEditor(){
     range.deleteContents();
     range.insertNode(nodeToInsert);
 
-    // move caret after inserted node + add a line break so typing continues below the media
     const br = document.createElement('br');
     nodeToInsert.after(br);
     const r2 = document.createRange();
@@ -1308,9 +1264,6 @@ async function insertImageIntoEditor(){
   }
 }
 
-/* =====================================================
-   THUMBNAIL (artikel) - gambar / gif / video
-===================================================== */
 function switchThumbMode(mode){
   document.getElementById('tabLinkBtn').classList.toggle('active', mode==='link');
   document.getElementById('tabUploadBtn').classList.toggle('active', mode==='upload');
@@ -1341,9 +1294,6 @@ function previewThumb(mode){
   }
 }
 
-/* =====================================================
-   HEADER SETTINGS - gambar / gif / video
-===================================================== */
 function switchHeaderMode(mode){
   document.getElementById('hTabLinkBtn').classList.toggle('active', mode==='link');
   document.getElementById('hTabUploadBtn').classList.toggle('active', mode==='upload');
@@ -1390,7 +1340,7 @@ async function uploadIfNeeded(value, filenameHint){
     if(!resp.ok) throw new Error(json.error || 'Upload media gagal');
     return json.url;
   }
-  return value; // sudah berupa URL biasa
+  return value;
 }
 
 async function saveHeaderSettings(){
@@ -1433,9 +1383,6 @@ async function loadHeaderSettings(){
   }catch(e){}
 }
 
-/* =====================================================
-   BADGE SETTINGS (per kategori)
-===================================================== */
 const BADGE_FONT_OPTIONS = [
   "Segoe UI", "Arial", "Helvetica", "Georgia", "Times New Roman",
   "Verdana", "Tahoma", "Trebuchet MS", "Courier New", "Poppins", "Roboto", "Montserrat"
@@ -1453,8 +1400,6 @@ KATEGORI_LIST_SAFE().forEach(k => {
   };
 });
 
-// helper wrappers (kategori list & titlecase are defined later in the file;
-// these thin wrappers just avoid ordering issues at script parse time)
 function KATEGORI_LIST_SAFE(){
   return ["SEPAK BOLA","OLAHRAGA","TEKNOLOGI & OTOMOTIF","HIBURAN","ENTERTAIMENT","BISNIS","BERITA DUNIA","LIFESTYLE","FILM & SERIES","ARSIP"];
 }
@@ -1467,7 +1412,7 @@ function titleCaseKategoriSafe(k){
 
 let badgeSettings = JSON.parse(JSON.stringify(DEFAULT_BADGE_SETTINGS));
 let badgeSettingsLoaded = false;
-let currentBadgeIconMime = {}; // per-kategori mime saat upload file baru
+let currentBadgeIconMime = {};
 
 function renderBadgeSettingsForm(){
   const wrap = document.getElementById('badgeSettingsList');
@@ -1626,7 +1571,6 @@ function collectBadgeSettingsFromForm(){
 async function saveBadgeSettings(){
   try{
     const collected = collectBadgeSettingsFromForm();
-    // upload semua ikon berbentuk data URL dulu
     for(const k of Object.keys(collected)){
       if(collected[k].icon && collected[k].icon.startsWith('data:')){
         const safeId = k.replace(/\s+/g,'_').toLowerCase();
@@ -1661,7 +1605,6 @@ async function loadBadgeSettings(){
       });
     }
   }catch(e){
-    // pakai default jika gagal memuat
   } finally {
     badgeSettingsLoaded = true;
     renderBadgeSettingsForm();
@@ -1675,17 +1618,12 @@ function getBadgeStyleFor(k){
   return b;
 }
 
-/* =====================================================
-   ARTICLES: SAVE / LIST / EDIT / DELETE
-===================================================== */
 let editingSlug = null;
 let cachedArticles = [];
 let currentKategoriFilter = 'ALL';
 let currentPage = 1;
 const ARTICLES_PER_PAGE = 10;
 
-// Kategori dasar (sama seperti checkbox form). Kategori baru yang muncul dari
-// data lama (misal ditulis manual) akan otomatis ditambahkan ke bar filter juga.
 const KATEGORI_LIST = ["SEPAK BOLA","OLAHRAGA","TEKNOLOGI","HIBURAN","ENTERTAIMENT","BISNIS","DUNIA","LIFESTYLE","FILM & SERIES"];
 
 function getKategoriChecked(){
@@ -1786,8 +1724,6 @@ function titleCaseKategori(k){
   return k.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
 }
 
-/* Bangun bar filter kategori secara otomatis: "Semua" + tiap kategori,
-   masing-masing dengan jumlah berita yang tersimpan di kategori itu. */
 function renderKategoriFilterBar(){
   const bar = document.getElementById('kategoriFilterBar');
   const counts = {};
@@ -1819,7 +1755,6 @@ function getFilteredArticles(){
   return cachedArticles.filter(a => getKategoriArr(a).map(x => x.toUpperCase()).includes(currentKategoriFilter));
 }
 
-/* Render tabel untuk halaman aktif (10 berita per halaman) dari hasil filter kategori. */
 function renderFilteredTable(){
   const tbody = document.getElementById('articleTableBody');
   const filtered = getFilteredArticles();
@@ -1942,9 +1877,6 @@ function escapeHtml(str){
   return (str||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 }
 
-/* =====================================================
-   TOAST
-===================================================== */
 let toastTimer;
 function showToast(msg){
   const t = document.getElementById('toast');
